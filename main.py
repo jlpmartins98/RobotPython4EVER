@@ -744,7 +744,16 @@ def main():
     if(len(posicao_ovelhas) ==1): #Ovelhas na mesma posição
         posicao_ovelhas[1]= posicao_ovelhas[0]
 
-    #guia_ovelha(algoritmo_A_star(posicao_ovelhas[0])-6)   
+    # betty = escolhe_ovelha()
+    # 
+    # if (betty == posicao_ovelhas[0]): #escolheu a primeira ovelha
+    #   vitoria = posicao_ovelhas[1]
+    #   guia_ovelha(betty) 
+    #   guia_ovelha(vitoria)
+    # else:
+    #   vitoria = posicao_ovelhas[0]
+    #   guia_ovelha(betty)
+    #   guia_ovelha(vitoria)
     # print(k)
 
 if (__name__ == "__main__"):
