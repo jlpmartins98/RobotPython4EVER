@@ -44,6 +44,7 @@ precionado = 0
 encontrou_parede = 0
 batatadas_totais = 0
 paredes_encontradas = 0
+paredes = []
 ##################MOTORES#########################
 # motor_esquerdo = Motor(OUTPUT_A)
 # motor_direito = Motor(OUTPUT_C)
@@ -214,44 +215,62 @@ def algoritmo_A_star(goal):
 
 def adiciona_parede(cacifoComParede):
     global paredes_encontradas
+    AlreadyFound = True
     j = 0
     while(j != len(arrayCacifos_com_heuristica)):
         if(arrayCacifos_com_heuristica[j].numeroCacifo == cacifoComParede):
             if(informacao.direcao == 0):  # Virado para cima
+                if(arrayCacifos_com_heuristica[j].paredeUp != True):
+                    AlreadyFound = False
                 # guarda que este cacifo tem uma parede em cima
                 arrayCacifos_com_heuristica[j].paredeUp = True
                 # colocamos a parede do cacifo acima
                 if(arrayCacifos_com_heuristica[j].numeroCacifo < 31):
+                    if(arrayCacifos_com_heuristica[j+6].paredeDown != True):
+                        AlreadyFound = False
                     # guarda que o cacifo de cima do atual tem uma parede em baixo
                     arrayCacifos_com_heuristica[j+6].paredeDown = True
 
             elif(informacao.direcao == 270):  # Virado para a direita
+                if(arrayCacifos_com_heuristica[j].paredeRight != True):
+                    AlreadyFound = False
                 # guarda que este cacifo tem uma parede a dirieta
                 arrayCacifos_com_heuristica[j].paredeRight = True
                 # colocamos a parede do cacifo a sua direita
                 # caso nao esteja nos limites do mapa a direita
                 if(arrayCacifos_com_heuristica[j].numeroCacifo not in [36, 30, 24, 18, 12, 6]):
+                    if(arrayCacifos_com_heuristica[j+1].paredeLeft != True):
+                        AlreadyFound = False
                     # guarda que o cacifo a direita do atual tem uma parde a sua esquerda
                     arrayCacifos_com_heuristica[j+1].paredeLeft = True
 
             elif(informacao.direcao == 180):  # Virado para baixo
+                if(arrayCacifos_com_heuristica[j].paredeDown != True):
+                    AlreadyFound = False
                 # guarda que este cacifo tem uma parede em baixo
                 arrayCacifos_com_heuristica[j].paredeDown = True
                 # colocamos a parede no cacifo abaixo
                 # caso nao esteja nos limites do mapa em baixo
                 if(arrayCacifos_com_heuristica[j].numeroCacifo > 6):
+                    if(arrayCacifos_com_heuristica[j-6].paredeUp != True):
+                        AlreadyFound = False
                     # guarda que o cacifo a abaixo do atual tem uma parede em cima
                     arrayCacifos_com_heuristica[j-6].paredeUp = True
 
             elif(informacao.direcao == 90):  # Virado para a esquerda
+                if(arrayCacifos_com_heuristica[j].paredeLeft != True):
+                    AlreadyFound = False
                 arrayCacifos_com_heuristica[j].paredeLeft = True
                 # colocamos a parede do cacifo a esquerda
                 # caso nao esteja nos limites do mapa a esquerda
                 if(arrayCacifos_com_heuristica[j].numeroCacifo not in [1, 7, 13, 19, 25, 31]):
+                    if(arrayCacifos_com_heuristica[j-1].paredeRight != True):
+                        AlreadyFound = False
                     # guarda que o cacifo a direita do atual tem uma parde a sua esquerda
                     arrayCacifos_com_heuristica[j-1].paredeRight = True
         j += 1
-    paredes_encontradas+=1
+    if(AlreadyFound == False):
+        paredes_encontradas+=1
 
 
 # adiciona o cacifo, ao array cacifos visitados
@@ -702,18 +721,17 @@ def calcula_inicio(ovelha): #Função que vai calcular em que sitio começar e q
         elif(k.paredeUp and k.paredeRight):
             caminho_ovelha = algoritmo_A_star(k.numeroCacifo+6) #vai para a posição em cima da ovelha porque fica mais perto da cerca para a ovelha
             # opcao 2 caminho_ovelha = algoritmo_A_star(k.numeroCacifo+1) #vai para a posição à direita da ovelha porque fica mais perto da cerca para a ovelha
-return caminho_ovelha        
+    return caminho_ovelha        
         
 def escolhe_ovelha(): #função que escolhe qual é a melhor ovelha para começar a ser guiada (para evitar ter de fazer mais ifs na função calcula_inicio() )
     ov1 = CacifoAtual(posicao_ovelhas[0]) #1ª ovelha encontrada
     ov2 = CacifoAtual(posicao_ovelhas[1]) #2º ovelha encontrada
-    if (ov1.numeroCacifo == ov2.numeroCacifo+1 or ov1.numeroCacifo == ov2.numeroCacifo+6 or ov1.numeroCacifo == ov2.numeroCacifo-1 or ov1.numeroCacifo == ov2.numeroCacifo-6) #Verifica se a 2ª ovelha está num cacifo adjacente ao da 1ª ovelha   
-        if (ov1.numeroCacifo in [35,34,33,32,31,25,19,13,7,2,3,4,5,6,12,18,24,30]): #Verifica se a 1ª ovelha está na borda do tabuleiro
+    if (ov1.numeroCacifo == ov2.numeroCacifo+1 or ov1.numeroCacifo == ov2.numeroCacifo+6 or ov1.numeroCacifo == ov2.numeroCacifo-1 or ov1.numeroCacifo == ov2.numeroCacifo-6): #Verifica se a 2ª ovelha está num cacifo adjacente ao da 1ª ovelha   
+        if(ov1.numeroCacifo in [35,34,33,32,31,25,19,13,7,2,3,4,5,6,12,18,24,30]): #Verifica se a 1ª ovelha está na borda do tabuleiro
             return posicao_ovelhas[1]  #Devolve a 2ª ovelha porque é a mais fácil para começar a guiar
-        else:
-            return posicao_ovelhas[0]  #Devolve a 1ª ovelha por motivo nenhum senão simplesmente ser a primeira que foi encontrada
-    else:
-        return posicao_ovelhas[0] #Devolve a 1ª ovelha por motivo nenhum senão simplesmente ser a primeira que foi encontrada
+        #else:
+            #return posicao_ovelhas[0]  #Devolve a 1ª ovelha por motivo nenhum senão simplesmente ser a primeira que foi encontrada
+    return posicao_ovelhas[0] #Devolve a 1ª ovelha por motivo nenhum senão simplesmente ser a primeira que foi encontrada
 
 
 # m = LargeMotor(OUTPUT_A)
