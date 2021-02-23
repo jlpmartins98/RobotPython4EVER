@@ -637,9 +637,83 @@ def guia_ovelha(pathovelha):
                 robot.on_for_distance(SpeedRPM(20),150)
                 j+= 1
             
+def calcula_inicio(ovelha): #Função que vai calcular em que sitio começar e qual o caminho da heurística que recebe qual a ovelha que quer guiar
+    k = CacifoAtual(ovelha)
+    if(k.numeroCacifo in [32,33,34,35]): #se tiver na linha de cima do tabuleiro (o 31 é um caso especial pk tem a parede dos limites)
+        if(k.paredeDown == True and (k.paredeRight == True or k.paredeLeft == True)): #se tiver uma parede em L 
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6) #vai para a posição abaixo da ovelha por causa da parede em L
+        elif (k.paredeLeft == True) :
+            caminho_ovelha =  algoritmo_A_star(k.numeroCacifo-6) #vai para a posição abaixo da ovelha porque fica mais perto da cerca para a ovelha
+        elif (k.paredeRight == True):
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo-1) #vai para a posição à esquerda da ovelha porque fica mais perto da cerca se bater para a ovelha
+        elif(k.paredeDown == True):
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo-1) #vai para a posição à esquerda da ovelha porque fica mais perto da cerca se bater para a ovelha
+    elif (k.numeroCacifo in [31]): #Caso especial para o 31 porque faz parte do limite do tabuleiro de cima e da esquerda (por isso já faz um L)
+        if(k.paredeDown == True):
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6) #vai para a posição abaixo da ovelha porque fica mais perto da cerca para a ovelha
+        elif(k.paredeRight == True):
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo+1) #vai para a posição à direita da ovelha porque fica mais perto da cerca para a ovelha
+    elif(k.numeroCacifo in [2,3,4,5]): #se tiver na linha de baixo do tabuleiro (o 6 é um caso especial porque tem a parede em dos limites o 1 não é caso especial porque a ovelha nunca vai estar na posição 1 no inicio)
+        if(k.paredeUp and (k.paredeLeft or k.paredeRight)):
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo+6) #vai para a posição em cima da ovelha porque fica mais perto da cerca para a ovelha
+        elif (k.paredeUp or k.paredeRight):
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo-1) #vai para a posição à esquerda da ovelha porque fica mais perto da cerca se bater para a ovelha
+        elif(k.paredeLeft):
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo+1) #vai para a posição à direita da ovelha porque fica mais perto da cerca para a ovelha
+    elif(k.numeroCacifo in [6]): #Caso especial para o 6 porque faz parte do limite do tabuleiro em baixo e da direita (por isso já faz um L)
+        if(k.paredeUp):
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo+6) #vai para a posição em cima da ovelha porque fica mais perto da cerca para a ovelha
+        elif(k.paredeLeft):
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo-1) #vai para a posição à esquerda porque fica mais perto da cerca se bater para a ovelha
+    elif(k.numeroCacifo in [25,19,13,7]): #se tiver na linha da esquerda do tabuleiro (o 31 não interessa porque já é resolvido num elif de cima)
+        if(k.paredeRight and (k.paredeUp or k.paredeDown)):
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo+6) #vai para a posição em cima da ovelha porque fica mais perto da cerca para a ovelha
+        elif(k.paredeRight or k.paredeUp):
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6) #vai para a posição abaixo da ovelha porque fica mais perto da cerca para a ovelha
+        elif(k.paredeDown):
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo+6) #vai para a posição em cima da ovelha porque fica mais perto da cerca para a ovelha
+    elif(k.numeroCacifo in [30,24,18,12]): #se tiver na linha da direita do tabuleiro (o 6 não interessa porque já é resolvido num elif de cima)
+        if(k.paredeLeft and (k.paredeUp or k.paredeDown)):
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo-1) #vai para a posição à esquerda da ovelha porque fica mais perto da cerca se bater para a ovelha
+        elif(k.paredeLeft or k.paredeUp):
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6) #vai para a posição abaixo da ovelha porque fica mais perto da cerca para a ovelha
+        elif(k.paredeDown):
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo-1) #vai para a posição à esquerda da ovelha porque fica mais perto da cerca se bater para a ovelha
+    
+    else:#Trata dos casos para L's dentro do tabuleiro
+        #Casos de 3 paredes
+        if(k.paredeUp and k.paredeDown and (k.paredeLeft or k.paredeRight)): #Para o caso de ter 3 paredes em forma de C para a direita ou para a esquerda nota: usar lógica negada?
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6) #vai para a posição abaixo da ovelha porque fica mais perto da cerca para a ovelha
+        elif(k.paredeRight and k.paredeLeft and (k.paredeDown or k.paredeUp)): #Para o caso de ter 3 paredes em forma de U para cima ou para baixo
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo-1) #vai para a posição à esquerda da ovelha porque fica mais perto da cerca se bater para a ovelha
+        #Casos normais de 1 parede
+        elif(k.paredeUp or k.paredeDown): 
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo-1) #vai para a posição à esquerda da ovelha porque fica mais perto da cerca se bater para a ovelha
+        elif(k.paredeRight or k.paredeLeft):
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6) #vai para a posição abaixo da ovelha porque fica mais perto da cerca para a ovelha
+        #Casos de 2 paredes
+        elif(k.paredeUp and k.paredeLeft):
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6) #vai para a posição abaixo da ovelha porque fica mais perto da cerca para a ovelha
+        elif(k.paredeDown and k.paredeRight):
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo-1) #vai para a posição à esquerda da ovelha porque fica mais perto da cerca se bater para a ovelha
+        elif(k.paredeLeft and k.paredeDown): 
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo-1) #vai para a posição à esquerda da ovelha porque fica mais perto da cerca se bater para a ovelha
+            #opcao 2 caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6) #vai para a posição abaixo da ovelha porque fica mais perto da cerca para a ovelha
+        elif(k.paredeUp and k.paredeRight):
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo+6) #vai para a posição em cima da ovelha porque fica mais perto da cerca para a ovelha
+            # opcao 2 caminho_ovelha = algoritmo_A_star(k.numeroCacifo+1) #vai para a posição à direita da ovelha porque fica mais perto da cerca para a ovelha
+return caminho_ovelha        
         
-        
-                 
+def escolhe_ovelha(): #função que escolhe qual é a melhor ovelha para começar a ser guiada (para evitar ter de fazer mais ifs na função calcula_inicio() )
+    ov1 = CacifoAtual(posicao_ovelhas[0]) #1ª ovelha encontrada
+    ov2 = CacifoAtual(posicao_ovelhas[1]) #2º ovelha encontrada
+    if (ov1.numeroCacifo == ov2.numeroCacifo+1 or ov1.numeroCacifo == ov2.numeroCacifo+6 or ov1.numeroCacifo == ov2.numeroCacifo-1 or ov1.numeroCacifo == ov2.numeroCacifo-6) #Verifica se a 2ª ovelha está num cacifo adjacente ao da 1ª ovelha   
+        if (ov1.numeroCacifo in [35,34,33,32,31,25,19,13,7,2,3,4,5,6,12,18,24,30]): #Verifica se a 1ª ovelha está na borda do tabuleiro
+            return posicao_ovelhas[1]  #Devolve a 2ª ovelha porque é a mais fácil para começar a guiar
+        else:
+            return posicao_ovelhas[0]  #Devolve a 1ª ovelha por motivo nenhum senão simplesmente ser a primeira que foi encontrada
+    else:
+        return posicao_ovelhas[0] #Devolve a 1ª ovelha por motivo nenhum senão simplesmente ser a primeira que foi encontrada
 
 
 # m = LargeMotor(OUTPUT_A)
