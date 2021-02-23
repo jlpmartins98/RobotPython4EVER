@@ -454,9 +454,9 @@ def atualiza_posicao():
 # paredeDown, paredeLeft, paredeRight, paredeUp
 
 
-def guia_ovelha():
+def guia_ovelha(pathovelha):
     j = 0
-    while(j < len(arrayCacifos_com_heuristica)-1):
+    while(j < len(pathovelha)):
         # if(arrayCacifos_com_heuristica[j+1].numeroCacifo in 1,31,6): #isto já não está resolvido com as paredes? (acho que não porque se não houver paredes ele vai quere sempre usar o braço quando a ovelha está nestas posições)
         # funcao braco()
         # estes whiles e k's desta parte sei lá é random stuff x) acho que pode ser que seja útil para fazer mover 2 casas mas talvez não
@@ -465,23 +465,37 @@ def guia_ovelha():
         # while(j <k)
         # andar 2 casas
         #  j+=1
-        if(informacao.posicao+6 == posicao_ovelhas[1] or informacao.posicao-6 == posicao_ovelhas[1] or informacao.posicao-1 == posicao_ovelhas[1] or informacao.posicao+1 == posicao_ovelhas[1]):
+        #if(informacao.posicao+6 == posicao_ovelhas[1] or informacao.posicao-6 == posicao_ovelhas[1] or informacao.posicao-1 == posicao_ovelhas[1] or informacao.posicao+1 == posicao_ovelhas[1]):
             # funcao braco()
             # andar 2 casas
-            j += 2
+            #j += 2
 
         # Para paredes em L e/ou 3 paredes num cacifo (limites também fazem parte da parede) (caso andar para cima)
-        elif(arrayCacifos_com_heuristica[j].numeroCacifo+6 == arrayCacifos_com_heuristica[j+1].numeroCacifo):
-            if((arrayCacifos_com_heuristica[j+1].paredeUp == True and arrayCacifos_com_heuristica[j+1].paredeRight == True) or (arrayCacifos_com_heuristica[j+1].paredeUp == True and arrayCacifos_com_heuristica[j+1] in [36, 30, 24, 18, 12, 6]) or (arrayCacifos_com_heuristica[j+1] > 30 and arrayCacifos_com_heuristica[j+1].paredeRight == True)):  # tirar o 36 da lista?
+        if(pathovelha[j].numeroCacifo+6 == pathovelha[j+1].numeroCacifo):
+            if((pathovelha[j+1].paredeUp == True and pathovelha[j+1].paredeRight == True) or (pathovelha[j+1].paredeUp == True and pathovelha[j+1] in [36, 30, 24, 18, 12, 6]) or (pathovelha[j+1] > 30 and pathovelha[j+1].paredeRight == True)):  # tirar o 36 da lista?
+                sleep(1)
+                braco.on_for_degrees(100,360)
+                #if(toque.is_pressed):
+                sleep(1)
+                #braco.stop()
+                #volta com o braço para cima 
+                braco.on_for_degrees(100,-360)
                 coloca_direcao(0)
                 robot.on_for_distance(SpeedRPM(20), 150)
                 coloca_direcao(90)
                 robot.on_for_distance(SpeedRPM(20), 150)
                 j+= 2
             
-            elif((arrayCacifos_com_heuristica[j+1].paredeUp == True and arrayCacifos_com_heuristica[j+1].paredeLeft == True) or (arrayCacifos_com_heuristica[j+1].paredeUp == True and arrayCacifos_com_heuristica[j+1] in [31,25,19,13,7,1]) or (arrayCacifos_com_heuristica[j+1] > 30 and arrayCacifos_com_heuristica[j+1].paredeLeft == True) ):
+            elif((pathovelha[j+1].paredeUp == True and pathovelha[j+1].paredeLeft == True) or (pathovelha[j+1].paredeUp == True and pathovelha[j+1] in [31,25,19,13,7,1]) or (pathovelha[j+1] > 30 and pathovelha[j+1].paredeLeft == True) ):
                 # braco
                 # andar 2 casas fazendo l para a esquerda (cima e direita) FEITO
+                sleep(1)
+                braco.on_for_degrees(100,360)
+                #if(toque.is_pressed):
+                sleep(1)
+                #braco.stop()
+                #volta com o braço para cima 
+                braco.on_for_degrees(100,-360)
                 coloca_direcao(0) 
                 robot.on_for_distance(SpeedRPM(20),150)
                 coloca_direcao(270)
@@ -495,18 +509,32 @@ def guia_ovelha():
                 robot.on_for_distance(SpeedRPM(20),150)
                 j+= 1
             
-        elif(arrayCacifos_com_heuristica[j].numeroCacifo+1 == arrayCacifos_com_heuristica[j+1].numeroCacifo):#Para o caso de querer andar para a direita 
-            if((arrayCacifos_com_heuristica[j+1].paredeRight == True and arrayCacifos_com_heuristica[j+1].paredeUp == True) or (arrayCacifos_com_heuristica[j+1].paredeRight == True and arrayCacifos_com_heuristica[j+1] > 30 ) or (arrayCacifos_com_heuristica[j+1] in [36,30,24,18,12,6] and arrayCacifos_com_heuristica[j+1].paredeUp == True)):#tirar o 36 da lista?
+        elif(pathovelha[j].numeroCacifo+1 == pathovelha[j+1].numeroCacifo):#Para o caso de querer andar para a direita 
+            if((pathovelha[j+1].paredeRight == True and pathovelha[j+1].paredeUp == True) or (pathovelha[j+1].paredeRight == True and pathovelha[j+1] > 30 ) or (pathovelha[j+1] in [36,30,24,18,12,6] and pathovelha[j+1].paredeUp == True)):#tirar o 36 da lista?
                 # braco
                 # andar 2 casas fazendo l para a direita ( direita e depois baixo) FEITO
+                sleep(1)
+                braco.on_for_degrees(100,360)
+                #if(toque.is_pressed):
+                sleep(1)
+                #braco.stop()
+                #volta com o braço para cima 
+                braco.on_for_degrees(100,-360)
                 coloca_direcao(270)
                 robot.on_for_distance(SpeedRPM(20),150)
                 coloca_direcao(180)
                 robot.on_for_distance(SpeedRPM(20),150) 
                 j+= 2
-            elif((arrayCacifos_com_heuristica[j+1].paredeRight == True and arrayCacifos_com_heuristica[j+1].paredeDown == True) or (arrayCacifos_com_heuristica[j+1].paredeRight == True and arrayCacifos_com_heuristica[j+1] < 7) or (arrayCacifos_com_heuristica[j+1] in [36,30,24,18,12,6] and arrayCacifos_com_heuristica[j+1].paredeDown == True)): #tirar o 36 da lista
+            elif((pathovelha[j+1].paredeRight == True and pathovelha[j+1].paredeDown == True) or (pathovelha[j+1].paredeRight == True and pathovelha[j+1] < 7) or (pathovelha[j+1] in [36,30,24,18,12,6] and pathovelha[j+1].paredeDown == True)): #tirar o 36 da lista
                 # braco
                 # andar 2 casas fazendo l para a direita ( direita e depois cima) FEITO
+                sleep(1)
+                braco.on_for_degrees(100,360)
+                #if(toque.is_pressed):
+                sleep(1)
+                #braco.stop()
+                #volta com o braço para cima 
+                braco.on_for_degrees(100,-360)
                 coloca_direcao(270)
                 robot.on_for_distance(SpeedRPM(20),150)
                 coloca_direcao(0)
@@ -521,18 +549,32 @@ def guia_ovelha():
                 j+= 1
             
         
-        elif(arrayCacifos_com_heuristica[j].numeroCacifo-6 == arrayCacifos_com_heuristica[j+1].numeroCacifo): #para o caso de querer andar para baixo
-            if((arrayCacifos_com_heuristica[j+1].paredeDown == True and arrayCacifos_com_heuristica[j+1].paredeRight == True) or (arrayCacifos_com_heuristica[j+1].paredeDown == True and arrayCacifos_com_heuristica[j+1] in [36,30,24,18,12,6]) or (arrayCacifos_com_heuristica[j+1] < 7 and arrayCacifos_com_heuristica[j+1].paredeRight == True)):
+        elif(pathovelha[j].numeroCacifo-6 == pathovelha[j+1].numeroCacifo): #para o caso de querer andar para baixo
+            if((pathovelha[j+1].paredeDown == True and pathovelha[j+1].paredeRight == True) or (pathovelha[j+1].paredeDown == True and pathovelha[j+1] in [36,30,24,18,12,6]) or (pathovelha[j+1] < 7 and pathovelha[j+1].paredeRight == True)):
                 # braco
                 # andar 2 casas fazendo l para a esquerda (baixo e esquerda) #FEITO
+                sleep(1)
+                braco.on_for_degrees(100,360)
+                #if(toque.is_pressed):
+                sleep(1)
+                #braco.stop()
+                #volta com o braço para cima 
+                braco.on_for_degrees(100,-360)
                 coloca_direcao(180)
                 robot.on_for_distance(SpeedRPM(20),150)
                 coloca_direcao(90)
                 robot.on_for_distance(SpeedRPM(20),150) 
                 j+= 2
-            elif((arrayCacifos_com_heuristica[j+1].paredeDown == True and arrayCacifos_com_heuristica[j+1].paredeLeft == True) or (arrayCacifos_com_heuristica[j+1].paredeDown == True and arrayCacifos_com_heuristica[j+1] in [31,25,19,13,7,1]) or (arrayCacifos_com_heuristica[j+1] < 7 and arrayCacifos_com_heuristica[j+1].paredeLeft == True)):
+            elif((pathovelha[j+1].paredeDown == True and pathovelha[j+1].paredeLeft == True) or (pathovelha[j+1].paredeDown == True and pathovelha[j+1] in [31,25,19,13,7,1]) or (pathovelha[j+1] < 7 and pathovelha[j+1].paredeLeft == True)):
                 # braco
                 # andar 2 casas fazendo l para a direita (baixo e direita) FEITO
+                sleep(1)
+                braco.on_for_degrees(100,360)
+                #if(toque.is_pressed):
+                sleep(1)
+                #braco.stop()
+                #volta com o braço para cima 
+                braco.on_for_degrees(100,-360)
                 coloca_direcao(180)
                 robot.on_for_distance(SpeedRPM(20),150)
                 coloca_direcao(270)
@@ -541,24 +583,38 @@ def guia_ovelha():
             
             else:
                 # apitar 
-				# e andar 1 casa FEITO
+                # e andar 1 casa FEITO
                 Sound.beep() 
                 coloca_direcao(180)
                 robot.on_for_distance(SpeedRPM(20),150)
                 j+= 1
             
-        elif(arrayCacifos_com_heuristica[j].numeroCacifo-1 == arrayCacifos_com_heuristica[j+1].numeroCacifo): #para o caso de querer andar para a esquerda 
-            if((arrayCacifos_com_heuristica[j+1].paredeLeft == True and arrayCacifos_com_heuristica[j+1].paredeDown == True) or (arrayCacifos_com_heuristica[j+1].paredeLeft == True and arrayCacifos_com_heuristica[j+1] < 6) or (arrayCacifos_com_heuristica[j+1] in [31,25,19,13,7,1] and arrayCacifos_com_heuristica[j+1].paredeDown == True)):
+        elif(pathovelha[j].numeroCacifo-1 == pathovelha[j+1].numeroCacifo): #para o caso de querer andar para a esquerda 
+            if((pathovelha[j+1].paredeLeft == True and pathovelha[j+1].paredeDown == True) or (pathovelha[j+1].paredeLeft == True and pathovelha[j+1] < 6) or (pathovelha[j+1] in [31,25,19,13,7,1] and pathovelha[j+1].paredeDown == True)):
                 # braco
                 # andar 2 casas fazendo l ( esquerda e depois cima) FEITO
+                sleep(1)
+                braco.on_for_degrees(100,360)
+                #if(toque.is_pressed):
+                sleep(1)
+                #braco.stop()
+                #volta com o braço para cima 
+                braco.on_for_degrees(100,-360)
                 coloca_direcao(90)
                 robot.on_for_distance(SpeedRPM(20),150)
                 coloca_direcao(0)
                 robot.on_for_distance(SpeedRPM(20),150) 
                 j+= 2
-            elif((arrayCacifos_com_heuristica[j+1].paredeLeft == True and arrayCacifos_com_heuristica[j+1].paredeUp == True) or (arrayCacifos_com_heuristica[j+1].paredeLeft == True and arrayCacifos_com_heuristica[j+1] > 30) or (arrayCacifos_com_heuristica[j+1] in [31,25,19,13,7,1] and arrayCacifos_com_heuristica[j+1].paredeUp == True)):
+            elif((pathovelha[j+1].paredeLeft == True and pathovelha[j+1].paredeUp == True) or (pathovelha[j+1].paredeLeft == True and pathovelha[j+1] > 30) or (pathovelha[j+1] in [31,25,19,13,7,1] and pathovelha[j+1].paredeUp == True)):
                 # braco
                 # andar 2 casas fazendo l ( esquerda e depois baixo) FEITO
+                sleep(1)
+                braco.on_for_degrees(100,360)
+                #if(toque.is_pressed):
+                sleep(1)
+                #braco.stop()
+                #volta com o braço para cima 
+                braco.on_for_degrees(100,-360)
                 coloca_direcao(90)
                 robot.on_for_distance(SpeedRPM(20),150)
                 coloca_direcao(180)
@@ -567,27 +623,16 @@ def guia_ovelha():
             
             else:
                 # apitar 
-				# e andar 1 casa FEITO
+                # e andar 1 casa FEITO
                 Sound.beep() 
                 coloca_direcao(90)
                 robot.on_for_distance(SpeedRPM(20),150)
                 j+= 1
             
         
-        else:
-            # apitar e andar 1 casa
-            Sound.beep() 
-            j+= 1
+        
                  
-def guia_robot():
-    j = 0
-    while(j < len(arrayCacifos_com_heuristica)-1):
-        if(arrayCacifos_com_heuristica[j].numeroCacifo+6 == arrayCacifos_com_heuristica[j+1].numeroCacifo):
-            coloca_direcao(0)
-            robot.on_for_distance(SpeedRPM(20),150)
-        elif(arrayCacifos_com_heuristica[j].numeroCacifo+1 == arrayCacifos_com_heuristica[j+1].numeroCacifo):
-            coloca_direcao(180)
-            robot.on_for_distance(SpeedRPM(20),150)
+
 
 # m = LargeMotor(OUTPUT_A)
 # verifica o tabuleiro todo
@@ -615,5 +660,6 @@ if (__name__ == "__main__"):
     main() 
 
             
+
 
 
