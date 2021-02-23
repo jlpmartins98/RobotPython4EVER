@@ -379,13 +379,13 @@ def ovelhas():  # quando encontra ovelhas
     if(obstacle_sensor.distance_centimeters < 20):  # verificar distancia
         Sound.beep()
 
-        sleep(1)
-        braco.on_for_degrees(100,360)
+        #sleep(1)
+        #braco.on_for_degrees(100,360)
         #if(toque.is_pressed):
-        sleep(1)
+        #sleep(1)
         #braco.stop()
         #volta com o braço para cima 
-        braco.on_for_degrees(100,-360)
+        #braco.on_for_degrees(100,-360)
         if(len(posicao_ovelhas) != 2): #se ainda nao tiver encontrado as duas ovelhas guarda a posiçao da q encontrou
             guarda_posicao_ovelha()
         #else:
@@ -653,7 +653,7 @@ def main():
         if(informacao.posicao == 36):
             break
         #verificou o tabuleiro todo
-    algoritmo_A_star(posicao_ovelhas[0])    
+    guia_ovelha(algoritmo_A_star(posicao_ovelhas[0])-6)   
     # print(k)
 
 if (__name__ == "__main__"):
