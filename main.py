@@ -750,6 +750,8 @@ def main():
     #   vitoria = posicao_ovelhas[1]
     #   guia_ovelha(betty) 
     #   guia_ovelha(vitoria)
+    # elif (posicao_ovelhas[0] == posicao_ovelhas[1])
+    #   guia_ovelha(betty)
     # else:
     #   vitoria = posicao_ovelhas[0]
     #   guia_ovelha(betty)
