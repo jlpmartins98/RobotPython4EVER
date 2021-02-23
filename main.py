@@ -43,7 +43,7 @@ array_pode_avancar = []
 precionado = 0
 encontrou_parede = 0
 batatadas_totais = 0
-
+paredes_encontradas = 0
 ##################MOTORES#########################
 # motor_esquerdo = Motor(OUTPUT_A)
 # motor_direito = Motor(OUTPUT_C)
@@ -213,6 +213,7 @@ def algoritmo_A_star(goal):
 
 
 def adiciona_parede(cacifoComParede):
+    global paredes_encontradas
     j = 0
     while(j != len(arrayCacifos_com_heuristica)):
         if(arrayCacifos_com_heuristica[j].numeroCacifo == cacifoComParede):
@@ -250,6 +251,7 @@ def adiciona_parede(cacifoComParede):
                     # guarda que o cacifo a direita do atual tem uma parde a sua esquerda
                     arrayCacifos_com_heuristica[j-1].paredeRight = True
         j += 1
+    paredes_encontradas+=1
 
 
 # adiciona o cacifo, ao array cacifos visitados
@@ -289,10 +291,15 @@ def verifica_cacifo():
         i += 1  # Atualiza o i
         vira(90)
     elif(cs.color == 2 or cs.color == 1):  # Encontrou limite do cacifo BLACK ####tá azul agora era (1)
-        ovelhas()
+        #ovelhas()
         if(obstacle_sensor.distance_centimeters < 20):  # verificar distancia
+            Sound.beep()
+            sleep(2)
+            if(len(posicao_ovelhas) != 2): #se ainda nao tiver encontrado as duas ovelhas guarda a posiçao da q encontrou
+                guarda_posicao_ovelha()
             robot.on_for_distance(SpeedRPM(-40), 50)
             sleep(0.5)
+            i += 1
             # vira(90)
         ######################robot.straight(-50)#####################
         # robot.on_for_rotations(-20, -20, 0.5)    #Volta para trás, suposto voltar ate ao centro do cacifo
@@ -300,13 +307,14 @@ def verifica_cacifo():
         else:
             robot.on_for_distance(SpeedRPM(-40), 50)
             sleep(0.5)
+            teste_pode_avancar = pode_avancar()
+            i += 1  # Atualiza o i
+            if(teste_pode_avancar == True):  # Caso possa avançar nessa direção
+                # Adiciona essa direção ao array
+                array_pode_avancar.append(informacao.direcao)
             # vira(90)
         # Verifica se pode avançar(Se não é limite do tabuleiro)
-        teste_pode_avancar = pode_avancar()
-        i += 1  # Atualiza o i
-        if(teste_pode_avancar == True):  # Caso possa avançar nessa direção
-            # Adiciona essa direção ao array
-            array_pode_avancar.append(informacao.direcao)
+        
         vira(90)
 
     if(i >= 4):  # Já verificou todos os lados do cacifo
@@ -314,8 +322,8 @@ def verifica_cacifo():
         escolhe_prioridade(array_pode_avancar)
         # Obtem tamanho do array prioritario
         opcoes_prioridade = len(cacifos_prioritarios)
-        print(cacifos_prioritarios)
-        print(array_pode_avancar)
+        #print(cacifos_prioritarios)
+        #print(array_pode_avancar)
         if(opcoes_prioridade > 0):  # Se existir algum com prioridade
             op_prio = opcoes_prioridade - 1
             if(op_prio > 0):
@@ -639,6 +647,7 @@ def guia_ovelha(pathovelha):
 # chama o A* para o melhor caminho para a ovelha 
 
 def main():
+    print("Teste")
     # inicializaCacifos()
     inicializaCacifos()
     #k = algoritmo_A_star(30)
@@ -646,14 +655,22 @@ def main():
     # verifica_cacifo()
     # m.on_for_rotations(SpeedPercent(50),10)
     
-    while True:
+    while ((len(cacifos_visitados)<36)):
+        print(len(posicao_ovelhas))
+        print(paredes_encontradas)
+        if((paredes_encontradas ==6 and len(posicao_ovelhas)==2)):
+            break
         verifica_cacifo()
         # if(sensor_cor.color() == Color.BLUE):
             # robot.Stop()
-        if(informacao.posicao == 36):
-            break
+        #if(informacao.posicao == 36):
+         #   break
         #verificou o tabuleiro todo
-    guia_ovelha(algoritmo_A_star(posicao_ovelhas[0])-6)   
+        
+    if(len(posicao_ovelhas) ==1): #Ovelhas na mesma posição
+        posicao_ovelhas[1]= posicao_ovelhas[0]
+
+    #guia_ovelha(algoritmo_A_star(posicao_ovelhas[0])-6)   
     # print(k)
 
 if (__name__ == "__main__"):
