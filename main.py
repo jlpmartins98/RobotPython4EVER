@@ -870,11 +870,13 @@ def main():
        print(vitoria, file = stderr)
        print(betty, file = stderr)
        vai_ate_ovelha(betty)
-       caminhobetty = calcula_inicio(36,True)
+       #caminhobetty = calcula_inicio(36,True)
+       caminhobetty = algoritmo_A_star(36,True)
        #guia_ovelha(betty)
        guia_ovelha(caminhobetty)
        vai_ate_ovelha(vitoria)
-       caminhovitoria = calcula_inicio(36,True)
+       #caminhovitoria = calcula_inicio(36,True)
+       caminhovitoria = algoritmo_A_star(36,True)
        guia_ovelha(caminhovitoria)
        
        VAR = "betty"
