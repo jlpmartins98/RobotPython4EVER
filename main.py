@@ -120,14 +120,14 @@ def CacifoAtual(numero_cacifo):
 
 # devolve um array com o caminho(nº dos cacifos a seguir começando na sua posiçao)
 def algoritmo_A_star(goal,ignoreSheep):
-    print("A*", file = stderr)
+    #print("A*", file = stderr)
     global arrayCacifos_com_heuristica
     # faz uma copia da cacifoComParedeiavel
     arrayBackup = cp.deepcopy(arrayCacifos_com_heuristica)
     openList = []  # cacifos que nao verificou
     closedList = []  # cacifos que ja verificou
     inicio = CacifoAtual(informacao.posicao)
-    inicio.custoTotal = 0  # isto modifica a cacifoComParedeivel global mas pq?
+    inicio.custoTotal = 0 
     openList.append(inicio)
     while(len(openList) > 0):
         # vai buscar o cacifo atual
@@ -143,16 +143,16 @@ def algoritmo_A_star(goal,ignoreSheep):
                 currentIndex = index
         # tira o cacifo verificado da openList e mete na lista dos que ja verificou
         openList.pop(currentIndex)
-        closedList.append(currentNode)
+        closedList.append(currentNode.numeroCacifo)
         # mudar o current node para o mais barato
         if(currentNode.numeroCacifo == goal):  # caso chegue ao objetivo
-            print("Encontrou goal", file=stderr)
+            #print("Encontrou goal", file=stderr)
             path = []
             current = currentNode
             # ciclo para guardar o caminho, vai percorrendo os pais dos nos ate chegar ao inicio
             while(current is not None):
                 path.append(current)
-                print(current.numeroCacifo, file = stderr)
+                #print(current.numeroCacifo, file = stderr)
                 current = current.parentCacifo
             # devolve o caminho ao contrario (ou seja na ordem começando onde ele esta)
             return path[::-1]
@@ -196,9 +196,9 @@ def algoritmo_A_star(goal,ignoreSheep):
         children.append(childDown)
         children.append(childLeft)
         children.append(childRight)
-        print(currentNode.numeroCacifo, file = stderr)
+        #print(currentNode.numeroCacifo, file = stderr)
         for child in children:
-            if(child in closedList):  # se ja verificou este child
+            if(child.numeroCacifo in closedList):  # se ja verificou este child
                 continue
             # custa sempre 1 para andar para qq um dos child pois sao os cacifos adajacentes
             child.custoCaminho += currentNode.custoCaminho + 1
