@@ -85,7 +85,7 @@ def guarda_posicao_ovelha():
             k -= 1
         if(informacao.direcao == 180):  # se a ovelha estiver abaixo
             k -= 6
-        if(informacao.posicao == 270):  # se a ovelha estiver a direita
+        if(informacao.direcao == 270):  # se a ovelha estiver a direita
             k += 1
         if(k not in posicao_ovelhas):
             posicao_ovelhas.append(k)
@@ -225,57 +225,75 @@ def adiciona_parede(cacifoComParede):
     j = 0
     while(j != len(arrayCacifos_com_heuristica)):
         if(arrayCacifos_com_heuristica[j].numeroCacifo == cacifoComParede):
+            print("Teste1", file=stderr)
             if(informacao.direcao == 0):  # Virado para cima
+                print("Teste2", file=stderr)
                 if(arrayCacifos_com_heuristica[j].paredeUp != True):
+                    print("Teste3", file=stderr)
                     AlreadyFound = False
                 # guarda que este cacifo tem uma parede em cima
                 arrayCacifos_com_heuristica[j].paredeUp = True
                 # colocamos a parede do cacifo acima
                 if(arrayCacifos_com_heuristica[j].numeroCacifo < 31):
+                    print("Teste4", file=stderr)
                     if(arrayCacifos_com_heuristica[j+6].paredeDown != True):
+                        print("Teste5", file=stderr)
                         AlreadyFound = False
                     # guarda que o cacifo de cima do atual tem uma parede em baixo
                     arrayCacifos_com_heuristica[j+6].paredeDown = True
 
             elif(informacao.direcao == 270):  # Virado para a direita
+                print("Teste6", file=stderr)
                 if(arrayCacifos_com_heuristica[j].paredeRight != True):
+                    print("Teste7", file=stderr)
                     AlreadyFound = False
                 # guarda que este cacifo tem uma parede a dirieta
                 arrayCacifos_com_heuristica[j].paredeRight = True
                 # colocamos a parede do cacifo a sua direita
                 # caso nao esteja nos limites do mapa a direita
                 if(arrayCacifos_com_heuristica[j].numeroCacifo not in [36, 30, 24, 18, 12, 6]):
+                    print("Teste8", file=stderr)
                     if(arrayCacifos_com_heuristica[j+1].paredeLeft != True):
+                        print("Teste9", file=stderr)
                         AlreadyFound = False
                     # guarda que o cacifo a direita do atual tem uma parde a sua esquerda
                     arrayCacifos_com_heuristica[j+1].paredeLeft = True
 
             elif(informacao.direcao == 180):  # Virado para baixo
+                print("Teste10", file=stderr)
                 if(arrayCacifos_com_heuristica[j].paredeDown != True):
+                    print("Teste11", file=stderr)
                     AlreadyFound = False
                 # guarda que este cacifo tem uma parede em baixo
                 arrayCacifos_com_heuristica[j].paredeDown = True
                 # colocamos a parede no cacifo abaixo
                 # caso nao esteja nos limites do mapa em baixo
                 if(arrayCacifos_com_heuristica[j].numeroCacifo > 6):
+                    print("Teste12", file=stderr)
                     if(arrayCacifos_com_heuristica[j-6].paredeUp != True):
+                        print("Teste13", file=stderr)
                         AlreadyFound = False
                     # guarda que o cacifo a abaixo do atual tem uma parede em cima
                     arrayCacifos_com_heuristica[j-6].paredeUp = True
 
             elif(informacao.direcao == 90):  # Virado para a esquerda
+                print("Teste14", file=stderr)
                 if(arrayCacifos_com_heuristica[j].paredeLeft != True):
+                    print("Teste15", file=stderr)
                     AlreadyFound = False
                 arrayCacifos_com_heuristica[j].paredeLeft = True
                 # colocamos a parede do cacifo a esquerda
                 # caso nao esteja nos limites do mapa a esquerda
                 if(arrayCacifos_com_heuristica[j].numeroCacifo not in [1, 7, 13, 19, 25, 31]):
+                    print("Teste16", file=stderr)
                     if(arrayCacifos_com_heuristica[j-1].paredeRight != True):
+                        print("Teste17", file=stderr)
                         AlreadyFound = False
                     # guarda que o cacifo a direita do atual tem uma parde a sua esquerda
                     arrayCacifos_com_heuristica[j-1].paredeRight = True
         j += 1
     if(AlreadyFound == False):
+        print("Teste18", file=stderr)
         paredes_encontradas+=1
 
 
@@ -302,7 +320,7 @@ def verifica_cacifo():
     global cacifos_prioritarios
     while(cs.color == 6):  # Avança até ao limite do cacifo
         ################robot.drive(75,-1)####################
-        robot.on(30, 30)  # suposto andar ate receber a instrução off
+        robot.on(20, 20)  # suposto andar ate receber a instrução off
         ##################################################
     robot.on(0, 0)
     if(cs.color == 5):  # Encontrou parede RED
@@ -311,7 +329,7 @@ def verifica_cacifo():
         Sound.beep()
         sleep(0.5)
         # robot.straight(-50)
-        robot.on_for_distance(SpeedRPM(-30), 50)  # Volta para trás
+        robot.on_for_distance(SpeedRPM(-20), 50)  # Volta para trás
         sleep(0.5)
         i += 1  # Atualiza o i
         vira(90)
@@ -323,7 +341,7 @@ def verifica_cacifo():
             Sound.beep()
             if(len(posicao_ovelhas) != 2): #se ainda nao tiver encontrado as duas ovelhas guarda a posiçao da q encontrou
                 guarda_posicao_ovelha()
-            robot.on_for_distance(SpeedRPM(-30), 50)
+            robot.on_for_distance(SpeedRPM(-20), 50)
             sleep(0.5)
             i += 1
             # vira(90)
@@ -331,7 +349,7 @@ def verifica_cacifo():
         # robot.on_for_rotations(-20, -20, 0.5)    #Volta para trás, suposto voltar ate ao centro do cacifo
         ###############################################################
         else:
-            robot.on_for_distance(SpeedRPM(-30), 50)
+            robot.on_for_distance(SpeedRPM(-20), 50)
             sleep(0.5)
             teste_pode_avancar = pode_avancar()
             i += 1  # Atualiza o i
@@ -344,6 +362,7 @@ def verifica_cacifo():
         vira(90)
 
     if(i >= 4):  # Já verificou todos os lados do cacifo
+        print(array_pode_avancar, file=stderr)
         # Dos arrays possíveis procura um que não foi visitado
         escolhe_prioridade(array_pode_avancar)
         # Obtem tamanho do array prioritario
@@ -360,17 +379,56 @@ def verifica_cacifo():
             else:
                 coloca_direcao(cacifos_prioritarios[0])
         else:
-            # numero de opcoes disponiveis
             opcoes = len(array_pode_avancar) - 1
             if(opcoes > 0):
+                print("opcoes", file=stderr)
                 aleatorio = randint(0, opcoes)  # Escolhe uma aleatoriamente
                 direcao = array_pode_avancar[aleatorio]
                 coloca_direcao(direcao)  # coloca o robot nesse direção
             else:
-                coloca_direcao(array_pode_avancar[0])
+                print("opcoes2", file=stderr)
+                coloca_direcao(array_pode_avancar[0]) 
+
+            if(informacao.posicao+12 not in cacifos_visitados and informacao.posicao+12<36):
+                print("Teste", file=stderr)
+                if(0 in array_pode_avancar):
+                    print("Array ")
+                    print(array_pode_avancar,file = stderr)
+                    print("Testee", file=stderr)
+                    coloca_direcao(0)
+            
+            elif(informacao.posicao-12 not in cacifos_visitados and informacao.posicao-12>0):
+                print("Tes", file=stderr)
+                if(180 in array_pode_avancar):
+                    print("w", file=stderr)
+                    coloca_direcao(180)
+            elif(informacao.posicao+2 not in cacifos_visitados and informacao.posicao+2<36):
+                print("s", file=stderr)
+                if(informacao.posicao not in [5,6,11,12,17,18,23,24,29,30,35,36]):
+                    print("a", file=stderr)
+                    if(270 in array_pode_avancar):
+                        print("v", file=stderr)
+                        coloca_direcao(270)
+            elif(informacao.posicao-2 not in cacifos_visitados and informacao.posicao-2>0):
+                print("o", file=stderr)
+                if(informacao.posicao not in [1,2,7,8,13,14,19,20,25,26,31,32]):
+                    print("y", file=stderr)
+                    if(90 in array_pode_avancar):
+                        print("p", file=stderr)
+                        coloca_direcao(90)
+
+        
+                
+            #elif(informacao.posicao+2 not in cacifos_visitados and informacao.posicao+12<36):
+                #coloca_direcao(180):
+            #elif(informacao.posicao-2 not in cacifos_visitados and informacao.posicao+12<36):
+                #coloca_direcao(270) 
+
+            # numero de opcoes disponiveis
+            
         ############robot.straight(200) #Avança até o próximo cacifo######################
         # robot.on_for_rotations(20, 20, 1) # suposto andar ate ao proximo cacifo
-        robot.on_for_distance(SpeedRPM(30), 150)
+        robot.on_for_distance(SpeedRPM(20), 150)
         ####################################################################################
         adiciona_visitados(informacao.posicao)
         atualiza_posicao()
@@ -440,14 +498,14 @@ def vira(graus):  # vira o robo pelos graus inseridos (sentido contrahorario)
     robot.turn_right(SpeedRPM(20), graus)
 
     if(graus == 270):  # para endireitar o robo como ele nunca vira direito
-        #robot.turn_right(SpeedRPM(20), -20)
-        robot.turn_right(SpeedRPM(20), -30)
+        robot.turn_right(SpeedRPM(20), -20)
+        #robot.turn_right(SpeedRPM(20), -30)
     elif(graus == 180):  # para endireitar o robo como ele nunca vira direito
-       #robot.turn_right(SpeedRPM(20), -20)
-       robot.turn_right(SpeedRPM(20), -30)
-    elif(graus == 90):  # para endireitar o robo como ele nunca vira direito
-       #robot.turn_right(SpeedRPM(20), -15)
        robot.turn_right(SpeedRPM(20), -20)
+       #robot.turn_right(SpeedRPM(20), -30)
+    elif(graus == 90):  # para endireitar o robo como ele nunca vira direito
+       robot.turn_right(SpeedRPM(20), -15)
+       #robot.turn_right(SpeedRPM(20), -20)
     informacao.direcao = informacao.direcao + graus  # atualiza a direçao do robo
     # da o resto da divisao inteira da sua direçao por 360 para os graus nunca ultrapassarem 360
     informacao.direcao = int(informacao.direcao % 360)
@@ -493,7 +551,7 @@ def atualiza_posicao():
 
 def guia_ovelha(pathovelha):
     j = 0
-    while(j < len(pathovelha)-1):
+    while(j < len(pathovelha)-2):
         # if(arrayCacifos_com_heuristica[j+1].numeroCacifo in 1,31,6): #isto já não está resolvido com as paredes? (acho que não porque se não houver paredes ele vai quere sempre usar o braço quando a ovelha está nestas posições)
         # funcao braco()
         # estes whiles e k's desta parte sei lá é random stuff x) acho que pode ser que seja útil para fazer mover 2 casas mas talvez não
@@ -709,7 +767,7 @@ def guia_ovelha(pathovelha):
                 j+= 1
                 print(j, file=stderr)
                 print(informacao.posicao, file=stderr)
-        Sound.beep()
+        #Sound.beep()
 
 
             
@@ -819,7 +877,7 @@ def vai_ate_ovelha(ovelha):
             coloca_direcao(270)
         else:
             coloca_direcao(90)
-        robot.on_for_distance(SpeedRPM(40), 210)
+        robot.on_for_distance(SpeedRPM(40), 200)
         atualiza_posicao()
         i+=1
 
@@ -831,38 +889,41 @@ def main():
    # print("Teste")
     # inicializaCacifos()
     inicializaCacifos()
-    adiciona_parede(4)
-    adiciona_parede(14)
-    adiciona_parede(23)
-    informacao.direcao = 90
-    adiciona_parede(3)
-    adiciona_parede(27)
-    adiciona_parede(18)
-    informacao.direcao=0
-    informacao.posicao=29
-    guarda_posicao_ovelha()
-    informacao.posicao=21
-    guarda_posicao_ovelha()
-    informacao.posicao=1
+    #adiciona_parede(4)
+    #adiciona_parede(14)
+    #adiciona_parede(23)
+    #informacao.direcao = 90
+    #adiciona_parede(16)
+    #adiciona_parede(27)
+    #adiciona_parede(18)
+    #informacao.direcao=0
+    #informacao.posicao=29
+    #guarda_posicao_ovelha()
+    #informacao.posicao=21
+    #guarda_posicao_ovelha()
+    #informacao.posicao=1
     #k = algoritmo_A_star(30)
     # robot.on_for_position(10, 90)
     # verifica_cacifo()
     # m.on_for_rotations(SpeedPercent(50),10)
     
-    #while ((len(cacifos_visitados)<36)):
+    while ((len(cacifos_visitados)<36)):
      #   print(len(posicao_ovelhas))
       #  print(paredes_encontradas)
-       # if((paredes_encontradas ==6 and len(posicao_ovelhas)==2)):
-        #    break
-        #verifica_cacifo()
-        # if(sensor_cor.color() == Color.BLUE):
+        if((paredes_encontradas ==6 and len(posicao_ovelhas)==2)):
+            break
+        verifica_cacifo()
+        print(informacao.posicao, file = stderr)
+        print(posicao_ovelhas, file=stderr)
+        print(paredes_encontradas, file=stderr)
+        #if(sensor_cor.color() == Color.BLUE):
             # robot.Stop()
         #if(informacao.posicao == 36):
          #   break
         #verificou o tabuleiro todo
        
-    #if(len(posicao_ovelhas) ==1): #Ovelhas na mesma posição
-     #   posicao_ovelhas[1]= posicao_ovelhas[0]
+    if(len(posicao_ovelhas) ==1): #Ovelhas na mesma posição
+        posicao_ovelhas[1]= posicao_ovelhas[0]
 
     betty = escolhe_ovelha()
     if (betty == posicao_ovelhas[0]): #escolheu a primeira ovelha
