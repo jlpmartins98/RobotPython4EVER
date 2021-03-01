@@ -495,11 +495,12 @@ def guia_ovelha(pathovelha):
                 j+= 1
             elif ((pathovelha[j+1].paredeUp == True and pathovelha[j+1].numeroCacifo in [36, 30, 24, 18, 12, 6]) or (pathovelha[j+1].numeroCacifo > 30 and pathovelha[j+1].paredeRight == True)):              
                 sleep(1)
+               
+                coloca_direcao(0)
                 braco.on_for_degrees(100,360)                
                 sleep(1)
                 #volta com o braço para cima 
                 braco.on_for_degrees(100,-360)
-                coloca_direcao(0)
                 robot.on_for_distance(SpeedRPM(40),200)
                 coloca_direcao(90)
                 robot.on_for_distance(SpeedRPM(40),200)
@@ -508,11 +509,12 @@ def guia_ovelha(pathovelha):
                 j+= 2
             elif ((pathovelha[j+1].paredeUp == True and pathovelha[j+1].paredeLeft == True) or (pathovelha[j+1].paredeUp == True and pathovelha[j+1].numeroCacifo in [31,25,19,13,7,1]) or (pathovelha[j+1].numeroCacifo > 30 and pathovelha[j+1].paredeLeft == True)):
                 sleep(1)
+                
+                coloca_direcao(0)
                 braco.on_for_degrees(100,360)                
                 sleep(1)
                 #volta com o braço para cima 
                 braco.on_for_degrees(100,-360)
-                coloca_direcao(0)
                 robot.on_for_distance(SpeedRPM(40),200)
                 coloca_direcao(270)
                 robot.on_for_distance(SpeedRPM(40),200)
@@ -569,11 +571,12 @@ def guia_ovelha(pathovelha):
                 # braco
                 # andar 2 casas fazendo l para a direita ( direita e depois baixo) FEITO
                 sleep(1)
+                
+                coloca_direcao(270)
                 braco.on_for_degrees(100,360)
                 sleep(1)
                 #volta com o braço para cima 
                 braco.on_for_degrees(100,-360)
-                coloca_direcao(270)
                 robot.on_for_distance(SpeedRPM(40),200)
                 coloca_direcao(180)
                 robot.on_for_distance(SpeedRPM(40),200)
@@ -584,11 +587,12 @@ def guia_ovelha(pathovelha):
                 # braco
                 # andar 2 casas fazendo l para a direita ( direita e depois cima) FEITO
                 sleep(1)
+                
+                coloca_direcao(270)
                 braco.on_for_degrees(100,360)
                 sleep(1)
                 #volta com o braço para cima 
                 braco.on_for_degrees(100,-360)
-                coloca_direcao(270)
                 robot.on_for_distance(SpeedRPM(40),200)
                 coloca_direcao(0)
                 robot.on_for_distance(SpeedRPM(40),200)
@@ -645,11 +649,12 @@ def guia_ovelha(pathovelha):
                 # braco
                 # andar 2 casas fazendo l para a esquerda (baixo e esquerda) #FEITO
                 sleep(1)
+                
+                coloca_direcao(180)
                 braco.on_for_degrees(100,360)
                 sleep(1)
                 #volta com o braço para cima 
                 braco.on_for_degrees(100,-360)
-                coloca_direcao(180)
                 robot.on_for_distance(SpeedRPM(40),200)
                 coloca_direcao(90)
                 robot.on_for_distance(SpeedRPM(40),200)
@@ -660,11 +665,12 @@ def guia_ovelha(pathovelha):
                 # braco
                 # andar 2 casas fazendo l para a direita (baixo e direita) FEITO
                 sleep(1)
+                
+                coloca_direcao(180)
                 braco.on_for_degrees(100,360)
                 sleep(1)
                 #volta com o braço para cima 
                 braco.on_for_degrees(100,-360)
-                coloca_direcao(180)
                 robot.on_for_distance(SpeedRPM(40),200)
                 coloca_direcao(270)
                 #obot.on_for_distance(SpeedRPM(40),200)
@@ -722,11 +728,12 @@ def guia_ovelha(pathovelha):
                 # braco
                 # andar 2 casas fazendo l ( esquerda e depois cima) FEITO
                 sleep(1)
+               
+                coloca_direcao(90)
                 braco.on_for_degrees(100,360)
                 sleep(1)
                 #volta com o braço para cima 
                 braco.on_for_degrees(100,-360)
-                coloca_direcao(90)
                 robot.on_for_distance(SpeedRPM(20),200)
                 coloca_direcao(0)
                 robot.on_for_distance(SpeedRPM(20),200)
@@ -737,11 +744,12 @@ def guia_ovelha(pathovelha):
                 # braco
                 # andar 2 casas fazendo l ( esquerda e depois baixo) FEITO
                 sleep(1)
+              
+                coloca_direcao(90)
                 braco.on_for_degrees(100,360)
                 sleep(1)
                 #volta com o braço para cima 
                 braco.on_for_degrees(100,-360)
-                coloca_direcao(90)
                 robot.on_for_distance(SpeedRPM(20),200)
                 coloca_direcao(180)
                 robot.on_for_distance(SpeedRPM(20),200)
