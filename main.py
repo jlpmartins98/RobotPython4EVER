@@ -636,11 +636,11 @@ def guia_ovelha(ovelha):
             robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
             informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para cima
         elif (cacifo_ovelha.numeroCacifo in [26,27,28,29,20,21,22,23,14,15,16,17,8,9,10,11] and cacifo_ovelha.paredeDown == False and cacifo_ovelha.paredeLeft == False and cacifo_ovelha.paredeUp == False and cacifo_ovelha.paredeRight == False): #Caso de estar num cacifo sem paredes e que não faça parte dos limites do tabuleiro
-            coloca_direcao(270) #virado para a direita
+            coloca_direcao(0) #virado para cima
             Sound.beep() #Apita
-            atualiza_ovelha(ovelha,1) #ovelha vai para a direita
+            atualiza_ovelha(ovelha,6) #ovelha vai para cima
             robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-            informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
+            informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para cima
             #ficar por baixo a apitar
 
 
@@ -971,15 +971,7 @@ def vai_ate_ovelha(ovelha):
         i+=1
 
 
-  
 
-
-
-
-def encontra_caminho(o):
-    while(o != 36): #só acaba quando meter a ovelha na cerca se não fica sempre a correr
-        
-        if(obstacle_sensor.distance_centimeters < 20):
 
 def main():
     inicializaCacifos()
@@ -1011,15 +1003,15 @@ def main():
         vitoria = posicao_ovelhas[1]
         vai_ate_ovelha(betty)
         #caminhobetty = algoritmo_A_star(36,True) 
-        guia_ovelha(caminhobetty)
+        #guia_ovelha(caminhobetty)
         vai_ate_ovelha(vitoria)
         #caminhovitoria = algoritmo_A_star(36,True)
-        guia_ovelha(caminhovitoria)
+        #guia_ovelha(caminhovitoria)
 
     elif (posicao_ovelhas[0] == posicao_ovelhas[1]):
         vai_ate_ovelha(betty)
         #caminhobetty = algoritmo_A_star(36,True)
-        guia_ovelha(caminhobetty)
+        #guia_ovelha(caminhobetty)
 
     else:
         vitoria = posicao_ovelhas[0]
