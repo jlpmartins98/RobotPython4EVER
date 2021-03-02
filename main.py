@@ -477,7 +477,9 @@ def guia_ovelha(ovelha):
             #Novo Código
             #casos de paredes em L
         if(ovelhas_na_cerca < 1 and (cacifo_ovelha.numeroCacifo+6 == ovelha2 or cacifo_ovelha.numeroCacifo+1 == ovelha2 or cacifo_ovelha.numeroCacifo-6 == ovelha2 or cacifo_ovelha.numeroCacifo-1 == ovelha2 )):
-            
+            braco.on_for_degrees(100,-360) #mexe o braço para cima
+            atualiza_ovelha(ovelha,2) #ovelha vai 2 para a direita
+            robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção       
         elif(cacifo_ovelha.paredeDown and cacifo_ovelha.paredeRight):
             coloca_direcao(270) #virado para a direita
             Sound.beep() #Apita
@@ -633,12 +635,17 @@ def guia_ovelha(ovelha):
             atualiza_ovelha(ovelha,6) #ovelha vai para cima
             robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
             informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para cima
-        else: #Caso de estar num cacifo sem paredes e que não faça parte dos limites do tabuleiro
-            
+        elif (cacifo_ovelha.numeroCacifo in [26,27,28,29,20,21,22,23,14,15,16,17,8,9,10,11] and cacifo_ovelha.paredeDown == False and cacifo_ovelha.paredeLeft == False and cacifo_ovelha.paredeUp == False and cacifo_ovelha.paredeRight == False): #Caso de estar num cacifo sem paredes e que não faça parte dos limites do tabuleiro
+            coloca_direcao(270) #virado para a direita
+            Sound.beep() #Apita
+            atualiza_ovelha(ovelha,1) #ovelha vai para a direita
+            robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
+            informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
             #ficar por baixo a apitar
 
 
         #fim do código novo
+
         else:
             j = 0
             pathovelha = algoritmo_A_star(36,True) 
@@ -973,7 +980,6 @@ def encontra_caminho(o):
     while(o != 36): #só acaba quando meter a ovelha na cerca se não fica sempre a correr
         
         if(obstacle_sensor.distance_centimeters < 20):
-
 
 def main():
     inicializaCacifos()
