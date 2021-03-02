@@ -2,6 +2,7 @@
 
 
 # from ev3dev2.motor import LargeMotor, OUTPUT_A, OUTPUT_B, SpeedPercent, MoveTank, MediumMotor,SpeedPercent
+from math import inf
 from ev3dev2.sensor import INPUT_1, INPUT_2, INPUT_4
 from ev3dev2.sensor.lego import TouchSensor, ColorSensor, UltrasonicSensor
 from ev3dev2.led import Leds
@@ -357,6 +358,7 @@ def verifica_cacifo():
                 if(informacao.posicao not in [1,2,7,8,13,14,19,20,25,26,31,32]):
                     if(90 in array_pode_avancar):
                         coloca_direcao(90)
+            
 
         
 
@@ -460,7 +462,7 @@ def guia_ovelha(pathovelha):
     j = 0
     while(j < len(pathovelha)-2):
         if(pathovelha[j].numeroCacifo+6 == pathovelha[j+1].numeroCacifo): #Para o caso de querer subir 
-            if((pathovelha[j+1].paredeUp == True and pathovelha[j+1].paredeRight == True): 
+            if((pathovelha[j+1].paredeUp == True and pathovelha[j+1].paredeRight == True)): 
                 sleep(1)
                 #braco.on_for_degrees(100,360)
                 #if(toque.is_pressed):
@@ -477,7 +479,7 @@ def guia_ovelha(pathovelha):
                 #informacao.posicao-=1
                 j+= 1
             
-            elif((pathovelha[j+1].paredeUp == True and pathovelha[j+1].paredeLeft == True):
+            elif((pathovelha[j+1].paredeUp == True and pathovelha[j+1].paredeLeft == True)):
                 # braco
                 # andar 2 casas fazendo l para a esquerda (cima e direita) FEITO
                 sleep(1)
@@ -530,7 +532,7 @@ def guia_ovelha(pathovelha):
                 informacao.posicao+=6
             
         elif(pathovelha[j].numeroCacifo+1 == pathovelha[j+1].numeroCacifo):#Para o caso de querer andar para a direita 
-            if(pathovelha[j+1].paredeRight == True and pathovelha[j+1].paredeUp == True)):
+            if(pathovelha[j+1].paredeRight == True and pathovelha[j+1].paredeUp == True):
                 # braco
                 # andar 2 casas fazendo l para a direita ( direita e depois baixo) FEITO
                 sleep(1)
@@ -724,7 +726,7 @@ def guia_ovelha(pathovelha):
                 informacao.posicao-=1
                 #informacao.posicao-=6 
                 j+= 1
-            elif((pathovelha[j+1].paredeLeft == True and pathovelha[j+1].numeroCacifo < 6) or (pathovelha[j+1].numeroCacifo in [31,25,19,13,7,1] and pathovelha[j+1].paredeDown == True))
+            elif((pathovelha[j+1].paredeLeft == True and pathovelha[j+1].numeroCacifo < 6) or (pathovelha[j+1].numeroCacifo in [31,25,19,13,7,1] and pathovelha[j+1].paredeDown == True)):
                 # braco
                 # andar 2 casas fazendo l ( esquerda e depois cima) FEITO
                 sleep(1)
@@ -881,33 +883,18 @@ def vai_ate_ovelha(ovelha):
 
 def main():
     inicializaCacifos()
-    
-    adiciona_parede(1)
-    informacao.direcao = 90
-    adiciona_parede(32)
-    adiciona_parede(20)
-    adiciona_parede(26)
-    
-    
-    informacao.direcao = 270
-    
-    adiciona_parede(17)
-    
-    adiciona_parede(21)
-  
-    
+    adiciona_parede(8)
+    adiciona_parede(4)
     informacao.direcao=90
-   
-    #informacao.direcao = 270
-    informacao.direcao = 0
-    informacao.posicao=4
-    
+    adiciona_parede(18)
+    adiciona_parede(22)
+    adiciona_parede(33)
+    adiciona_parede(26)
+    informacao.direcao=0
+    informacao.posicao=26
     guarda_posicao_ovelha()
-    informacao.posicao=8
+    informacao.posicao=11
     guarda_posicao_ovelha()
-    
-    informacao.direcao = 0
-    #guarda_posicao_ovelha()
     informacao.posicao=1
 
     while ((len(cacifos_visitados)<36)):
