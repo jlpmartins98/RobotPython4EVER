@@ -1783,10 +1783,25 @@ def main():
         if((paredes_encontradas ==6 and len(posicao_ovelhas)==2)):
             break
         verifica_cacifo()
-       
+    
+    
     if(len(posicao_ovelhas) ==1): #Caso verifique todos os cacifos e só tenha adicionado 1 ovelha (2 ovelhas no mesmo cacifo)
         posicao_ovelhas[1]= posicao_ovelhas[0]
 
+    if(paredes_encontradas==5):
+        x = posicao_ovelhas[0]- posicao_ovelhas[1]
+        if(x==6):
+            informacao.direcao=0
+            adiciona_parede(posicao_ovelhas[1])
+        elif(x==-6):
+            informacao.direcao=180
+            adiciona_parede(posicao_ovelhas[1])
+        elif(x==1):
+            informacao.direcao=270
+            adiciona_parede(posicao_ovelhas[1])
+        elif(x==-1):
+            informacao.direcao=90
+            adiciona_parede(posicao_ovelhas[1])
     betty = escolhe_ovelha()
 
     if (betty == posicao_ovelhas[0]): #escolheu a primeira ovelha
