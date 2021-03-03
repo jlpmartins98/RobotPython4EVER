@@ -516,7 +516,7 @@ def guia_ovelha(ovelha):
             cacifo_baixo = CacifoAtual(ovelha-6)
             cacifo_direita = CacifoAtual(ovelha+1)
             cacifo_esquerda = CacifoAtual(ovelha-1)
-            elif(cacifo_ovelha.paredeUp and cacifo_ovelha.paredeDown and (cacifo_ovelha.paredeLeft or cacifo_ovelha.paredeRight)):
+            if(cacifo_ovelha.paredeUp and cacifo_ovelha.paredeDown and (cacifo_ovelha.paredeLeft or cacifo_ovelha.paredeRight)):
                 if (cacifo_ovelha.paredeLeft):
                     coloca_direcao(0) #virado para cima
                     Sound.beep() #Apita
@@ -1761,8 +1761,6 @@ def vai_ate_ovelha(ovelha):
         robot.on_for_distance(SpeedRPM(40), 200)
         atualiza_posicao()
         i+=1
-
-
 
 
 def main():
