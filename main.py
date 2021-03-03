@@ -1765,19 +1765,19 @@ def vai_ate_ovelha(ovelha):
 
 def main():
     inicializaCacifos()
-    adiciona_parede(8)
-    adiciona_parede(4)
-    informacao.direcao=90
-    adiciona_parede(18)
-    adiciona_parede(22)
-    adiciona_parede(33)
-    adiciona_parede(26)
-    informacao.direcao=0
-    informacao.posicao=26
-    guarda_posicao_ovelha()
-    informacao.posicao=11
-    guarda_posicao_ovelha()
-    informacao.posicao=1
+    #adiciona_parede(8)
+    #adiciona_parede(4)
+    #informacao.direcao=90
+    #adiciona_parede(18)
+    #adiciona_parede(22)
+    #adiciona_parede(33)
+    #adiciona_parede(26)
+    #informacao.direcao=0
+    #informacao.posicao=26
+    #guarda_posicao_ovelha()
+    #informacao.posicao=11
+    #guarda_posicao_ovelha()
+    #informacao.posicao=1
 
     while ((len(cacifos_visitados)<36)):
         if((paredes_encontradas ==6 and len(posicao_ovelhas)==2)):
@@ -1793,20 +1793,25 @@ def main():
         vitoria = posicao_ovelhas[1]
         vai_ate_ovelha(betty)
         #caminhobetty = algoritmo_A_star(36,True) 
+        guia_ovelha(betty)
         #guia_ovelha(caminhobetty)
         vai_ate_ovelha(vitoria)
+        guia_ovelha(vitoria)
         #caminhovitoria = algoritmo_A_star(36,True)
         #guia_ovelha(caminhovitoria)
 
     elif (posicao_ovelhas[0] == posicao_ovelhas[1]):
         vai_ate_ovelha(betty)
+        guia_ovelha(betty)
         #caminhobetty = algoritmo_A_star(36,True)
         #guia_ovelha(caminhobetty)
 
     else:
         vitoria = posicao_ovelhas[0]
         vai_ate_ovelha(betty)
+        guia_ovelha(betty)
         vai_ate_ovelha(vitoria)
+        guia_ovelha(vitoria)
         
 
 if (__name__ == "__main__"):
