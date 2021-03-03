@@ -1815,8 +1815,13 @@ def calcula_inicio(ovelha,ignora): #Função que vai calcular em que sitio come�
     cacifo_cima_direita = CacifoAtual(ovelha+7)
     caminho_ovelha = []
     if(k.numeroCacifo in [32,33,34,35]): #se tiver na linha de cima do tabuleiro (o 31 é um caso especial pk tem a parede dos limites)
-        if(k.paredeDown == True and (k.paredeRight == True or k.paredeLeft == True)): #se tiver uma parede em L 
-            caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6,ignora) #vai para a posição abaixo da ovelha por causa da parede em L
+        if(k.paredeDown):
+            if(k.paredeLeft):
+                caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6,ignora)
+            elif(k.paredeRight):
+                caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6,ignora)
+                 #se tiver uma parede em L 
+             #vai para a posição abaixo da ovelha por causa da parede em L
         elif(k.paredeLeft and k.paredeRight):
             if(cacifo_baixo_esquerda.paredeRight):
                 caminho_ovelha = algoritmo_A_star(k.numeroCacifo+1,ignora) #vai para a posição à direita da ovelha porque fica mais perto da cerca para a ovelha
@@ -1838,8 +1843,12 @@ def calcula_inicio(ovelha,ignora): #Função que vai calcular em que sitio come�
         else:
             caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6,ignora)
     elif(k.numeroCacifo in [2,3,4,5]): #se tiver na linha de baixo do tabuleiro (o 6 é um caso especial porque tem a parede em dos limites o 1 não é caso especial porque a ovelha nunca vai estar na posição 1 no inicio)
-        if(k.paredeUp and (k.paredeLeft or k.paredeRight)):
-            caminho_ovelha = algoritmo_A_star(k.numeroCacifo+6,ignora) #vai para a posição em cima da ovelha porque fica mais perto da cerca para a ovelha
+        if(k.paredeUp):
+            if(k.paredeRight):
+                caminho_ovelha = algoritmo_A_star(k.numeroCacifo+6,ignora)
+            elif(k.paredeLeft:
+                caminho_ovelha = algoritmo_A_star(k.numeroCacifo+6,ignora)
+             #vai para a posição em cima da ovelha porque fica mais perto da cerca para a ovelha
         elif(k.paredeLeft and k.paredeRight):
             if(cacifo_cima_esquerda.paredeRight):
                 caminho_ovelha = algoritmo_A_star(k.numeroCacifo+1,ignora) #vai para a posição à direita da ovelha porque fica mais perto da cerca para a ovelha
@@ -1879,8 +1888,12 @@ def calcula_inicio(ovelha,ignora): #Função que vai calcular em que sitio come�
         else:
             caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6,ignora)
     elif(k.numeroCacifo in [30,24,18,12]): #se tiver na linha da direita do tabuleiro (o 6 não interessa porque já é resolvido num elif de cima)
-        if(k.paredeLeft and (k.paredeUp or k.paredeDown)):
-            caminho_ovelha = algoritmo_A_star(k.numeroCacifo-1,ignora) #vai para a posição à esquerda da ovelha porque fica mais perto da cerca se bater para a ovelha
+        if(k.paredeLeft):
+            if(k.paredeUp):
+                caminho_ovelha = algoritmo_A_star(k.numeroCacifo-1,ignora)
+            elif(k.paredeDown):
+                caminho_ovelha = algoritmo_A_star(k.numeroCacifo-1,ignora)
+             #vai para a posição à esquerda da ovelha porque fica mais perto da cerca se bater para a ovelha
         elif(k.paredeUp and k.paredeDown):
             if(cacifo_baixo_esquerda.paredeUp):
                 caminho_ovelha = algoritmo_A_star(k.numeroCacifo+6,ignora) #vai para a posição a cima da ovelha porque fica mais perto da cerca para a ovelha
