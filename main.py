@@ -300,7 +300,7 @@ def verifica_cacifo():
         sleep(0.5)
         i += 1  # Atualiza o i
         vira(90)
-    elif(cs.color == 2 or cs.color == 1):  # Encontrou limite do cacifo BLACK ####tá azul agora era (1)
+    elif(cs.color == 2 or cs.color == 1 or cs.color == 4):  # Encontrou limite do cacifo BLACK ####tá azul agora era (1)
         #ovelhas()
         if(obstacle_sensor.distance_centimeters < 20):  # verificar distancia
             sleep(2)
