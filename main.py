@@ -369,26 +369,48 @@ def verifica_cacifo():
 # muda a direcao
 
 def verifica_ovelha():
-    if(informacao.direcao == 0):  # Verifica se tem ovelha no cacifo a cima
-        if(informacao.posicao +6 == posicao_ovelhas[0] or informacao.posicao+6 == posicao_ovelhas[1]):  # E na linha de cima
-            return False  # não pode avançar
-        else:
-            return True  # caso contrario avança
-    elif(informacao.direcao == 270):  # Verifica se tem ovelha no cacifo a direita
-        if(informacao.posicao +1 == posicao_ovelhas[0] or informacao.posicao+1 == posicao_ovelhas[1]):  # e na coluna da direita
-            return False  # não pode avançar
-        else:
-            return True  # caso contrario avança
-    elif(informacao.direcao == 180):  # Verifica se tem ovelha no cacifo a baixo
-        if(informacao.posicao -6 == posicao_ovelhas[0] or informacao.posicao-6 == posicao_ovelhas[1]):  # e na linha de baixo
-            return False  # não pode avançar
-        else:
-            return True  # caso contrario avança
-    else:  # Verifica se tem ovelha no cacifo a esquerda
-        if(informacao.posicao -1 == posicao_ovelhas[0] or informacao.posicao-1 == posicao_ovelhas[1]):  # e na coluna da esquerda
-            return False  # não pode avançar
-        else:
-            return True  # caso contrario avança   
+    if(len(posicao_ovelhas)==1):
+        if(informacao.direcao == 0):  # Verifica se tem ovelha no cacifo a cima
+            if(informacao.posicao +6 == posicao_ovelhas[0]):  # E na linha de cima
+                return False  # não pode avançar
+            else:
+                return True  # caso contrario avança
+        elif(informacao.direcao == 270):  # Verifica se tem ovelha no cacifo a direita
+            if(informacao.posicao +1 == posicao_ovelhas[0]):  # e na coluna da direita
+                return False  # não pode avançar
+            else:
+                return True  # caso contrario avança
+        elif(informacao.direcao == 180):  # Verifica se tem ovelha no cacifo a baixo
+            if(informacao.posicao -6 == posicao_ovelhas[0]):  # e na linha de baixo
+                return False  # não pode avançar
+            else:
+                return True  # caso contrario avança
+        else:  # Verifica se tem ovelha no cacifo a esquerda
+            if(informacao.posicao -1 == posicao_ovelhas[0]):  # e na coluna da esquerda
+                return False  # não pode avançar
+            else:
+                return True  # caso contrario avança
+    elif(len(posicao_ovelhas)==2):
+        if(informacao.direcao == 0):  # Verifica se tem ovelha no cacifo a cima
+            if(informacao.posicao +6 == posicao_ovelhas[0] or informacao.posicao+6 == posicao_ovelhas[1]):  # E na linha de cima
+                return False  # não pode avançar
+            else:
+                return True  # caso contrario avança
+        elif(informacao.direcao == 270):  # Verifica se tem ovelha no cacifo a direita
+            if(informacao.posicao +1 == posicao_ovelhas[0] or informacao.posicao+1 == posicao_ovelhas[1]):  # e na coluna da direita
+                return False  # não pode avançar
+            else:
+                return True  # caso contrario avança
+        elif(informacao.direcao == 180):  # Verifica se tem ovelha no cacifo a baixo
+            if(informacao.posicao -6 == posicao_ovelhas[0] or informacao.posicao-6 == posicao_ovelhas[1]):  # e na linha de baixo
+                return False  # não pode avançar
+            else:
+                return True  # caso contrario avança
+        else:  # Verifica se tem ovelha no cacifo a esquerda
+            if(informacao.posicao -1 == posicao_ovelhas[0] or informacao.posicao-1 == posicao_ovelhas[1]):  # e na coluna da esquerda
+                return False  # não pode avançar
+            else:
+                return True  # caso contrario avança   
 
 def escolhe_adjacentes(lista):
     for k in lista:
