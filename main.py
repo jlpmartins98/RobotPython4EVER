@@ -56,6 +56,7 @@ graus = [90, 180, 270]
 lugares_visitados = []
 cacifos_visitados = [1]
 cacifos_prioritarios = []
+cacifos_adjacentes = []
 posicao_ovelhas = []
 Sound = Sound()
 
@@ -80,6 +81,7 @@ def guarda_posicao_ovelha():
             k += 1
         if(k not in posicao_ovelhas): # Só adiciona caso a ovelha não seja repetida
             posicao_ovelhas.append(k)
+            cacifos_visitados.append(k)
 
 
 def inicializaCacifos():  # funcao que da os valores da heuristica e custo do caminho a todos os cacifos (antes de encontrar paredes/ovelhas)
@@ -286,6 +288,7 @@ def verifica_cacifo():
     global i
     global array_pode_avancar  # Array que guarda as direções que o robot pode ir
     global cacifos_prioritarios
+    global cacifos_adjacentes
     while(cs.color == 6):  # Avança até ao limite do cacifo
         robot.on(20, 20)  # suposto andar ate receber a instrução off
     robot.on(0, 0)
@@ -311,8 +314,9 @@ def verifica_cacifo():
             robot.on_for_distance(SpeedRPM(-20), 50)
             sleep(0.5)
             teste_pode_avancar = pode_avancar()
+            teste_ovelha= verifica_ovelha() #Caso falhe o sensor a reconhecer a ovelha
             i += 1  # Atualiza o i
-            if(teste_pode_avancar == True):  # Caso possa avançar nessa direção
+            if(teste_pode_avancar == True and teste_ovelha== True):  # Caso possa avançar nessa direção
                 # Adiciona essa direção ao array
                 array_pode_avancar.append(informacao.direcao)
         # Verifica se pode avançar(Se não é limite do tabuleiro)
@@ -320,11 +324,12 @@ def verifica_cacifo():
         vira(90)
 
     if(i >= 4):  # Já verificou todos os lados do cacifo
-        # Dos arrays possíveis procura um que não foi visitado
-        escolhe_prioridade(array_pode_avancar)
+        escolhe_prioridade(array_pode_avancar) #Verifica se nos arrays adjacentes há algum não visitado, caso exista, esse cacifo passa a prioritário
+        escolhe_adjacentes(array_pode_avancar)
         # Obtem tamanho do array prioritario
         opcoes_prioridade = len(cacifos_prioritarios)
-        if(opcoes_prioridade > 0):  # Se existir algum com prioridade
+        opcoes_adjacentes = len(cacifos_adjacentes)
+        if(opcoes_prioridade > 0):  # Se existir algum com prioridade (Cacifos exatamente ao lado que não tenham sido visitados)
             op_prio = opcoes_prioridade - 1
             if(op_prio > 0):
                 # Escolhe um aleatóriamente
@@ -333,35 +338,25 @@ def verifica_cacifo():
                 coloca_direcao(direcao_prioridade)
             else:
                 coloca_direcao(cacifos_prioritarios[0])
-        else:
+            
+        elif(opcoes_adjacentes > 0): # Caso não exista um exatamente ao lado, verifica os adjacentes a esses
+            op_adjacente = opcoes_adjacentes -1
+            if(op_adjacente>0):
+                aleatorio_adjacente = randint(0, op_adjacente)
+                direcao_adjacentes = cacifos_adjacentes[aleatorio_adjacente]
+                coloca_direcao(direcao_adjacentes)
+            else:
+                coloca_direcao(cacifos_adjacentes[0])
+
+        else: # Caso todos os cacifos exatamente ao lado, e os adjancentes já tenham sido verificados, escolhe um aleatório dos possíveis a avançar
             opcoes = len(array_pode_avancar) - 1
             if(opcoes > 0):
                 aleatorio = randint(0, opcoes)  # Escolhe uma aleatoriamente
                 direcao = array_pode_avancar[aleatorio]
                 coloca_direcao(direcao)  # coloca o robot nesse direção
             else:
-                coloca_direcao(array_pode_avancar[0]) 
-
-            if(informacao.posicao+12 not in cacifos_visitados and informacao.posicao+12<36):
-                if(0 in array_pode_avancar):
-                    coloca_direcao(0)
+                coloca_direcao(array_pode_avancar[0])
             
-            elif(informacao.posicao-12 not in cacifos_visitados and informacao.posicao-12>0):
-                if(180 in array_pode_avancar):
-                    coloca_direcao(180)
-
-            elif(informacao.posicao+2 not in cacifos_visitados and informacao.posicao+2<36):
-                if(informacao.posicao not in [5,6,11,12,17,18,23,24,29,30,35,36]):
-                    if(270 in array_pode_avancar):
-                        coloca_direcao(270)
-
-            elif(informacao.posicao-2 not in cacifos_visitados and informacao.posicao-2>0):
-                if(informacao.posicao not in [1,2,7,8,13,14,19,20,25,26,31,32]):
-                    if(90 in array_pode_avancar):
-                        coloca_direcao(90)
-            
-
-        
 
         robot.on_for_distance(SpeedRPM(20), 150)
         adiciona_visitados(informacao.posicao)
@@ -369,9 +364,48 @@ def verifica_cacifo():
         i = 0  # Reseta o contador
         array_pode_avancar = []  # Limpa o array
         cacifos_prioritarios = []  # Limpa prioritários
+        cacifos_adjacentes = [] # Limpa adjacentes
 
 # muda a direcao
 
+def verifica_ovelha():
+    if(informacao.direcao == 0):  # Verifica se tem ovelha no cacifo a cima
+        if(informacao.posicao +6 == posicao_ovelhas[0] or informacao.posicao+6 == posicao_ovelhas[1]):  # E na linha de cima
+            return False  # não pode avançar
+        else:
+            return True  # caso contrario avança
+    elif(informacao.direcao == 270):  # Verifica se tem ovelha no cacifo a direita
+        if(informacao.posicao +1 == posicao_ovelhas[0] or informacao.posicao+1 == posicao_ovelhas[1]):  # e na coluna da direita
+            return False  # não pode avançar
+        else:
+            return True  # caso contrario avança
+    elif(informacao.direcao == 180):  # Verifica se tem ovelha no cacifo a baixo
+        if(informacao.posicao -6 == posicao_ovelhas[0] or informacao.posicao-6 == posicao_ovelhas[1]):  # e na linha de baixo
+            return False  # não pode avançar
+        else:
+            return True  # caso contrario avança
+    else:  # Verifica se tem ovelha no cacifo a esquerda
+        if(informacao.posicao -1 == posicao_ovelhas[0] or informacao.posicao-1 == posicao_ovelhas[1]):  # e na coluna da esquerda
+            return False  # não pode avançar
+        else:
+            return True  # caso contrario avança   
+
+def escolhe_adjacentes(lista):
+    for k in lista:
+        if (k==0):
+            if(informacao.posicao+12 not in cacifos_visitados and informacao.posicao+12<36 and CacifoAtual(informacao.posicao+6).paredeUp == False):
+                cacifos_adjacentes.append(k)
+        if (k==180):
+            if(informacao.posicao-12 not in cacifos_visitados and informacao.posicao-12>0 and CacifoAtual(informacao.posicao-6).paredeDown == False):
+                cacifos_adjacentes.append(k)
+        if (k==270):
+            if(informacao.posicao+2 not in cacifos_visitados and informacao.posicao+2<36 and CacifoAtual(informacao.posicao+1).paredeRight == False):
+                if(informacao.posicao not in [5,6,11,12,17,18,23,24,29,30,35,36]):
+                    cacifos_adjacentes.append(k)
+        if (k==90):
+            if(informacao.posicao-2 not in cacifos_visitados and informacao.posicao-2>0 and CacifoAtual(informacao.posicao-1).paredeLeft == False):
+                if(informacao.posicao not in [1,2,7,8,13,14,19,20,25,26,31,32]):
+                    cacifos_adjacentes.append(k)
 
 def coloca_direcao(direcao):
     while(informacao.direcao != direcao):   # Roda para a esquerda até a direção ser a pretendida
@@ -482,7 +516,7 @@ def guia_ovelha(ovelha):
             cacifo_baixo = CacifoAtual(ovelha-6)
             cacifo_direita = CacifoAtual(ovelha+1)
             cacifo_esquerda = CacifoAtual(ovelha-1)
-            elif(cacifo_ovelha.paredeDown and cacifo_ovelha.paredeRight):
+            if(cacifo_ovelha.paredeDown and cacifo_ovelha.paredeRight):
                 if(cacifo_cima.paredeRight):
                     coloca_direcao(270) #virado para a direita
                     braco.on_for_degrees(100,360) #mexe o braço para baixo                
@@ -558,7 +592,7 @@ def guia_ovelha(ovelha):
                     informacao.posicao-=1 #atualiza a posição do robot a dizer que foi para a esquerda
 
             elif(cacifo_ovelha.paredeLeft and cacifo_ovelha.paredeDown):
-                if(cacifo_cima.paredeLeft)
+                if(cacifo_cima.paredeLeft):
                     coloca_direcao(90) #virado para a esquerda
                     braco.on_for_degrees(100,360) #mexe o braço para baixo                
                     sleep(1)
@@ -695,7 +729,7 @@ def guia_ovelha(ovelha):
                         robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
                         informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
                 elif(cacifo_ovelha.paredeLeft):
-                   if(cacifo_cima.paredeUp):
+                    if(cacifo_cima.paredeUp):
                         sleep(1)
                         coloca_direcao(0) #virado para cima
                         braco.on_for_degrees(100,360) #mexe o braço para baixo                
@@ -710,7 +744,7 @@ def guia_ovelha(ovelha):
                     else:
                         sleep(1)
                         coloca_direcao(0) #virado para cima
-                        braco.on_for_degrees(100,360) #mexe o braço para baixo                
+                        braco.on_for_degrees    (100,360) #mexe o braço para baixo                
                         sleep(1)
                         #volta com o braço para cima 
                         braco.on_for_degrees(100,-360) #mexe o braço para cima
