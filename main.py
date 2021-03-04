@@ -899,8 +899,8 @@ def guia_ovelha(ovelha):
                     sleep(1)
                     #volta com o braço para cima 
                     braco.on_for_degrees(100,-360)
-                    atualiza_ovelha(ovelha,-5) #ovelha vai para a direita e para baixo
-                    ovelha = ovelha-5
+                    atualiza_ovelha(ovelha,7) #ovelha vai para a direita e para cima
+                    ovelha = ovelha+7
                     robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
                     informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
                     robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
