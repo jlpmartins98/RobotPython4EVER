@@ -559,7 +559,7 @@ def guia_ovelha(ovelha):
                     coloca_direcao(270) #virado para a direita
                     robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
                     informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-                else:
+                elif(cacifo_ovelha.paredeRight)):
                     coloca_direcao(0) #virado para cima
                     Sound.beep() #Apita
                     atualiza_ovelha(ovelha,-1) #ovelha vai para a esquerda
@@ -576,7 +576,7 @@ def guia_ovelha(ovelha):
                     coloca_direcao(0) #virado para cima
                     robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
                     informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para cima
-                else:
+                elif(cacifo_ovelha.paredeUp):
                     coloca_direcao(270) #virado para a direita
                     Sound.beep() #Apita
                     atualiza_ovelha(ovelha,-6) #ovelha vai para baixo
@@ -1203,7 +1203,7 @@ def guia_ovelha(ovelha):
                     coloca_direcao(270) #virado para a direita
                     robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
                     informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-                else:
+                elif(cacifo_ovelha.paredeRight):
                     coloca_direcao(0) #virado para cima
                     Sound.beep() #Apita
                     atualiza_ovelha(ovelha,-1) #ovelha vai para a esquerda
@@ -1220,7 +1220,7 @@ def guia_ovelha(ovelha):
                     coloca_direcao(0) #virado para cima
                     robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
                     informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para cima
-                else:
+                elif(cacifo_ovelha.paredeUp):
                     coloca_direcao(270) #virado para a direita
                     Sound.beep() #Apita
                     atualiza_ovelha(ovelha,-6) #ovelha vai para baixo
