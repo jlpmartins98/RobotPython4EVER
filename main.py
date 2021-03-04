@@ -528,1306 +528,565 @@ def atualiza_ovelha(o,pos):
     print("atualiza",file= stderr)
     print(posicao_ovelhas[0],file= stderr)
     print(posicao_ovelhas[1],file= stderr)
-def guia_ovelha(ovelha):
-    global ovelhas_na_cerca
-    if (ovelha == posicao_ovelhas[0]):
-        ovelha2 = posicao_ovelhas[1]
-    else:
-        ovelha2 = posicao_ovelhas[0]
-    cacifo_ovelha = CacifoAtual(ovelha)
-     #devolve o cacifo onde está a ovelha
-    #atualiza_ovelha(ovelha,ondefoi) #usado para atualizar a posição da ovelha após interagirmos com ela
-    while(cacifo_ovelha.numeroCacifo < 36): #Enquanto a ovelha não chegar à cerca
-        print("posicao ovelha",file= stderr)
-        print(ovelha,file= stderr)
-        print(cacifo_ovelha.numeroCacifo,file= stderr)
-        #Novo Código
-        cacifo_ovelha = CacifoAtual(ovelha)
+
+           
+
+#FUNÇAO QUE CALCULA O CAMINHO DA OVELHA QUANDO o robo USA O BRAÇO
+def calcula_braco(posicao_ovelha):
+    cacifo_ovelha = CacifoAtual(posicao_ovelha)
+    if(informacao.direcao==0): # Virado para cima (Robot por baixo da ovelha)
+        if(cacifo_ovelha.numeroCacifo in [32,33,34,35]): # Se a ovelha estiver no limite superior do tabuleiro 
+            if(cacifo_ovelha.paredeRight == True): # Se tiver parede ao lado direito da ovelha (ovelha vai para a esquerda) -1 ||
+                proximo_cacifo = CacifoAtual(posicao_ovelha-1) 
+                if(proximo_cacifo.paredeLeft == True or proximo_cacifo.numeroCacifo in [1,7,13,19,25,31]): # Depois do primeiro movimento tem parede à esquerda (ovelha desce) -6
+                    return posicao_ovelha-7
+                else: # Não tem parede à esquerda, ovelha anda 2 casas para esquerda
+                    return posicao_ovelha-2
+            else: # Não tem parede do lado direito (ovelha anda para a direita) +1
+                proximo_cacifo = CacifoAtual(posicao_ovelha+1)
+                if(proximo_cacifo.paredeRight == True): # Depois do primeiro movimento tem parede à direita (ovelha desce) -6
+                    return posicao_ovelha-5
+                else: # Não tem parede à direita, ovelha anda 2 casas para a direita
+                    return posicao_ovelha+2 
+        elif(cacifo_ovelha.numeroCacifo == 31): # Vai para a direita, supostamente nunca chamará com parede a impedir o movimento para a direita +1
+            proximo_cacifo = CacifoAtual(posicao_ovelha+1)
+            if(proximo_cacifo.paredeRight == True): # Depois do primeiro movimento tem parede à direita (ovelha desce) -6
+                return posicao_ovelha-5
+            else: # Não tem parede à direita, ovelha anda 2 casas para a direita
+                return posicao_ovelha+2 
+        elif(cacifo_ovelha.paredeUp == True): # Se tiver parede por cima da ovelha e a ovelha não está no limite superior
+            if(cacifo_ovelha.paredeRight==True or cacifo_ovelha.numeroCacifo in [6,12,18,24,30]): # Se tiver parede em cima e à direita ou na coluna da direita ( anda para a esquerda) -1
+                proximo_cacifo = CacifoAtual(posicao_ovelha-1)
+                if(proximo_cacifo.paredeUp == True):# Parede a impedir subir
+                    if(proximo_cacifo.paredeLeft == True): # Parede a impedir subir e ir para a esquerda (ovelha desce) -6
+                        return posicao_ovelha-7 # Andou para esquerda e baixo
+                    else:
+                        return posicao_ovelha-2 # Andou para esquerda 2 vezes
+                else: # Não tem parede a cima, ela sobe +6
+                    return posicao_ovelha+5 # Andou para esquerda e cima
+            else: # Não tem parede à direita, anda para a direita +1
+                proximo_cacifo = CacifoAtual(posicao_ovelha+1)
+                if(proximo_cacifo.paredeUp == True):# Parede a impedir subir
+                    if(proximo_cacifo.paredeRight == True): # Parede a impedir subir e ir para a direita (ovelha desce) -6
+                        return posicao_ovelha-5 # Andou para direita e baixo
+                    else:
+                        return posicao_ovelha+2 # Andou para direita 2 vezes
+                else: # não tem parede à cima, ela sobe +6
+                    return posicao_ovelha+7 # Andou para a direita e subiu
+        else: # não há parede a cima e não está no limite superior (ovelha sobe) +6
+            proximo_cacifo= CacifoAtual(posicao_ovelha+6)
+            if(proximo_cacifo.paredeUp == True):
+                if(proximo_cacifo.paredeRight == True or proximo_cacifo.numeroCacifo in [6,12,18,24,30]): # Há parede na direita ou esta na coluna da direita (ovelha anda para a esquerda)
+                    return posicao_ovelha+5 # ovelha subiu e andou para a esquerda
+                else: # Não há parede nem está no limite (ovelha para a direita) +1
+                    return posicao_ovelha+7 # ovelha subiu e andou para a direita
+            else: # Não há parede a impedir a subida
+                return posicao_ovelha+12 #ovelha sobe 2 vezes
+    elif(informacao.direcao == 90): # Virado para a esquerda
+        if(cacifo_ovelha.numeroCacifo in [7,13,19,25]):
+            if(cacifo_ovelha.paredeUp == True): # Desce -6
+                proximo_cacifo = CacifoAtual(posicao_ovelha-6)
+                if(proximo_cacifo.paredeDown == True): # direita +1
+                    return posicao_ovelha -5
+                else:
+                    return posicao_ovelha -12
+            else: # Sobe +6
+                proximo_cacifo = CacifoAtual(posicao_ovelha+6)
+                if(proximo_cacifo.paredeUp == True or proximo_cacifo.numeroCacifo ==31): # direita +1
+                    return posicao_ovelha +7
+                else:
+                    return posicao_ovelha +12
+        elif(cacifo_ovelha.numeroCacifo ==1):
+            proximo_cacifo = CacifoAtual(posicao_ovelha+6) # sobe +6
+            if(proximo_cacifo.paredeUp == True): # direita +1
+                return posicao_ovelha +7
+            else: # sobe +6
+                return posicao_ovelha +12
+        elif(cacifo_ovelha.numeroCacifo==31):
+            proximo_cacifo = CacifoAtual(posicao_ovelha-6) # desce -6
+            if(proximo_cacifo.paredeDown == True): # direita +1
+                return posicao_ovelha -5
+            else: # desce -6
+                return posicao_ovelha -12
+        elif(cacifo_ovelha.paredeLeft == True):
+            if(cacifo_ovelha.paredeUp == True or cacifo_ovelha.numeroCacifo in [31,32,33,34,35,36]): # baixo -6
+                proximo_cacifo = CacifoAtual(posicao_ovelha-6)
+                if(proximo_cacifo.paredeLeft == True): # desce ou direita
+                    if(proximo_cacifo.paredeDown == True or proximo_cacifo.numeroCacifo in [1,2,3,4,5,6]): # direita +1
+                        return posicao_ovelha -5
+                    else:# desce -6
+                        return posicao_ovelha -12
+                else: # esquerda -1
+                    return posicao_ovelha -7
+            else: # sobe +6
+                proximo_cacifo = CacifoAtual(posicao_ovelha +6)
+                if(proximo_cacifo.paredeLeft == True): # sobe ou direita
+                    if(proximo_cacifo.paredeUp == True or proximo_cacifo.numeroCacifo in [31,32,33,34,35,36]):
+                        return posicao_ovelha +7 # direita +1
+                    else: # sobe +6
+                        return posicao_ovelha+12
+                else:# esquerda -1
+                    return posicao_ovelha+5
+        else: # andou para a esquerda -1
+            proximo_cacifo = CacifoAtual(posicao_ovelha-1)
+            if(proximo_cacifo.paredeLeft == True or proximo_cacifo.numeroCacifo in [1,7,13,19,25,31]):
+                if(proximo_cacifo.paredeUp==True or proximo_cacifo.numeroCacifo == 31):
+                    return posicao_ovelha-7 # desce -6
+                else:
+                    return posicao_ovelha +5 # sobe +6
+            else:
+                return posicao_ovelha -2 # esquerda -1
+    
+    elif(informacao.direcao == 180): # Virado para baixo
+        if(cacifo_ovelha.numeroCacifo in [2,3,4,5]):
+            if(cacifo_ovelha.paredeLeft == True): # direta +1
+                proximo_cacifo = CacifoAtual(posicao_ovelha+1)
+                if(proximo_cacifo.paredeRight == True or proximo_cacifo ==6): # Sobe +6
+                    return posicao_ovelha +7
+                else: # direita +1
+                    return posicao_ovelha +2
+            else: # esquerda -1
+                proximo_cacifo = CacifoAtual(posicao_ovelha-1)
+                if(proximo_cacifo.paredeLeft == True or proximo_cacifo.numeroCacifo ==1): # sobe +1
+                    return posicao_ovelha +5
+                else:
+                    return posicao_ovelha -2
+        elif(cacifo_ovelha.numeroCacifo ==1):
+            proximo_cacifo = CacifoAtual(posicao_ovelha+1) # direita +1
+            if(proximo_cacifo.paredeRight == True): # sobe +6
+                return posicao_ovelha +7
+            else: # direita +1
+                return posicao_ovelha +2
+        elif(cacifo_ovelha.numeroCacifo==6):
+            proximo_cacifo = CacifoAtual(posicao_ovelha-1) # esquerda -1
+            if(proximo_cacifo.paredeLeft == True): # sobe +6
+                return posicao_ovelha +5
+            else: # esquerda -1
+                return posicao_ovelha -2
+        elif(cacifo_ovelha.paredeDown == True):
+            if(cacifo_ovelha.paredeLeft == True or cacifo_ovelha.numeroCacifo in [1,7,13,19,25,31]): # direita +1
+                proximo_cacifo = CacifoAtual(posicao_ovelha+1)
+                if(proximo_cacifo.paredeDown == True): # sobe ou esquerda
+                    if(proximo_cacifo.paredeRight == True or proximo_cacifo.numeroCacifo in [6,12,18,24,30,36]): # sobe +6
+                        return posicao_ovelha +7 # sobe +6
+                    else:# direita -1
+                        return posicao_ovelha +2
+                else: # baixo -6
+                    return posicao_ovelha -5
+            else: # esquerda -1
+                proximo_cacifo = CacifoAtual(posicao_ovelha -1)
+                if(proximo_cacifo.paredeDown == True): # sobe ou esquerda
+                    if(proximo_cacifo.paredeLeft == True or proximo_cacifo.numeroCacifo in [1,7,13,19,25,31]):
+                        return posicao_ovelha +5 # sobe +6
+                    else: # esquerda -1
+                        return posicao_ovelha-2
+                else:# desce -6
+                    return posicao_ovelha-7
+        else: # andou para a baixo -6
+            proximo_cacifo = CacifoAtual(posicao_ovelha-6)
+            if(proximo_cacifo.paredeDown == True or proximo_cacifo.numeroCacifo in [1,2,3,4,5,6]):
+                if(proximo_cacifo.paredeLeft==True or proximo_cacifo.numeroCacifo == 1):
+                    return posicao_ovelha-5 # direita +1
+                else:
+                    return posicao_ovelha -7 # esquerda -1
+            else:
+                return posicao_ovelha -12 # baixo -6
+    elif(informacao.direcao == 270): # Virado para a direita
+        if(cacifo_ovelha.numeroCacifo in [12,18,24,30]):
+            if(cacifo_ovelha.paredeDown == True): # Sobe +6
+                proximo_cacifo = CacifoAtual(posicao_ovelha+6)
+                if(proximo_cacifo.paredeUp == True): # Esquerda -1
+                    return posicao_ovelha +5
+                else:
+                    return posicao_ovelha +12
+            else: # desce -6
+                proximo_cacifo = CacifoAtual(posicao_ovelha-6)
+                if(proximo_cacifo.paredeDown == True or proximo_cacifo.numeroCacifo ==6): # esquerda -1
+                    return posicao_ovelha -7
+                else:
+                    return posicao_ovelha -12
+        elif(cacifo_ovelha.numeroCacifo ==6):
+            proximo_cacifo = CacifoAtual(posicao_ovelha+6) # sobe +6
+            if(proximo_cacifo.paredeUp == True): # esquerda -1
+                return posicao_ovelha +5
+            else: # sobe +6
+                return posicao_ovelha +12
+        elif(cacifo_ovelha.paredeRight == True):
+            if(cacifo_ovelha.paredeDown == True or cacifo_ovelha.numeroCacifo in [1,2,3,4,5,6]): # sobe +6
+                proximo_cacifo = CacifoAtual(posicao_ovelha+6)
+                if(proximo_cacifo.paredeRight == True): # Sobe ou esquerda
+                    if(proximo_cacifo.paredeUp == True or proximo_cacifo.numeroCacifo in [31,32,33,34,35]): # direita +1
+                        return posicao_ovelha +5 # esquerda -1
+                    else:# sobe +6
+                        return posicao_ovelha +12
+                else: # direita +1
+                    return posicao_ovelha +7
+            else: # desce -6
+                proximo_cacifo = CacifoAtual(posicao_ovelha -6)
+                if(proximo_cacifo.paredeRight == True): # desce ou esquerda
+                    if(proximo_cacifo.paredeDown == True or proximo_cacifo.numeroCacifo in [1,2,3,4,5,6]):
+                        return posicao_ovelha -7 # esquerda -1
+                    else: # desce -6
+                        return posicao_ovelha-12
+                else:# direita +1
+                    return posicao_ovelha-5
+        else: # andou para a direta +1
+            proximo_cacifo = CacifoAtual(posicao_ovelha+1)
+            if(proximo_cacifo.paredeRight == True or proximo_cacifo.numeroCacifo in [6,12,18,24,30,36]):
+                if(proximo_cacifo.paredeDown==True or proximo_cacifo.numeroCacifo == 6):
+                    return posicao_ovelha+7 # sobe +6
+                else:
+                    return posicao_ovelha -5 # desce -6
+            else:
+                return posicao_ovelha +2 # direita -1
+
+
+
+#funçao que interage com as ovelhas pela 1º vez e devolve a posiçao atualizada da ovelha
+#podemos usar esta funçao num ciclo ate a posiçao da ovelha ser 36, esta funçao juntamente com o calcula inicio nas posiçoes atualizadas+ a funçao q leva o robo para a posiçao do calcula_inicio
+def interage_ovelha(ovelha):
+    #variavel para verificar se a ovelha tem paredes a volta
+    cacifoRobot = CacifoAtual(informacao.posicao)
+    cacifoOvelha = CacifoAtual(ovelha)
+    posicao_atualizada_ovelha = ovelha
+    #casos cantos
+    if(ovelha == 31):#caso a ovelha esteja no cacifo 31
+        if(cacifoOvelha.paredeDown):
+            #caso tenha uma parede em baixo, o robo vai para baixo da ovelha
+            #robo bate, ovelha anda para a direita, robo segue
+            Sound.beep()
+            #move_robot(270)
+            return posicao_atualizada_ovelha+1
+        if(cacifoOvelha.paredeRight):
+            #caso tenha uma parede a direita, o robo vai para a direita da ovelha
+            #robo bate, ovelha anda para baixo 2x, robo segue
+            coloca_direcao(90)
+            braco.on_for_degrees(100,360) #mexe o braço para baixo
+            sleep(1)
+            braco.on_for_degrees(100,-360) #mexe o braço para cima
+            return calcula_braco(posicao_atualizada_ovelha)
+        else:#caso sem paredes
+            #robo apita, ovelha anda para a direita, robo segue
+            Sound.beep()
+            return posicao_atualizada_ovelha+1
+    if(ovelha == 6):
+        if(cacifoOvelha.paredeUp):
+            #caso tenha uma parede em cima, robo vai para cima da ovelha
+            #robo bate, ovelha anada para a esquerda , robo segue
+            Sound.beep()
+            return posicao_atualizada_ovelha-1
+        if(cacifoOvelha.paredeLeft):
+            #caso tenha uma parede a esquerda, robo vai para a esquerda da ovelha
+            #robo bate, ovelha anda para cima 2x, robo segue
+            coloca_direcao(270)
+            braco.on_for_degrees(100,360) #mexe o braço para baixo
+            sleep(1)
+            braco.on_for_degrees(100,-360) #mexe o braço para cima
+            return calcula_braco(posicao_atualizada_ovelha)
+        else: #caso sem paredes
+            #robo vai para a esquerda da ovelha
+            #robo apita, ovelha sobe, robo segue
+            Sound.beep()
+            return posicao_atualizada_ovelha+6
+    if(ovelha == 1):#canto inferior esquerdo
+        if(cacifoOvelha.paredeUp):
+            #caso tenha uma parede em cima, robo vai para cima da ovelha
+            #robo bate, ovelha anda para a direita 2x, robo segue
+            coloca_direcao(180)
+            braco.on_for_degrees(100,360) #mexe o braço para baixo
+            sleep(1)
+            braco.on_for_degrees(100,-360) #mexe o braço para cima
+            return calcula_braco(posicao_atualizada_ovelha)
+        if(cacifoOvelha.paredeRight):
+            #caso tenha uma parede a direita, robo vai para a direita da ovelha
+            #robo apita, ovelha anda para cima, robo segue
+            Sound.beep()
+            return posicao_atualizada_ovelha+6
+        else: #caso sem paredes
+            #robo vai para a direita da ovelha
+            #robo apita, ovelha sobe, robo segue
+            Sound.beep()
+            return posicao_atualizada_ovelha+6
+
+    #CASOS QUE A OVELHA ESTA NO LIMITE MAS FAZ UM L
+    #7,2,5,12,25,32
+    
+    #CASOS LIMITES
+    if(ovelha in [2,3,4,5]):#limnite inferior
+        if(cacifoOvelha.paredeUp and cacifoOvelha.paredeLeft):
+            #robo vai para cima da ovelha
+            #robo apita, ovelha anda para a direita, robo segue
+            Sound.beep()
+            return posicao_atualizada_ovelha+1
+        elif(cacifoOvelha.paredeUp and cacifoOvelha.paredeRight):
+            #robo vai para cima
+            #robo apita, ovelha anda para a esquerda, robo segue
+            Sound.beep()
+            return posicao_atualizada_ovelha-1
+        elif(cacifoOvelha.paredeLeft or cacifoOvelha.paredeRight):
+            #robo vai para a direita ou esquerda (por esta ordem)
+            #robo apita, ovelha sobe para cima, robo segue
+            Sound.beep()
+            return posicao_atualizada_ovelha+6
+        else:#caso nao tenha paredes e esteja no limite inferior
+            #robo vai para a esquerda da ovelha
+            #robo apita, ovelha anda para a direita, robo segue
+            Sound.beep()
+            return posicao_atualizada_ovelha+1
         
-        if(cacifo_ovelha.numeroCacifo+6 == ovelha2 or cacifo_ovelha.numeroCacifo+1 == ovelha2 or cacifo_ovelha.numeroCacifo-6 == ovelha2 or cacifo_ovelha.numeroCacifo-1 == ovelha2 ):
-            #3 paredes
-            cacifo_cima = CacifoAtual(ovelha+6)
-            cacifo_baixo = CacifoAtual(ovelha-6)
-            cacifo_direita = CacifoAtual(ovelha+1)
-            cacifo_esquerda = CacifoAtual(ovelha-1)
-            if(cacifo_ovelha.paredeUp and cacifo_ovelha.paredeDown and (cacifo_ovelha.paredeLeft or cacifo_ovelha.paredeRight)):
-                if (cacifo_ovelha.paredeLeft):
-                    coloca_direcao(0) #virado para cima
-                    Sound.beep() #Apita
-                    atualiza_ovelha(ovelha,1) #ovelha vai para a direita
-                    ovelha = ovelha+1
-                    coloca_direcao(270) #virado para a direita
-                    robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                    informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-                elif(cacifo_ovelha.paredeRight)):
-                    coloca_direcao(0) #virado para cima
-                    Sound.beep() #Apita
-                    atualiza_ovelha(ovelha,-1) #ovelha vai para a esquerda
-                    ovelha = ovelha-1
-                    coloca_direcao(90) #virado para a esquerda
-                    robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                    informacao.posicao-=1 #atualiza a posição do robot a dizer que foi para a esquerda
-            elif(cacifo_ovelha.paredeRight and cacifo_ovelha.paredeLeft and (cacifo_ovelha.paredeDown or cacifo_ovelha.paredeUp)):
-                if(cacifo_ovelha.paredeDown):
-                    coloca_direcao(270) #virado para a direita
-                    Sound.beep() #Apita
-                    atualiza_ovelha(ovelha,6) #ovelha vai para cima
-                    ovelha = ovelha+6
-                    coloca_direcao(0) #virado para cima
-                    robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                    informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para cima
-                elif(cacifo_ovelha.paredeUp):
-                    coloca_direcao(270) #virado para a direita
-                    Sound.beep() #Apita
-                    atualiza_ovelha(ovelha,-6) #ovelha vai para baixo
-                    ovelha = ovelha-6
-                    coloca_direcao(90) #virado para baixo
-                    robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                    informacao.posicao-=6 #atualiza a posição do robot a dizer que foi para baixa
-            #casos de paredes em L   
-            
-            if(cacifo_ovelha.paredeDown and cacifo_ovelha.paredeRight):
-                if(cacifo_cima.paredeRight):
-                    coloca_direcao(270) #virado para a direita
-                    braco.on_for_degrees(100,360) #mexe o braço para baixo                
-                    sleep(1)
-                    #volta com o braço para cima 
-                    braco.on_for_degrees(100,-360) #mexe o braço para cima
-                    robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                    atualiza_ovelha(ovelha,12) #ovelha vai para a cima 2 vezes
-                    ovelha = ovelha+12
-                    informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-                else:
-                    coloca_direcao(270) #virado para a direita
-                    braco.on_for_degrees(100,360) #mexe o braço para baixo                
-                    sleep(1)
-                    #volta com o braço para cima 
-                    braco.on_for_degrees(100,-360) #mexe o braço para cima
-                    robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                    atualiza_ovelha(ovelha,7) #ovelha vai para a cima e depois para a direita
-                    ovelha = ovelha+7
-                    informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-                    coloca_direcao(0) #virado para cima
-                    robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                    informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para a direita
+    if(ovelha in {12,18,24,30}):#limite direito
+        if(cacifoOvelha.paredeUp and cacifoOvelha.paredeLeft):
+            #robo vai para a esquerda da ovelha
+            #robo apita, ovelha desce, robo segue
+            Sound.beep()
+            return posicao_atualizada_ovelha-6
+        if(cacifoOvelha.paredeDown and cacifoOvelha.paredeLeft):
+            #robo vai para a esquerda da ovelha
+            #robo bate, ovelha sobe 2x, robo segue
+            coloca_direcao(270)
+            braco.on_for_degrees(100,360) #mexe o braço para baixo
+            sleep(1)
+            braco.on_for_degrees(100,-360) #mexe o braço para cima
+            return calcula_braco(posicao_atualizada_ovelha)
+        if(cacifoOvelha.paredeDown):
+            #robo vai para a esquerda da ovelha
+            #robo apita, ovelha sobe, robo segue
+            Sound.beep()
+            return posicao_atualizada_ovelha+6
+        if(cacifoOvelha.paredeUp):
+            #robo vai para baixo da ovelha
+            #robo apita, ovelha vai para a esquerda, robo segue
+            Sound.beep()
+            return posicao_atualizada_ovelha-1
+        else:#sem paredes a volta da ovelha ou so uma parede a esquerda
+            #robo vai para baixo da ovelha
+            #robo apita, ovelha sobe, robo segue
+            Sound.beep()
+            return posicao_atualizada_ovelha+6
 
-            elif(cacifo_ovelha.paredeLeft and cacifo_ovelha.paredeUp):
-                if(cacifo_direita.paredeUp):
-                    coloca_direcao(0) #virado para cima
-                    braco.on_for_degrees(100,360) #mexe o braço para baixo                
-                    sleep(1)
-                    #volta com o braço para cima 
-                    braco.on_for_degrees(100,-360) #mexe o braço para cima
-                    robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                    atualiza_ovelha(ovelha,2) #ovelha vai para a direita 2 vezes
-                    ovelha = ovelha+2
-                    informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para cima
-                    coloca_direcao(270) #virado para a direita
-                    robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                    informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-                else:
-                    coloca_direcao(0) #virado para cima
-                    braco.on_for_degrees(100,360) #mexe o braço para baixo                
-                    sleep(1)
-                    #volta com o braço para cima 
-                    braco.on_for_degrees(100,-360) #mexe o braço para cima
-                    robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                    atualiza_ovelha(ovelha,7) #ovelha vai para a direita 2 vezes
-                    ovelha = ovelha+7
-                    informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para cima
-                    coloca_direcao(270) #virado para a direita
-                    robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                    informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
+    if(ovelha in [7,13,19,25]):#limite esquerdo
+        if(cacifoOvelha.paredeRight and cacifoOvelha.paredeDown):
+            #robo vai para a direita
+            #robo usa braço, ovelha sobe 2x, robo segue
+            coloca_direcao(90)
+            braco.on_for_degrees(100,360) #mexe o braço para baixo
+            sleep(1)
+            braco.on_for_degrees(100,-360) #mexe o braço para cima
+            return calcula_braco(posicao_atualizada_ovelha)
+        if(cacifoOvelha.paredeRight and cacifoOvelha.paredeUp):
+            #robo vai para a direita
+            #robo usa braço, ovelha desce 2x, robo segue
+            coloca_direcao(90)
+            braco.on_for_degrees(100,360) #mexe o braço para baixo
+            sleep(1)
+            braco.on_for_degrees(100,-360) #mexe o braço para cima
+            return calcula_braco(posicao_atualizada_ovelha)
+        if(cacifoOvelha.paredeUp or cacifoOvelha.paredeDown):
+            #robo vai para baixo     robo vai para cima
+            #robo apita, ovelha anda para a direita, robo segue
+            Sound.beep()
+            return posicao_atualizada_ovelha+1
+        else: #casos sem paredes ou so uma parede a direita
+            #robo vai para baixo
+            #robo apita, ovelha sobe, robo segue
+            Sound.beep()
+            return posicao_atualizada_ovelha+6
 
-            elif(cacifo_ovelha.paredeUp and cacifo_ovelha.paredeRight):
-                if(cacifo_esquerda.paredeUp):
-                    coloca_direcao(0) #virado para cima
-                    braco.on_for_degrees(100,360) #mexe o braço para baixo                
-                    sleep(1)
-                    #volta com o braço para cima 
-                    braco.on_for_degrees(100,-360) #mexe o braço para cima
-                    robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                    atualiza_ovelha(ovelha,-2) #ovelha vai para a esquerda 2 vezes
-                    ovelha = ovelha-2
-                    informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para cima
-                    
-                    coloca_direcao(90) #virado para a esquerda
-                    robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                    informacao.posicao-=1 #atualiza a posição do robot a dizer que foi para a esquerda
-                else:
-                    coloca_direcao(0) #virado para cima
-                    braco.on_for_degrees(100,360) #mexe o braço para baixo                
-                    sleep(1)
-                    #volta com o braço para cima 
-                    braco.on_for_degrees(100,-360) #mexe o braço para cima
-                    robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                    atualiza_ovelha(ovelha,5) #ovelha vai para a esquerda e para cima
-                    ovelha = ovelha+5
-                    informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para cima
-                    coloca_direcao(90) #virado para a esquerda
-                    robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                    informacao.posicao-=1 #atualiza a posição do robot a dizer que foi para a esquerda
+    if(ovelha in [32,33,34,35]):#limite superior
+        if(cacifoOvelha.paredeDown and cacifoOvelha.paredeRight):
+            #robo vai para baixo
+            #robo bate, ovelha anda para a esquerda 2x, robo segue
+            coloca_direcao(0)
+            braco.on_for_degrees(100,360) #mexe o braço para baixo
+            sleep(1)
+            braco.on_for_degrees(100,-360) #mexe o braço para cima
+            return calcula_braco(posicao_atualizada_ovelha)
+        if(cacifoOvelha.paredeDown and cacifoOvelha.paredeLeft):
+            #robo vai para baixo
+            #robo bate, ovelha anda para a direita 2x, robo segue
+            coloca_direcao(0)
+            braco.on_for_degrees(100,360) #mexe o braço para baixo
+            sleep(1)
+            braco.on_for_degrees(100,-360) #mexe o braço para cima
+            return calcula_braco(posicao_atualizada_ovelha)
+        if(cacifoOvelha.paredeRight):
+            #robo vai para a esquerda
+            #robo apita, ovelha anda para baixo, robo segue
+            coloca_direcao(270)
+            Sound.beep()
+            return posicao_atualizada_ovelha-6
+        else:#caso sem paredes, apenas 1 parede a esquerda, ou apenas 1 parede em baixo
+            #robo vai para a esquerda   #robo vai para baixo    #robo vai para a esquerda
+            #robo apita, ovelha anda para a direita, robo segue
+            if(cacifoRobot.numeroCacifo +6 == ovelha):
+                coloca_direcao(0)
+            elif(cacifoRobot.numeroCacifo+1 == ovelha):
+                coloca_direcao(270)
+            Sound.beep()
+            return calcula_braco(posicao_atualizada_ovelha)
 
-            elif(cacifo_ovelha.paredeLeft and cacifo_ovelha.paredeDown):
-                if(cacifo_cima.paredeLeft):
-                    coloca_direcao(90) #virado para a esquerda
-                    braco.on_for_degrees(100,360) #mexe o braço para baixo                
-                    sleep(1)
-                    #volta com o braço para cima 
-                    braco.on_for_degrees(100,-360) #mexe o braço para cima
-                    robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                    atualiza_ovelha(ovelha,12) #ovelha vai para a cima 2 vezes
-                    ovelha = ovelha+12
-                    informacao.posicao-=1 #atualiza a posição do robot a dizer que foi para a esquerda
-                    coloca_direcao(0)   #virado para cima
-                    robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                    informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para cima
-                else:
-                    coloca_direcao(90) #virado para a esquerda
-                    braco.on_for_degrees(100,360) #mexe o braço para baixo                
-                    sleep(1)
-                    #volta com o braço para cima 
-                    braco.on_for_degrees(100,-360) #mexe o braço para cima
-                    robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                    atualiza_ovelha(ovelha,5) #ovelha vai para a cima e depois para a esquerda
-                    ovelha = ovelha+5
-                    informacao.posicao-=1 #atualiza a posição do robot a dizer que foi para a esquerda
-                    coloca_direcao(0) #virado para cima
-                    robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                    informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para cima
+    #casos 3 paredes com a de cima e baixo fixas
+    if(cacifoOvelha.paredeUp and cacifoOvelha.paredeDown and (cacifoOvelha.paredeRight or cacifoOvelha.paredeLeft)):
+        #neste caso o robo iria estar em baixo da ovelha
+        if(cacifoOvelha.paredeLeft):#caso a parede livre seja a direita
+            #caso o robo n tenha uma parede a direita
+            #o robo iria apitar e a ovelha ia andar para a direita e o robo vai seguir
+            #como o beep é a volta do robo n intressa a direçao para onde esta virado
+            coloca_direcao(0)
+            Sound.beep()
+            #move_robot(270)
+            coloca_direcao(0)
+            return posicao_atualizada_ovelha+1
+        #caso o robo n consiga andar para a direita ele perde
+        else:#caso a parede livre seja a esquerda
+            #caso o robo nao tenha uma parede a esquerda
+            #o robo iria apitar e a ovelha ia andar para a esquerda e o robo vai seguir
+            #como o beep é a volta do robo n intressa a direçao para onde esta virado
+            coloca_direcao(0)
+            Sound.beep()
+            #move_robot(90)
+            coloca_direcao(0)
+            return posicao_atualizada_ovelha-1
+        #caso o robo n consiga andar para a esquerda ele perde
 
-            
+    #casos 3 paredes com as dos lados fixas
+    if(cacifoOvelha.paredeLeft and cacifoOvelha.paredeRight and (cacifoOvelha.paredeDown or cacifoOvelha.paredeUp)):
+        #neste caso o robo iria estar a esquerda da ovelha
+        if(cacifoOvelha.paredeDown):#caso a parede livre seja em cima
+            #o robo vai apitar, a ovelha vai andar para cima 
+            #o robo ira andar para cima
+            coloca_direcao(270) 
+            Sound.beep()
+            #move_robot(0)
+            return posicao_atualizada_ovelha+6
+        if(cacifoOvelha.paredeUp):#caso a parede livre esteja em baixo
+            #o robo vai apitar, a ovelha vai andar para baixo 
+            #o robo ira andar para baixo 
+            coloca_direcao(270)
+            Sound.beep()
+            #move_robot(180)
+            return posicao_atualizada_ovelha-6
 
-                    
-            #casos de 1 parede ou limites
-            elif(cacifo_ovelha.paredeUp or cacifo_ovelha.paredeRight or cacifo_ovelha.paredeLeft or cacifo_ovelha.paredeDown):
-                if(cacifo_ovelha.paredeUp):
-                    if(cacifo_direita.paredeRight):
-                        sleep(1)
-                        coloca_direcao(270) #virado para direita
-                        braco.on_for_degrees(100,360) #mexe o braço para baixo                
-                        sleep(1)
-                        #volta com o braço para cima 
-                        braco.on_for_degrees(100,-360) #mexe o braço para cima
-                        robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                        atualiza_ovelha(ovelha,7) #ovelha vai para a direita e para cima
-                        ovelha = ovelha+7
-                        informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-                        robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                        informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-                    else:
-                        sleep(1)
-                        coloca_direcao(270) #virado para direita
-                        braco.on_for_degrees(100,360) #mexe o braço para baixo                
-                        sleep(1)
-                        #volta com o braço para cima 
-                        braco.on_for_degrees(100,-360) #mexe o braço para cima
-                        robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                        atualiza_ovelha(ovelha,2) #ovelha vai para a direita 2 vezes
-                        ovelha = ovelha+2
-                        informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-                        robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                        informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-                
-                elif(cacifo_ovelha.paredeRight):
-                    if(cacifo_cima.paredeUp):
-                        sleep(1)
-                        coloca_direcao(0) #virado para cima
-                        braco.on_for_degrees(100,360) #mexe o braço para baixo                
-                        sleep(1)
-                        #volta com o braço para cima 
-                        braco.on_for_degrees(100,-360) #mexe o braço para cima
-                        robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                        atualiza_ovelha(ovelha,7) #ovelha vai para cima e para a direita
-                        ovelha = ovelha+7
-                        informacao.posicao+=6 #atualiza a posição do robot a dizer que subiu
-                        robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                        informacao.posicao+=6 #atualiza a posição do robot a dizer que subiu
-                    else:
-                        sleep(1)
-                        coloca_direcao(0) #virado para cima
-                        braco.on_for_degrees(100,360) #mexe o braço para baixo                
-                        sleep(1)
-                        #volta com o braço para cima 
-                        braco.on_for_degrees(100,-360) #mexe o braço para cima
-                        robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                        atualiza_ovelha(ovelha,12) #ovelha vai para cima 2 vezes
-                        ovelha = ovelha+12
-                        informacao.posicao+=6 #atualiza a posição do robot a dizer que subiu
-                        robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                        informacao.posicao+=6 #atualiza a posição do robot a dizer que subiu
-                elif(cacifo_ovelha.paredeDown):
-                    if(cacifo_direita.paredeRight):
-                        sleep(1)
-                        coloca_direcao(270) #virado para direita
-                        braco.on_for_degrees(100,360) #mexe o braço para baixo                
-                        sleep(1)
-                        #volta com o braço para cima 
-                        braco.on_for_degrees(100,-360) #mexe o braço para cima
-                        robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                        atualiza_ovelha(ovelha,7) #ovelha vai para a direita e para cima
-                        ovelha = ovelha+7
-                        informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-                        robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                        informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-                    else:
-                        sleep(1)
-                        coloca_direcao(270) #virado para direita
-                        braco.on_for_degrees(100,360) #mexe o braço para baixo                
-                        sleep(1)
-                        #volta com o braço para cima 
-                        braco.on_for_degrees(100,-360) #mexe o braço para cima
-                        robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                        atualiza_ovelha(ovelha,2) #ovelha vai para a direita 2 vezes
-                        ovelha = ovelha+2
-                        informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-                        robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                        informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-                elif(cacifo_ovelha.paredeLeft):
-                    if(cacifo_cima.paredeUp):
-                        sleep(1)
-                        coloca_direcao(0) #virado para cima
-                        braco.on_for_degrees(100,360) #mexe o braço para baixo                
-                        sleep(1)
-                        #volta com o braço para cima 
-                        braco.on_for_degrees(100,-360) #mexe o braço para cima
-                        robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                        atualiza_ovelha(ovelha,7) #ovelha vai para cima e para a direita
-                        ovelha = ovelha+7
-                        informacao.posicao+=6 #atualiza a posição do robot a dizer que subiu
-                        robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                        informacao.posicao+=6 #atualiza a posição do robot a dizer que subiu
-                    else:
-                        sleep(1)
-                        coloca_direcao(0) #virado para cima
-                        braco.on_for_degrees    (100,360) #mexe o braço para baixo                
-                        sleep(1)
-                        #volta com o braço para cima 
-                        braco.on_for_degrees(100,-360) #mexe o braço para cima
-                        robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                        atualiza_ovelha(ovelha,12) #ovelha vai para cima 2 vezes
-                        ovelha = ovelha+12
-                        informacao.posicao+=6 #atualiza a posição do robot a dizer que subiu
-                        robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                        informacao.posicao+=6 #atualiza a posição do robot a dizer que subiu
-                elif(cacifo_ovelha.numeroCacifo in [31]):
-                    coloca_direcao(0) #virado para cima
-                    braco.on_for_degrees(100,360) #mexe o braço para baixo                
-                    sleep(1)
-                    #volta com o braço para cima 
-                    braco.on_for_degrees(100,-360) #mexe o braço para cima
-                    atualiza_ovelha(ovelha,2) #ovelha vai 2 para a direita
-                    ovelha = ovelha+2
-                    robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                    informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para cima
-                    coloca_direcao(270) #virado para a direita
-                    robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                    informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-                elif(cacifo_ovelha.numeroCacifo in [6]):
-                    #Usa o braço
-                    coloca_direcao(270) #virado para a direita
-                    braco.on_for_degrees(100,360) #mexe o braço para baixo                
-                    sleep(1)
-                    #volta com o braço para cima 
-                    braco.on_for_degrees(100,-360) #mexe o braço para cima
-                    atualiza_ovelha(ovelha,12) #ovelha vai 2 para cima
-                    ovelha = ovelha+12
-                    robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                    informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-                    coloca_direcao(0) #virado para cima
-                    robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                    informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para cima
-                elif(cacifo_ovelha.numeroCacifo in [1]):
-                    #Para o caso da ovelha estar no cacifo 1
-                    if(informacao.posicao == 2): #robot no cacifo 2
-                        coloca_direcao(90)
-                        braco.on_for_degrees(100,360)                
-                        sleep(1)
-                        #volta com o braço para cima 
-                        braco.on_for_degrees(100,-360)
-                        atualiza_ovelha(ovelha,12) #ovelha vai 2 para cima
-                        ovelha = ovelha+12
-                        robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                        informacao.posicao-=1 #atualiza a posição do robot a dizer que foi para a esquerda
-                        coloca_direcao(0) #virado para cima
-                        robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                        informacao.posicao+=6 #atualiza a posição do robot a dizer que subiu
-                    else: #robot no cacifo 7
-                        coloca_direcao(180)
-                        braco.on_for_degrees(100,360)                
-                        sleep(1)
-                        #volta com o braço para cima 
-                        braco.on_for_degrees(100,-360)
-                        atualiza_ovelha(ovelha,2) #ovelha vai 2 para a direita
-                        ovelha = ovelha+2
-                        robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                        informacao.posicao-=6 #atualiza a posição do robot a dizer que desceu
-                        coloca_direcao(270) #virado para a direita
-                        informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-                        robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-            
-            
-            elif(cacifo_ovelha.numeroCacifo in [32,33,34,35]): #caso de estar nos cacifos do topo do tabuleiro
-                if(cacifo_direita.paredeRight):
-                    coloca_direcao(270) #virado para a direita
-                    braco.on_for_degrees(100,360)                
-                    sleep(1)
-                    #volta com o braço para cima 
-                    braco.on_for_degrees(100,-360)
-                    atualiza_ovelha(ovelha,-5) #ovelha vai para a direita e para baixo
-                    ovelha = ovelha-5
-                    robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                    informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-                    robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                    informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-                else:
-                    coloca_direcao(270) #virado para a direita
-                    braco.on_for_degrees(100,360)                
-                    sleep(1)
-                    #volta com o braço para cima 
-                    braco.on_for_degrees(100,-360)
-                    atualiza_ovelha(ovelha,2) #ovelha vai para a direita 2 vezes
-                    ovelha = ovelha+2
-                    robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                    informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-                    robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                    informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-            elif(cacifo_ovelha.numeroCacifo in [2,3,4,5]): #estar nos cacifos da parte de baixo do tabuleiro
-                if(cacifo_direita.paredeRight):
-                    coloca_direcao(270) #virado para a direita
-                    braco.on_for_degrees(100,360)                
-                    sleep(1)
-                    #volta com o braço para cima 
-                    braco.on_for_degrees(100,-360)
-                    atualiza_ovelha(ovelha,7) #ovelha vai para a direita e para cima
-                    ovelha = ovelha+7
-                    robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                    informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-                    robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                    informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-                else:
-                    coloca_direcao(270) #virado para a direita
-                    braco.on_for_degrees(100,360)                
-                    sleep(1)
-                    #volta com o braço para cima 
-                    braco.on_for_degrees(100,-360)
-                    atualiza_ovelha(ovelha,2) #ovelha vai para a direita 2 vezes
-                    ovelha = ovelha+2
-                    robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                    informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-                    robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                    informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-            elif (cacifo_ovelha.numeroCacifo in [30,24,18,12]): #estar no cacifos mais à direita
-                if(cacifo_cima.paredeUp):
-                    coloca_direcao(0) #virado para cima
-                    braco.on_for_degrees(100,360)                
-                    sleep(1)
-                    #volta com o braço para cima 
-                    braco.on_for_degrees(100,-360)
-                    atualiza_ovelha(ovelha,5) #ovelha vai para cima e esquerda
-                    ovelha = ovelha+5
-                    robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                    informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para cima
-                    robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                    informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para cima
-                else:
-                    coloca_direcao(0) #virado para cima
-                    braco.on_for_degrees(100,360)                
-                    sleep(1)
-                    #volta com o braço para cima 
-                    braco.on_for_degrees(100,-360)
-                    atualiza_ovelha(ovelha,12) #ovelha vai para cima 2 vezes
-                    ovelha = ovelha+12
-                    robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                    informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para cima
-                    robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                    informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para cima
+    #casos L
+    if(cacifoOvelha.paredeLeft and cacifoOvelha.paredeDown):
+        #o robo vai para a direita da ovelha
+        #o robo vai apitar, a ovelha vai subir e o robo vai seguir
+        #o robo anda para cima
+        coloca_direcao(90)
+        Sound.beep()
+        #move_robot(0)
+        return posicao_atualizada_ovelha+6
+    if(cacifoOvelha.paredeLeft and cacifoOvelha.paredeUp):
+        #o robo vai para baixo da ovelha
+        #o robo vai apitar, a ovelha vai para a direita e o robo vai seguir
+        coloca_direcao(0)
+        Sound.beep()
+        #move_robot(270)
+        return posicao_atualizada_ovelha+1
+    if(cacifoOvelha.paredeRight and cacifoOvelha.paredeDown):
+        #o robo vai para a esquerda da ovelha
+        #o robo vai apitar, a ovelha vai para cima e o robo ira seguir
+        coloca_direcao(270)
+        Sound.beep()
+        #move_robot(0)
+        return posicao_atualizada_ovelha+6
+    if(cacifoOvelha.paredeRight and cacifoOvelha.paredeUp):
+        #o robo vai para baixo
+        #o robo apita, ovelha vai para a esquerda
+        coloca_direcao(0)
+        Sound.beep()
+        #move_robot(90)
+        return posicao_atualizada_ovelha-1
+    
+    #casos 2 paredes paralelas e #casos 1 parede, sao iguais
+    if(cacifoOvelha.paredeUp or cacifoOvelha.paredeDown):
+        #vai para a esquerda da ovelha
+        #robo apita ovelha anda para a direita, robo segue
+        coloca_direcao(270)
+        Sound.beep()
+        #move_robot(270)
+        return posicao_atualizada_ovelha+1
+    if(cacifoOvelha.paredeRight or cacifoOvelha.paredeLeft):
+        #vai para baixo da ovelha
+        #robo apita ovelha anda para cima, robo segue
+        coloca_direcao(0)
+        Sound.beep()
+        #move_robot(0)
+        return posicao_atualizada_ovelha+6
+    else:#caso sem paredes
+        #robo vai para baixo da ovelha
+        #robo apita ovelha sobe, robo segue
+        coloca_direcao(0)
+        Sound.beep()
+        return posicao_atualizada_ovelha+6
 
-            elif (cacifo_ovelha.numeroCacifo in [26,27,28,29,20,21,22,23,14,15,16,17,8,9,10,11] and cacifo_ovelha.paredeDown == False and cacifo_ovelha.paredeLeft == False and cacifo_ovelha.paredeUp == False and cacifo_ovelha.paredeRight == False): #Caso de estar num cacifo sem paredes e que não faça parte dos limites do tabuleiro
-                if(cacifo_cima.paredeUp and cacifo_cima.paredeRight): 
-                    coloca_direcao(0) #virado para cima
-                    braco.on_for_degrees(100,360)                
-                    sleep(1)
-                    #volta com o braço para cima 
-                    braco.on_for_degrees(100,-360)
-                    atualiza_ovelha(ovelha,5) #ovelha vai para cima e a esquerda
-                    ovelha = ovelha+5
-                    robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                    informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para cima
-                    robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                    informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para cima
-                elif(cacifo_cima.paredeUp):
-                    coloca_direcao(0) #virado para cima
-                    braco.on_for_degrees(100,360)                
-                    sleep(1)
-                    #volta com o braço para cima 
-                    braco.on_for_degrees(100,-360)
-                    atualiza_ovelha(ovelha,7) #ovelha vai para cima e a direita
-                    ovelha = ovelha+7
-                    robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                    informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para cima
-                    robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                    informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para cima
-                else:
-                    coloca_direcao(0) #virado para cima
-                    braco.on_for_degrees(100,360)                
-                    sleep(1)
-                    #volta com o braço para cima 
-                    braco.on_for_degrees(100,-360)
-                    atualiza_ovelha(ovelha,12) #ovelha vai para cima 2 vezes
-                    ovelha = ovelha+12
-                    robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                    informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para cima
-                    robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                    informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para cim
-            
-            #fim dos casos com as 2 ovelhas adjacentes
-            else:
-                j = 0
-                pathovelha = algoritmo_A_star(36,True) 
-                if(pathovelha[j].numeroCacifo+6 == pathovelha[j+1].numeroCacifo): #Para o caso de querer subir 
-                    if((pathovelha[j+1].paredeUp == True and pathovelha[j+1].paredeRight == True)): 
-                        sleep(1)
-                        sleep(1)
-                        coloca_direcao(0)
-                        Sound.beep()
-                        robot.on_for_distance(SpeedRPM(40),200)
-                        informacao.posicao+=6
-                        j+= 1
-                    
-                    elif((pathovelha[j+1].paredeUp == True and pathovelha[j+1].paredeLeft == True)):
-                        sleep(1)
-                        sleep(1)
-                        coloca_direcao(0) 
-                        Sound.beep()
-                        robot.on_for_distance(SpeedRPM(40),200)
-                        informacao.posicao+=6
-                        j+= 1
-                    elif ((pathovelha[j+1].paredeUp == True and pathovelha[j+1].numeroCacifo in [36, 30, 24, 18, 12, 6]) or (pathovelha[j+1].numeroCacifo > 30 and pathovelha[j+1].paredeRight == True)):              
-                        sleep(1)
-                    
-                        coloca_direcao(0)
-                        braco.on_for_degrees(100,360)                
-                        sleep(1) 
-                        braco.on_for_degrees(100,-360)
-                        #volta com o braço para cim
-                        robot.on_for_distance(SpeedRPM(40),200)
-                        coloca_direcao(90)
-                        robot.on_for_distance(SpeedRPM(40),200)
-                        informacao.posicao+=6
-                        informacao.posicao-=1
-                        j+= 2
-                    elif ((pathovelha[j+1].paredeUp == True and pathovelha[j+1].paredeLeft == True) or (pathovelha[j+1].paredeUp == True and pathovelha[j+1].numeroCacifo in [31,25,19,13,7,1]) or (pathovelha[j+1].numeroCacifo > 30 and pathovelha[j+1].paredeLeft == True)):
-                        sleep(1)
-                        
-                        coloca_direcao(0)
-                        braco.on_for_degrees(100,360)                
-                        sleep(1) 
-                        #volta com o braço para cim
-                        braco.on_for_degrees(100,-360)
-                        robot.on_for_distance(SpeedRPM(40),200)
-                        coloca_direcao(270)
-                        robot.on_for_distance(SpeedRPM(40),200)
-                        informacao.posicao+=6
-                        informacao.posicao+=1
-                        j+= 2
-                    else:
-                        Sound.beep() 
-                        coloca_direcao(0)
-                        robot.on_for_distance(SpeedRPM(40),200)
-                        j+= 1
-                        informacao.posicao+=6
-                    
-                elif(pathovelha[j].numeroCacifo+1 == pathovelha[j+1].numeroCacifo):#Para o caso de querer andar para a direita 
-                    if(pathovelha[j+1].paredeRight == True and pathovelha[j+1].paredeUp == True):
-                        sleep(1)
-                        sleep(1)
-                        coloca_direcao(270)
-                        Sound.beep()
-                        robot.on_for_distance(SpeedRPM(40),200)
-                        informacao.posicao+=1
-                        j+= 1
-                    elif(pathovelha[j+1].paredeRight == True and pathovelha[j+1].paredeDown == True): #tirar o 36 da listaO
-                        sleep(1)
-                        sleep(1)
-                        coloca_direcao(270)
-                        Sound.beep()
-                        robot.on_for_distance(SpeedRPM(40),200)
-                        informacao.posicao+=1
-                        j+= 1
-                    elif ((pathovelha[j+1].paredeRight == True and pathovelha[j+1].numeroCacifo > 30 ) or (pathovelha[j+1].numeroCacifo in [36,30,24,18,12,6] and pathovelha[j+1].paredeUp == True)):
-                        sleep(1)
-                        coloca_direcao(270)
-                        braco.on_for_degrees(100,360)
-                        sleep(1)
-                        #volta com o braço para cim
-                        braco.on_for_degrees(100,-360)
-                        robot.on_for_distance(SpeedRPM(40),200)
-                        coloca_direcao(180)
-                        robot.on_for_distance(SpeedRPM(40),200)
-                        informacao.posicao+=1
-                        informacao.posicao-=6
-                        j+= 2
-                    elif ((pathovelha[j+1].paredeRight == True and pathovelha[j+1].numeroCacifo < 7) or (pathovelha[j+1].numeroCacifo in [36,30,24,18,12,6] and pathovelha[j+1].paredeDown == True)):
-                        sleep(1)
-                        
-                        coloca_direcao(270)
-                        braco.on_for_degrees(100,360)
-                        sleep(1)
-                        #volta com o braço para cim
-                        braco.on_for_degrees(100,-360)
-                        robot.on_for_distance(SpeedRPM(40),200)
-                        coloca_direcao(0)
-                        robot.on_for_distance(SpeedRPM(40),200)
-                        informacao.posicao+=1
-                        informacao.posicao+=6
-                        j+= 2
-                    else:
-                        Sound.beep() 
-                        coloca_direcao(270)
-                        robot.on_for_distance(SpeedRPM(40),200)
-                        informacao.posicao+=1
-                        j+= 1
-                    
-                
-                elif(pathovelha[j].numeroCacifo-6 == pathovelha[j+1].numeroCacifo): #para o caso de querer andar para baixo
-                    if(pathovelha[j+1].paredeDown == True and pathovelha[j+1].paredeRight == True ):
-                        sleep(1)
-                        sleep(1)
-                        coloca_direcao(180)
-                        Sound.beep()
-                        robot.on_for_distance(SpeedRPM(40),200)
-                        informacao.posicao-=6
-                        j+= 1
-                    elif(pathovelha[j+1].paredeDown == True and pathovelha[j+1].paredeLeft == True ):
-                        sleep(1)
-                        sleep(1)
-                        coloca_direcao(180)
-                        Sound.beep()
-                        robot.on_for_distance(SpeedRPM(40),200)
-                        informacao.posicao+=1
-                        j+= 1
-                    elif((pathovelha[j+1].paredeDown == True and pathovelha[j+1].numeroCacifo in [36,30,24,18,12,6]) or (pathovelha[j+1].numeroCacifo < 7 and pathovelha[j+1].paredeRight == True)):
-                        sleep(1)
-                        
-                        coloca_direcao(180)
-                        braco.on_for_degrees(100,360)
-                        sleep(1)
-                        #volta com o braço para cima 
-                        braco.on_for_degrees(100,-360)
-                        robot.on_for_distance(SpeedRPM(40),200)
-                        coloca_direcao(90)
-                        robot.on_for_distance(SpeedRPM(40),200)
-                        informacao.posicao-=6
-                        informacao.posicao-=1
-                        j+= 2
-                    elif((pathovelha[j+1].paredeDown == True and pathovelha[j+1].numeroCacifo in [31,25,19,13,7,1]) or (pathovelha[j+1].numeroCacifo < 7 and pathovelha[j+1].paredeLeft == True)):
-                        sleep(1)
-                        
-                        coloca_direcao(180)
-                        braco.on_for_degrees(100,360)
-                        sleep(1)
-                        #volta com o braço para cima 
-                        braco.on_for_degrees(100,-360)
-                        robot.on_for_distance(SpeedRPM(40),200)
-                        coloca_direcao(270)
-                        robot.on_for_distance(SpeedRPM(40),200)
-                        informacao.posicao+=1
-                        informacao.posicao-=6
-                        j+= 2
-                    else:
-                        Sound.beep() 
-                        coloca_direcao(180)
-                        robot.on_for_distance(SpeedRPM(40),200)
-                        informacao.posicao-=6
-                        j+= 1
-                    
-                elif(pathovelha[j].numeroCacifo-1 == pathovelha[j+1].numeroCacifo): #para o caso de querer andar para a esquerda 
-                    if(pathovelha[j+1].paredeLeft == True and pathovelha[j+1].paredeDown == True ):
-                        sleep(1)
-                        sleep(1)
-                        coloca_direcao(90)
-                        Sound.beep()
-                        robot.on_for_distance(SpeedRPM(20),200)
-                        informacao.posicao-=1
-                        j+= 1
-                    elif(pathovelha[j+1].paredeLeft == True and pathovelha[j+1].paredeUp == True):
-                        sleep(1)
-                        sleep(1)
-                        coloca_direcao(90)
-                        Sound.beep()
-                        robot.on_for_distance(SpeedRPM(20),200)
-                        informacao.posicao-=1
-                        j+= 1
-                    elif((pathovelha[j+1].paredeLeft == True and pathovelha[j+1].numeroCacifo < 6) or (pathovelha[j+1].numeroCacifo in [31,25,19,13,7,1] and pathovelha[j+1].paredeDown == True)):
-                        sleep(1)
-                    
-                        coloca_direcao(90)
-                        braco.on_for_degrees(100,360)
-                        sleep(1)
-                        #volta com o braço para cima 
-                        braco.on_for_degrees(100,-360)
-                        robot.on_for_distance(SpeedRPM(20),200)
-                        coloca_direcao(0)
-                        robot.on_for_distance(SpeedRPM(20),200)
-                        informacao.posicao-=1
-                        informacao.posicao+=6 
-                        j+= 2 
-                    elif((pathovelha[j+1].paredeLeft == True and pathovelha[j+1].numeroCacifo > 30) or (pathovelha[j+1].numeroCacifo in [31,25,19,13,7,1] and pathovelha[j+1].paredeUp == True)):  
-                        sleep(1)
-                        coloca_direcao(90)
-                        braco.on_for_degrees(100,360)
-                        sleep(1)
-                        #volta com o braço para cima 
-                        braco.on_for_degrees(100,-360)
-                        robot.on_for_distance(SpeedRPM(20),200)
-                        coloca_direcao(180)
-                        robot.on_for_distance(SpeedRPM(20),200)
-                        informacao.posicao-=1
-                        informacao.posicao-=6 
-                        j+= 2
-                    else:
-                        Sound.beep() 
-                        coloca_direcao(90)
-                        robot.on_for_distance(SpeedRPM(20),200)
-                        informacao.posicao-=1
-                        j+= 1
-        else:
-             #3 paredes
-            if(cacifo_ovelha.paredeUp and cacifo_ovelha.paredeDown and (cacifo_ovelha.paredeLeft or cacifo_ovelha.paredeRight)):
-                if (cacifo_ovelha.paredeLeft):
-                    coloca_direcao(0) #virado para cima
-                    Sound.beep() #Apita
-                    atualiza_ovelha(ovelha,1) #ovelha vai para a direita
-                    ovelha = ovelha+1
-                    coloca_direcao(270) #virado para a direita
-                    robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                    informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-                elif(cacifo_ovelha.paredeRight):
-                    coloca_direcao(0) #virado para cima
-                    Sound.beep() #Apita
-                    atualiza_ovelha(ovelha,-1) #ovelha vai para a esquerda
-                    ovelha = ovelha-1
-                    coloca_direcao(90) #virado para a esquerda
-                    robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                    informacao.posicao-=1 #atualiza a posição do robot a dizer que foi para a esquerda
-            elif(cacifo_ovelha.paredeRight and cacifo_ovelha.paredeLeft and (cacifo_ovelha.paredeDown or cacifo_ovelha.paredeUp)):
-                if(cacifo_ovelha.paredeDown):
-                    coloca_direcao(270) #virado para a direita
-                    Sound.beep() #Apita
-                    atualiza_ovelha(ovelha,6) #ovelha vai para cima
-                    ovelha = ovelha+6
-                    coloca_direcao(0) #virado para cima
-                    robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                    informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para cima
-                elif(cacifo_ovelha.paredeUp):
-                    coloca_direcao(270) #virado para a direita
-                    Sound.beep() #Apita
-                    atualiza_ovelha(ovelha,-6) #ovelha vai para baixo
-                    ovelha = ovelha-6
-                    coloca_direcao(90) #virado para baixo
-                    robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                    informacao.posicao-=6 #atualiza a posição do robot a dizer que foi para baixa
-            #casos de paredes em L   
-            elif(cacifo_ovelha.paredeDown and cacifo_ovelha.paredeRight):
-                coloca_direcao(270) #virado para a direita
-                Sound.beep() #Apita
-                robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                atualiza_ovelha(ovelha,6) #ovelha vai para a cima
-                ovelha = ovelha+6
-                informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-            elif(cacifo_ovelha.paredeLeft and cacifo_ovelha.paredeUp):
-                coloca_direcao(0) #virado para cima
-                Sound.beep() #Apita
-                robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                atualiza_ovelha(ovelha,1) #ovelha vai para a direita
-                ovelha = ovelha+1
-                informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para cima
-            elif(cacifo_ovelha.paredeUp and cacifo_ovelha.paredeRight):
-                coloca_direcao(0) #virado para cima
-                Sound.beep() #Apita
-                robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                atualiza_ovelha(ovelha,-1) #ovelha vai para a esquerda
-                ovelha = ovelha-1
-                informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para cima
-            elif(cacifo_ovelha.paredeLeft and cacifo_ovelha.paredeDown):
-                coloca_direcao(90) #virado para a esquerda
-                Sound.beep() #Apita
-                robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                atualiza_ovelha(ovelha,6) #ovelha vai para a cima
-                ovelha = ovelha+6
-                informacao.posicao-=1 #atualiza a posição do robot a dizer que foi para a esquerda
-            #casos de 1 parede ou limites
-            elif(cacifo_ovelha.paredeUp or cacifo_ovelha.paredeRight or cacifo_ovelha.paredeLeft or cacifo_ovelha.paredeDown or cacifo_ovelha.numeroCacifo in [1,6,31]):
-                if(cacifo_ovelha.numeroCacifo in [32,33,34,35]): #caso de estar nos cacifos do topo do tabuleiro
-                    if(cacifo_ovelha.paredeRight):
-                        coloca_direcao(270) #virado para a direita
-                        braco.on_for_degrees(100,360) #mexe o braço para baixo                
-                        sleep(1)
-                        #volta com o braço para cima 
-                        braco.on_for_degrees(100,-360) #mexe o braço para cima
-                        atualiza_ovelha(ovelha,-5) #ovelha vai para baixo e para direita
-                        ovelha = ovelha-5
-                        robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                        informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-                        coloca_direcao(180) #virado para baixo
-                        robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                        informacao.posicao-=6 #atualiza a posição do robot a dizer que foi para baixo
-                    else:
-                        coloca_direcao(270) #virado para a direita
-                        Sound.beep() #Apita
-                        atualiza_ovelha(ovelha,1) #ovelha vai para a direita
-                        ovelha = ovelha+1
-                        robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                        informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-                elif(cacifo_ovelha.paredeUp):
-                    sleep(1)
-                    coloca_direcao(270) #virado para direita
-                    Sound.beep() #Apita
-                    robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                    atualiza_ovelha(ovelha,1) #ovelha vai para a direita
-                    ovelha = ovelha+1
-                    informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita    
-                elif(cacifo_ovelha.paredeRight):
-                    sleep(1)
-                    coloca_direcao(0) #virado para cima
-                    Sound.beep() #Apita
-                    robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                    atualiza_ovelha(ovelha,6) #ovelha vai para cima
-                    ovelha = ovelha+6
-                    informacao.posicao+=6 #atualiza a posição do robot a dizer que subiu
-                elif(cacifo_ovelha.paredeDown):
-                    sleep(1)
-                    coloca_direcao(270) #virado para direita
-                    Sound.beep() #Apita
-                    robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                    atualiza_ovelha(ovelha,1) #ovelha vai para a direita
-                    ovelha = ovelha+1
-                    informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-                elif(cacifo_ovelha.paredeLeft):
-                    sleep(1)
-                    coloca_direcao(0) #virado para cima
-                    Sound.beep() #Apita
-                    robot.on_for_distance(SpeedRPM(40),200) #anda para direção estabelecida em cima
-                    atualiza_ovelha(ovelha,1) #ovelha vai para a direita
-                    ovelha = ovelha+1
-                    informacao.posicao+=6 #atualiza a posição do robot a dizer que subiu
-                elif(cacifo_ovelha.numeroCacifo in [31]):
-                    coloca_direcao(0) #virado para cima
-                    braco.on_for_degrees(100,360) #mexe o braço para baixo                
-                    sleep(1)
-                    #volta com o braço para cima 
-                    braco.on_for_degrees(100,-360) #mexe o braço para cima
-                    atualiza_ovelha(ovelha,2) #ovelha vai 2 para a direita
-                    ovelha = ovelha+2
-                    robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                    informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para cima
-                    coloca_direcao(270) #virado para a direita
-                    robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                    informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-                elif(cacifo_ovelha.numeroCacifo in [6]):
-                    #Usa o braço
-                    coloca_direcao(270) #virado para a direita
-                    braco.on_for_degrees(100,360) #mexe o braço para baixo                
-                    sleep(1)
-                    #volta com o braço para cima 
-                    braco.on_for_degrees(100,-360) #mexe o braço para cima
-                    atualiza_ovelha(ovelha,12) #ovelha vai 2 para cima
-                    ovelha = ovelha+12
-                    robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                    informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-                    coloca_direcao(0) #virado para cima
-                    robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                    informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para cima
-                elif(cacifo_ovelha.numeroCacifo in [1]):
-                    #Para o caso da ovelha estar no cacifo 1
-                    if(informacao.posicao == 2): #robot no cacifo 2
-                        coloca_direcao(90)
-                        braco.on_for_degrees(100,360)                
-                        sleep(1)
-                        #volta com o braço para cima 
-                        braco.on_for_degrees(100,-360)
-                        atualiza_ovelha(ovelha,12) #ovelha vai 2 para cima
-                        ovelha = ovelha+12
-                        robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                        informacao.posicao-=1 #atualiza a posição do robot a dizer que foi para a esquerda
-                        coloca_direcao(0) #virado para cima
-                        robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                        informacao.posicao+=6 #atualiza a posição do robot a dizer que subiu
-                    else: #robot no cacifo 7
-                        coloca_direcao(180)
-                        braco.on_for_degrees(100,360)                
-                        sleep(1)
-                        #volta com o braço para cima 
-                        braco.on_for_degrees(100,-360)
-                        atualiza_ovelha(ovelha,2) #ovelha vai 2 para a direita
-                        ovelha = ovelha+2
-                        robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                        informacao.posicao-=6 #atualiza a posição do robot a dizer que desceu
-                        coloca_direcao(270) #virado para a direita
-                        informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-                        robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-            
 
-            elif(cacifo_ovelha.numeroCacifo in [2,3,4,5]): #estar nos cacifos da parte de baixo do tabuleiro
-                coloca_direcao(270) #virado para a direita
-                Sound.beep() #Apita
-                atualiza_ovelha(ovelha,1) #ovelha vai para a direita
-                ovelha = ovelha+1
-                robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-            elif (cacifo_ovelha.numeroCacifo in [30,24,18,12]): #estar no cacifos mais à direita
-                coloca_direcao(0) #virado para cima
-                Sound.beep() #Apita
-                atualiza_ovelha(ovelha,6) #ovelha vai para cima
-                ovelha = ovelha+6
-                robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para cima
-            
-            elif (cacifo_ovelha.numeroCacifo in [26,27,28,29,20,21,22,23,14,15,16,17,8,9,10,11] and cacifo_ovelha.paredeDown == False and cacifo_ovelha.paredeLeft == False and cacifo_ovelha.paredeUp == False and cacifo_ovelha.paredeRight == False): #Caso de estar num cacifo sem paredes e que não faça parte dos limites do tabuleiro
-                if(informacao.posicao+6 == ovelha): #ovelha está em cima
-                    coloca_direcao(0) #virado para cima
-                    Sound.beep() #Apita
-                    atualiza_ovelha(ovelha,6) #ovelha vai para cima
-                    ovelha = ovelha+6
-                    robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                    informacao.posicao+=6 #atualiza a posição do robot a dizer que foi para cima
-                    #ficar por baixo a apitar
-                elif(informacao.posicao+1 == ovelha): #ovelha está à direita
-                    coloca_direcao(270) #virado para a direita
-                    Sound.beep() #Apita
-                    atualiza_ovelha(ovelha,1) #ovelha vai a direita
-                    ovelha = ovelha+1
-                    robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                    informacao.posicao+=1 #atualiza a posição do robot a dizer que foi para a direita
-                elif(informacao.posicao-6 == ovelha): #ovelha está em baixo
-                    coloca_direcao(180) #virado para baixo
-                    Sound.beep() #Apita
-                    atualiza_ovelha(ovelha,-6) #ovelha vai para cima
-                    ovelha = ovelha-6
-                    robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                    informacao.posicao-=6 #atualiza a posição do robot a dizer que foi para cima
-                    #ficar por baixo a apitar
-                elif(informacao.posicao-1 == ovelha): #ovelha está à direita
-                    coloca_direcao(90) #virado para a esquerda
-                    Sound.beep() #Apita
-                    atualiza_ovelha(ovelha,1) #ovelha vai para a esquerda
-                    ovelha = ovelha-1
-                    robot.on_for_distance(SpeedRPM(40),200) #mete o robot a andar na direção
-                    informacao.posicao-=1 #atualiza a posição do robot a dizer que foi para a esquerda
-        #fim do código novo
 
-            elif(informacao.posicao == cacifo_ovelha.numeroCacifo-6):
-                j = 0
-                pathovelha = algoritmo_A_star(30,True)
-                while(j < len(pathovelha)-1): 
-                    if(pathovelha[j].numeroCacifo+6 == pathovelha[j+1].numeroCacifo): #Para o caso de querer subir 
-                        if((pathovelha[j+1].paredeUp == True and pathovelha[j+1].paredeRight == True)): 
-                            sleep(1)
-                            sleep(1)
-                            coloca_direcao(0)
-                            Sound.beep()
-                            robot.on_for_distance(SpeedRPM(40),200)
-                            atualiza_ovelha(ovelha,-1) #ovelha vai para a esquerda
-                            ovelha = ovelha-1
-                            informacao.posicao+=6
-                            j+= 1
-                        
-                        elif((pathovelha[j+1].paredeUp == True and pathovelha[j+1].paredeLeft == True)):
-                            sleep(1)
-                            sleep(1)
-                            coloca_direcao(0) 
-                            Sound.beep()
-                            robot.on_for_distance(SpeedRPM(40),200)
-                            atualiza_ovelha(ovelha,1) #ovelha vai para a direita
-                            ovelha = ovelha+1
-                            informacao.posicao+=6
-                            j+= 1
-                        elif ((pathovelha[j+1].paredeUp == True and pathovelha[j+1].numeroCacifo in [36, 30, 24, 18, 12, 6]) or (pathovelha[j+1].numeroCacifo > 30 and pathovelha[j+1].paredeRight == True)):              
-                            if(pathovelha[j+1].numeroCacifo in [36,30,24,18,12,6]):
-                                sleep(1)
-                                coloca_direcao(0)
-                                braco.on_for_degrees(100,360)                
-                                sleep(1) 
-                                braco.on_for_degrees(100,-360)
-                                #volta com o braço para cima
-                                atualiza_ovelha(ovelha,5) #ovelha vai para a esquerda e para cima
-                                ovelha = ovelha+5
-                                robot.on_for_distance(SpeedRPM(40),200)
-                                coloca_direcao(90)
-                                robot.on_for_distance(SpeedRPM(40),200)
-                                informacao.posicao+=6
-                                informacao.posicao-=1
-                                j+= 2
-                            elif(pathovelha[j+1].numeroCacifo >30):
-                                sleep(1)
-                                coloca_direcao(0)
-                                braco.on_for_degrees(100,360)                
-                                sleep(1) 
-                                braco.on_for_degrees(100,-360)
-                                #volta com o braço para cima
-                                atualiza_ovelha(ovelha,-5) #ovelha vai para baixo e para a direita
-                                ovelha = ovelha-5
-                                robot.on_for_distance(SpeedRPM(40),200)
-                                coloca_direcao(90)
-                                robot.on_for_distance(SpeedRPM(40),200)
-                                informacao.posicao+=6
-                                informacao.posicao-=1
-                                j+= 2
-                        elif ((pathovelha[j+1].paredeUp == True and pathovelha[j+1].numeroCacifo in [31,25,19,13,7,1]) or (pathovelha[j+1].numeroCacifo > 30 and pathovelha[j+1].paredeLeft == True)):
-                            if(pathovelha[j+1].numeroCacifo in [31,25,19,13,7,1]):
-                                sleep(1)
-                                
-                                coloca_direcao(0)
-                                braco.on_for_degrees(100,360)                
-                                sleep(1) 
-                                #volta com o braço para cima
-                                atualiza_ovelha(ovelha,6) #ovelha vai para cima e para a direita
-                                ovelha = ovelha+6
-                                braco.on_for_degrees(100,-360)
-                                robot.on_for_distance(SpeedRPM(40),200)
-                                coloca_direcao(270)
-                                robot.on_for_distance(SpeedRPM(40),200)
-                                informacao.posicao+=6
-                                informacao.posicao+=1
-                                j+= 2
-                            elif(pathovelha[j+1].numeroCacifo > 30):
-                                sleep(1)
-                                
-                                coloca_direcao(0)
-                                braco.on_for_degrees(100,360)                
-                                sleep(1) 
-                                #volta com o braço para cima
-                                atualiza_ovelha(ovelha,-5) #ovelha vai para baixo e para a direita
-                                ovelha = ovelha-5
-                                braco.on_for_degrees(100,-360)
-                                robot.on_for_distance(SpeedRPM(40),200)
-                                coloca_direcao(270)
-                                robot.on_for_distance(SpeedRPM(40),200)
-                                informacao.posicao+=6
-                                informacao.posicao+=1
-                                j+= 2
-                        else:
-                            Sound.beep() 
-                            coloca_direcao(0)
-                            atualiza_ovelha(ovelha,6) #ovelha vai para cima
-                            ovelha = ovelha+6
-                            robot.on_for_distance(SpeedRPM(40),200)
-                            j+= 1
-                            informacao.posicao+=6
-                        
-                    elif(pathovelha[j].numeroCacifo+1 == pathovelha[j+1].numeroCacifo):#Para o caso de querer andar para a direita 
-                        if(pathovelha[j+1].paredeRight == True and pathovelha[j+1].paredeUp == True):
-                            sleep(1)
-                            sleep(1)
-                            coloca_direcao(270)
-                            Sound.beep()
-                            atualiza_ovelha(ovelha,-1) #ovelha vai para a esquerda
-                            ovelha = ovelha-1
-                            robot.on_for_distance(SpeedRPM(40),200)
-                            informacao.posicao+=1
-                            j+= 1
-                        elif(pathovelha[j+1].paredeRight == True and pathovelha[j+1].paredeDown == True): #tirar o 36 da listaO
-                            sleep(1)
-                            sleep(1)
-                            coloca_direcao(270)
-                            Sound.beep()
-                            atualiza_ovelha(ovelha,6) #ovelha vai para cima
-                            ovelha = ovelha+6
-                            robot.on_for_distance(SpeedRPM(40),200)
-                            informacao.posicao+=1
-                            j+= 1
-                        elif ((pathovelha[j+1].paredeRight == True and pathovelha[j+1].numeroCacifo > 30 ) or (pathovelha[j+1].numeroCacifo in [36,30,24,18,12,6] and pathovelha[j+1].paredeUp == True)):
-                            if(pathovelha[j+1].numeroCacifo > 30):
-                                sleep(1)
-                                coloca_direcao(270)
-                                braco.on_for_degrees(100,360)
-                                sleep(1)
-                                #volta com o braço para cima
-                                braco.on_for_degrees(100,-360)
-                                atualiza_ovelha(ovelha,-5) #ovelha vai para baixo e para a direita
-                                ovelha = ovelha-5
-                                robot.on_for_distance(SpeedRPM(40),200)
-                                coloca_direcao(180)
-                                robot.on_for_distance(SpeedRPM(40),200)
-                                informacao.posicao+=1
-                                informacao.posicao-=6
-                                j+= 2
-                            elif(pathovelha[j+1].numeroCacifo in [36,30,24,18,12,6]):
-                                sleep(1)
-                                coloca_direcao(270)
-                                braco.on_for_degrees(100,360)
-                                sleep(1)
-                                #volta com o braço para cima
-                                braco.on_for_degrees(100,-360)
-                                atualiza_ovelha(ovelha,5) #ovelha vai para a esquerda e para cima
-                                ovelha = ovelha+5
-                                robot.on_for_distance(SpeedRPM(40),200)
-                                coloca_direcao(180)
-                                robot.on_for_distance(SpeedRPM(40),200)
-                                informacao.posicao+=1
-                                informacao.posicao-=6
-                                j+= 2
 
-                        elif ((pathovelha[j+1].paredeRight == True and pathovelha[j+1].numeroCacifo < 7) or (pathovelha[j+1].numeroCacifo in [36,30,24,18,12,6] and pathovelha[j+1].paredeDown == True)):
-                                if(pathovelha[j+1].numeroCacifo < 7):
-                                    sleep(1)
-                                    coloca_direcao(270)
-                                    braco.on_for_degrees(100,360)
-                                    sleep(1)
-                                    #volta com o braço para cima
-                                    braco.on_for_degrees(100,-360)
-                                    atualiza_ovelha(ovelha,7) #ovelha vai para cima e para a direita
-                                    ovelha = ovelha+7
-                                    robot.on_for_distance(SpeedRPM(40),200)
-                                    coloca_direcao(0)
-                                    robot.on_for_distance(SpeedRPM(40),200)
-                                    informacao.posicao+=1
-                                    informacao.posicao+=6
-                                    j+= 2
-                                elif(pathovelha[j+1].numeroCacifo in [36,30,24,18,12,6]):
-                                    sleep(1)
-                                    
-                                    coloca_direcao(270)
-                                    braco.on_for_degrees(100,360)
-                                    sleep(1)
-                                    #volta com o braço para cima
-                                    braco.on_for_degrees(100,-360)
-                                    atualiza_ovelha(ovelha,5) #ovelha vai para a esquerda e para cima
-                                    ovelha = ovelha+5
-                                    robot.on_for_distance(SpeedRPM(40),200)
-                                    coloca_direcao(0)
-                                    robot.on_for_distance(SpeedRPM(40),200)
-                                    informacao.posicao+=1
-                                    informacao.posicao+=6
-                                    j+= 2
-                        else:
-                            Sound.beep() 
-                            coloca_direcao(270)
-                            robot.on_for_distance(SpeedRPM(40),200)
-                            atualiza_ovelha(ovelha,1) #ovelha vai para a direita
-                            ovelha = ovelha+1
-                            informacao.posicao+=1
-                            j+= 1
-                        
-                    
-                    elif(pathovelha[j].numeroCacifo-6 == pathovelha[j+1].numeroCacifo): #para o caso de querer andar para baixo
-                        if(pathovelha[j+1].paredeDown == True and pathovelha[j+1].paredeRight == True ):
-                            sleep(1)
-                            sleep(1)
-                            coloca_direcao(180)
-                            Sound.beep()
-                            atualiza_ovelha(ovelha,-1) #ovelha vai para a esquerda
-                            ovelha = ovelha-1
-                            robot.on_for_distance(SpeedRPM(40),200)
-                            informacao.posicao-=6
-                            j+= 1
-                        elif(pathovelha[j+1].paredeDown == True and pathovelha[j+1].paredeLeft == True ):
-                            sleep(1)
-                            sleep(1)
-                            coloca_direcao(180)
-                            Sound.beep()
-                            atualiza_ovelha(ovelha,1) #ovelha vai para a direita
-                            ovelha = ovelha+1
-                            robot.on_for_distance(SpeedRPM(40),200)
-                            informacao.posicao+=1
-                            j+= 1
-                        elif((pathovelha[j+1].paredeDown == True and pathovelha[j+1].numeroCacifo in [36,30,24,18,12,6]) or (pathovelha[j+1].numeroCacifo < 7 and pathovelha[j+1].paredeRight == True)):
-                            if(pathovelha[j+1].numeroCacifo in [36,30,24,18,12,6]): 
-                                sleep(1)
-                                
-                                coloca_direcao(180)
-                                braco.on_for_degrees(100,360)
-                                sleep(1)
-                                #volta com o braço para cima 
-                                braco.on_for_degrees(100,-360)
-                                atualiza_ovelha(ovelha,-7) #ovelha vai para a esquerda e para baixo
-                                ovelha = ovelha-7
-                                robot.on_for_distance(SpeedRPM(40),200)
-                                coloca_direcao(90)
-                                robot.on_for_distance(SpeedRPM(40),200)
-                                informacao.posicao-=6
-                                informacao.posicao-=1
-                                j+= 2
-                            elif(pathovelha[j+1].numeroCacifo < 7):
-                                sleep(1)
-                                
-                                coloca_direcao(180)
-                                braco.on_for_degrees(100,360)
-                                sleep(1)
-                                #volta com o braço para cima 
-                                braco.on_for_degrees(100,-360)
-                                atualiza_ovelha(ovelha,5) #ovelha vai para a esquerda e para cima
-                                ovelha = ovelha+5
-                                robot.on_for_distance(SpeedRPM(40),200)
-                                coloca_direcao(90)
-                                robot.on_for_distance(SpeedRPM(40),200)
-                                informacao.posicao-=6
-                                informacao.posicao-=1
-                                j+= 2
-                        elif((pathovelha[j+1].paredeDown == True and pathovelha[j+1].numeroCacifo in [31,25,19,13,7,1]) or (pathovelha[j+1].numeroCacifo < 7 and pathovelha[j+1].paredeLeft == True)):
-                            if(pathovelha[j+1].numeroCacifo in [31,25,19,13,7,1]):
-                                sleep(1)
-                                
-                                coloca_direcao(180)
-                                braco.on_for_degrees(100,360)
-                                sleep(1)
-                                #volta com o braço para cima 
-                                braco.on_for_degrees(100,-360)
-                                atualiza_ovelha(ovelha,-5) #ovelha vai para a direita e para baixo
-                                ovelha = ovelha-5
-                                robot.on_for_distance(SpeedRPM(40),200)
-                                coloca_direcao(270)
-                                robot.on_for_distance(SpeedRPM(40),200)
-                                informacao.posicao+=1
-                                informacao.posicao-=6
-                                j+= 2
-                            elif(pathovelha[j+1].numeroCacifo < 7):
-                                sleep(1)
-                                
-                                coloca_direcao(180)
-                                braco.on_for_degrees(100,360)
-                                sleep(1)
-                                #volta com o braço para cima 
-                                braco.on_for_degrees(100,-360)
-                                atualiza_ovelha(ovelha,7) #ovelha vai para a direita e para cima
-                                ovelha = ovelha+7
-                                ovelha = ovelha+7
-                                robot.on_for_distance(SpeedRPM(40),200)
-                                coloca_direcao(270)
-                                robot.on_for_distance(SpeedRPM(40),200)
-                                informacao.posicao+=1
-                                informacao.posicao-=6
-                                j+= 2
-                        else:
-                            Sound.beep() 
-                            coloca_direcao(180)
-                            robot.on_for_distance(SpeedRPM(40),200)
-                            atualiza_ovelha(ovelha,-6) #ovelha vai para baixo
-                            ovelha = ovelha-6
-                            informacao.posicao-=6
-                            j+= 1
-                        
-                    elif(pathovelha[j].numeroCacifo-1 == pathovelha[j+1].numeroCacifo): #para o caso de querer andar para a esquerda 
-                        if(pathovelha[j+1].paredeLeft == True and pathovelha[j+1].paredeDown == True ):
-                            sleep(1)
-                            sleep(1)
-                            coloca_direcao(90)
-                            Sound.beep()
-                            robot.on_for_distance(SpeedRPM(20),200)
-                            atualiza_ovelha(ovelha,6) #ovelha vai para cima
-                            ovelha = ovelha+6
-                            informacao.posicao-=1
-                            j+= 1
-                        elif(pathovelha[j+1].paredeLeft == True and pathovelha[j+1].paredeUp == True):
-                            sleep(1)
-                            sleep(1)
-                            coloca_direcao(90)
-                            Sound.beep()
-                            robot.on_for_distance(SpeedRPM(20),200)
-                            atualiza_ovelha(ovelha,-6) #ovelha vai para baixo
-                            ovelha = ovelha-6
-                            informacao.posicao-=1
-                            j+= 1
-                        elif((pathovelha[j+1].paredeLeft == True and pathovelha[j+1].numeroCacifo < 6) or (pathovelha[j+1].numeroCacifo in [31,25,19,13,7,1] and pathovelha[j+1].paredeDown == True)):
-                            if(pathovelha[j+1].numeroCacifo < 6):
-                                sleep(1)
-                            
-                                coloca_direcao(90)
-                                braco.on_for_degrees(100,360)
-                                sleep(1)
-                                #volta com o braço para cima 
-                                braco.on_for_degrees(100,-360)
-                                atualiza_ovelha(ovelha,5) #ovelha vai para cima e para a esquerda
-                                ovelha = ovelha+5
-                                robot.on_for_distance(SpeedRPM(20),200)
-                                coloca_direcao(0)
-                                robot.on_for_distance(SpeedRPM(20),200)
-                                informacao.posicao-=1
-                                informacao.posicao+=6 
-                                j+= 2
-                            elif(pathovelha[j+1].numeroCacifo in [31,25,19,13,7,1]):
-                                sleep(1)
-                            
-                                coloca_direcao(90)
-                                braco.on_for_degrees(100,360)
-                                sleep(1)
-                                #volta com o braço para cima 
-                                braco.on_for_degrees(100,-360)
-                                atualiza_ovelha(ovelha,12) #ovelha vai para cima 2 vezes
-                                ovelha = ovelha+12
-                                robot.on_for_distance(SpeedRPM(20),200)
-                                coloca_direcao(0)
-                                robot.on_for_distance(SpeedRPM(20),200)
-                                informacao.posicao-=1
-                                informacao.posicao+=6 
-                                j+= 2
+#funçao que interage com as ovelhas caso estejam ambas adjacentes ao robot (usa o braço nao o apito)
+def trata_ovelhas_adjacentes_robot():
+    return
 
-                        elif((pathovelha[j+1].paredeLeft == True and pathovelha[j+1].numeroCacifo > 30) or (pathovelha[j+1].numeroCacifo in [31,25,19,13,7,1] and pathovelha[j+1].paredeUp == True)):  
-                            if(pathovelha[j+1].numeroCacifo > 30):
-                                sleep(1)
-                                coloca_direcao(90)
-                                braco.on_for_degrees(100,360)
-                                sleep(1)
-                                #volta com o braço para cima 
-                                braco.on_for_degrees(100,-360)
-                                atualiza_ovelha(ovelha,-7) #ovelha vai para baixo e para a esquerda
-                                ovelha = ovelha-7
-                                robot.on_for_distance(SpeedRPM(20),200)
-                                coloca_direcao(180)
-                                robot.on_for_distance(SpeedRPM(20),200)
-                                informacao.posicao-=1
-                                informacao.posicao-=6 
-                                j+= 2
-                            elif(pathovelha[j+1].numeroCacifo in [31,25,19,13,7,1]):
-                                sleep(1)
-                                coloca_direcao(90)
-                                braco.on_for_degrees(100,360)
-                                sleep(1)
-                                #volta com o braço para cima 
-                                braco.on_for_degrees(100,-360)
-                                atualiza_ovelha(ovelha,7) #ovelha vai para a direita e para cima
-                                ovelha = ovelha+7
-                                robot.on_for_distance(SpeedRPM(20),200)
-                                coloca_direcao(180)
-                                robot.on_for_distance(SpeedRPM(20),200)
-                                informacao.posicao-=1
-                                informacao.posicao-=6 
-                                j+= 2
-                        else:
-                            Sound.beep() 
-                            coloca_direcao(90)
-                            robot.on_for_distance(SpeedRPM(20),200)
-                            atualiza_ovelha(ovelha,-1) #ovelha vai para a esquerda
-                            ovelha = ovelha-1
-                            informacao.posicao-=1
-                            j+= 1
-            else:
-                vai_ate_ovelha(ovelha)      
-
+#funcao que verifica se o robo tem as duas ovelhas adjacentes a ele
+#recebe a posiçao da ovelha que esta guiando e a posiçao da outra ovelha
+#devolve true caso ambas as ovelhas estejam adjacentes ao robo
+def verifica_adjacentes(ovelhaGuiando,ovelha2):
+    posicao_robot = informacao.posicao
+    esquerda_robot = posicao_robot - 1
+    direita_robot = posicao_robot + 1
+    baixo_robot = posicao_robot - 6
+    cima_robot = posicao_robot + 6
+    if(cima_robot == ovelhaGuiando):
+        if(esquerda_robot == ovelha2):
+            return True
+        if(direita_robot == ovelha2):
+            return True
+        if(baixo_robot == ovelha2):
+            return True
+    if(baixo_robot == ovelhaGuiando):
+        if(cima_robot == ovelha2):
+            return True
+        if(direita_robot == ovelha2):
+            return True
+        if(esquerda_robot == ovelha2):
+            return True
+    if(esquerda_robot == ovelhaGuiando):
+        if(cima_robot == ovelha2):
+            return True
+        if(direita_robot == ovelha2):
+            return True
+        if(baixo_robot == ovelha2):
+            return True
+    if(direita_robot == ovelhaGuiando):
+        if(cima_robot == ovelha2):
+            return True
+        if(esquerda_robot == ovelha2):
+            return True
+        if(baixo_robot == ovelha2):
+            return True
+    return False
 
             
+           
 def calcula_inicio(ovelha,ignora): #Função que vai calcular em que sitio começar e qual o caminho da heurística que recebe qual a ovelha que quer guiar
     k = CacifoAtual(ovelha)
-    cacifo_baixo_direita = CacifoAtual(ovelha-5)
-    cacifo_baixo_esquerda = CacifoAtual(ovelha-7)
-    cacifo_cima_esquerda = CacifoAtual(ovelha+5)
-    cacifo_cima_direita = CacifoAtual(ovelha+7)
     caminho_ovelha = []
+    #posicoes da ovelha 
+    esquerdaOvelha = CacifoAtual(ovelha-1) 
+    #direitaOvelha = CacifoAtual(ovelha+1) 
+    baixoOvelha = CacifoAtual(ovelha-6)
+    #cimaOvelha = CacifoAtual(ovelha+6) 
+    #mudar o caminho do robot manualmente caso o caminho_ovelha seja maior que 2
+    #if(len(caminho_ovelha)>=2 and guiando_a_ovelha):
+        #ver cacifo da ovelha
+        #12,2,5,7
+
     if(k.numeroCacifo in [32,33,34,35]): #se tiver na linha de cima do tabuleiro (o 31 é um caso especial pk tem a parede dos limites)
-        if(k.paredeDown):
-            if(k.paredeLeft):
-                caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6,ignora)
-            elif(k.paredeRight):
-                caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6,ignora)
-                 #se tiver uma parede em L 
-             #vai para a posição abaixo da ovelha por causa da parede em L
-        elif(k.paredeLeft and k.paredeRight):
-            if(cacifo_baixo_esquerda.paredeRight):
-                caminho_ovelha = algoritmo_A_star(k.numeroCacifo+1,ignora) #vai para a posição à direita da ovelha porque fica mais perto da cerca para a ovelha
-            else:
-                caminho_ovelha = algoritmo_A_star(k.numeroCacifo-1,ignora) #vai para a posição à esquerda da ovelha porque fica mais perto da cerca se bater para a ovelha
-        elif (k.paredeLeft == True) :
+        if(k.paredeDown == True and (k.paredeRight == True or k.paredeLeft == True)): #se tiver uma parede em L 
+            #nao posso tocar se nao perco a ovelha
+            #restantes ja cobre todos os casos
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6,ignora) #vai para a posição abaixo da ovelha por causa da parede em L
+        elif (k.paredeLeft == True):
             caminho_ovelha =  algoritmo_A_star(k.numeroCacifo-6,ignora) #vai para a posição abaixo da ovelha porque fica mais perto da cerca para a ovelha
         elif (k.paredeRight == True):
             caminho_ovelha = algoritmo_A_star(k.numeroCacifo-1,ignora) #vai para a posição à esquerda da ovelha porque fica mais perto da cerca se bater para a ovelha
@@ -1835,6 +1094,18 @@ def calcula_inicio(ovelha,ignora): #Função que vai calcular em que sitio come�
             caminho_ovelha = algoritmo_A_star(k.numeroCacifo-1,ignora) #vai para a posição à esquerda da ovelha porque fica mais perto da cerca se bater para a ovelha
         else:
             caminho_ovelha = algoritmo_A_star(k.numeroCacifo-1,ignora)
+    #caso a ovelha vai para o cacifo 1
+    elif(k.numeroCacifo == 1):
+        
+        #perde
+        #if(k.paredeUp and k.numeroCacifo+6.paredeRight):
+            #caminho_ovelha = algoritmo_A_star(k.numeroCacifo+6,ignora)
+          #o robo terá que ir para o cacifo de cima da ovelha
+        if(k.paredeUp):
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo+6,ignora)
+        elif(k.paredeRight):
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo+1,ignora)
+      
     elif (k.numeroCacifo in [31]): #Caso especial para o 31 porque faz parte do limite do tabuleiro de cima e da esquerda (por isso já faz um L)
         if(k.paredeDown == True):
             caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6,ignora) #vai para a posição abaixo da ovelha porque fica mais perto da cerca para a ovelha
@@ -1843,20 +1114,9 @@ def calcula_inicio(ovelha,ignora): #Função que vai calcular em que sitio come�
         else:
             caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6,ignora)
     elif(k.numeroCacifo in [2,3,4,5]): #se tiver na linha de baixo do tabuleiro (o 6 é um caso especial porque tem a parede em dos limites o 1 não é caso especial porque a ovelha nunca vai estar na posição 1 no inicio)
-        if(k.paredeUp):
-            if(k.paredeRight):
-                caminho_ovelha = algoritmo_A_star(k.numeroCacifo+6,ignora)
-            elif(k.paredeLeft:
-                caminho_ovelha = algoritmo_A_star(k.numeroCacifo+6,ignora)
-             #vai para a posição em cima da ovelha porque fica mais perto da cerca para a ovelha
-        elif(k.paredeLeft and k.paredeRight):
-            if(cacifo_cima_esquerda.paredeRight):
-                caminho_ovelha = algoritmo_A_star(k.numeroCacifo+1,ignora) #vai para a posição à direita da ovelha porque fica mais perto da cerca para a ovelha
-            else:
-                caminho_ovelha = algoritmo_A_star(k.numeroCacifo-1,ignora) #vai para a posição à esquerda da ovelha porque fica mais perto da cerca se bater para a ovelha
-        elif(k.paredeRight):
-            caminho_ovelha = algoritmo_A_star(k.numeroCacifo-1,ignora) #vai para a posição à esquerda da ovelha porque fica mais perto da cerca se bater para a ovelha
-        elif (k.paredeUp ):
+        if(k.paredeUp and (k.paredeLeft or k.paredeRight)):
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo+6,ignora) #vai para a posição em cima da ovelha porque fica mais perto da cerca para a ovelha
+        elif (k.paredeUp or k.paredeRight):
             caminho_ovelha = algoritmo_A_star(k.numeroCacifo-1,ignora) #vai para a posição à esquerda da ovelha porque fica mais perto da cerca se bater para a ovelha
         elif(k.paredeLeft):
             caminho_ovelha = algoritmo_A_star(k.numeroCacifo+1,ignora) #vai para a posição à direita da ovelha porque fica mais perto da cerca para a ovelha
@@ -1876,11 +1136,6 @@ def calcula_inicio(ovelha,ignora): #Função que vai calcular em que sitio come�
                 caminho_ovelha = algoritmo_A_star(k.numeroCacifo+1,ignora)
             elif(k.paredeUp):
                 caminho_ovelha = algoritmo_A_star(k.numeroCacifo+1,ignora)
-        elif(k.paredeDown and k.paredeUp): #como se fosse 3 paredes
-            if(cacifo_baixo_direita.paredeUp):
-                caminho_ovelha = algoritmo_A_star(k.numeroCacifo+6,ignora) #vai para a posição em cima da ovelha porque fica mais perto da cerca para a ovelha
-            else:
-                caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6,ignora)
         elif(k.paredeUp):
             caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6,ignora) #vai para a posição abaixo da ovelha porque fica mais perto da cerca para a ovelha
         elif(k.paredeDown):
@@ -1888,17 +1143,8 @@ def calcula_inicio(ovelha,ignora): #Função que vai calcular em que sitio come�
         else:
             caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6,ignora)
     elif(k.numeroCacifo in [30,24,18,12]): #se tiver na linha da direita do tabuleiro (o 6 não interessa porque já é resolvido num elif de cima)
-        if(k.paredeLeft):
-            if(k.paredeUp):
-                caminho_ovelha = algoritmo_A_star(k.numeroCacifo-1,ignora)
-            elif(k.paredeDown):
-                caminho_ovelha = algoritmo_A_star(k.numeroCacifo-1,ignora)
-             #vai para a posição à esquerda da ovelha porque fica mais perto da cerca se bater para a ovelha
-        elif(k.paredeUp and k.paredeDown):
-            if(cacifo_baixo_esquerda.paredeUp):
-                caminho_ovelha = algoritmo_A_star(k.numeroCacifo+6,ignora) #vai para a posição a cima da ovelha porque fica mais perto da cerca para a ovelha
-            else:
-               caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6,ignora) #vai para a posição abaixo da ovelha porque fica mais perto da cerca para a ovelha 
+        if(k.paredeLeft and (k.paredeUp or k.paredeDown)):
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo-1,ignora) #vai para a posição à esquerda da ovelha porque fica mais perto da cerca se bater para a ovelha
         elif(k.paredeLeft or k.paredeUp):
             caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6,ignora) #vai para a posição abaixo da ovelha porque fica mais perto da cerca para a ovelha
         elif(k.paredeDown):
@@ -1909,23 +1155,45 @@ def calcula_inicio(ovelha,ignora): #Função que vai calcular em que sitio come�
     else:#Trata dos casos para L's dentro do tabuleiro
         #Casos de 3 paredes 
         if(k.paredeUp and k.paredeDown and (k.paredeLeft or k.paredeRight)): #Para o caso de ter 3 paredes em forma de C para a direita ou para a esquerda nota: usar lógica negada?
-            if(cacifo_baixo_direita.paredeUp):
-                caminho_ovelha = algoritmo_A_star(k.numeroCacifo+6,ignora) #vai para a posição em cima da ovelha porque fica mais perto da cerca para a ovelha    
-            else:
-                caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6,ignora) #vai para a posição abaixo da ovelha porque fica mais perto da cerca para a ovelha
-        elif(k.paredeRight and k.paredeLeft and (k.paredeDown or k.paredeUp)): #Para o caso de ter 3 paredes em forma de U para cima ou para baixo
-            if(cacifo_cima_esquerda.paredeRight):
-                caminho_ovelha = algoritmo_A_star(k.numeroCacifo+1,ignora) #vai para a posição à direita da ovelha porque fica mais perto da cerca se bater para a ovelha
-            else:
-                caminho_ovelha = algoritmo_A_star(k.numeroCacifo-1,ignora) #vai para a posição à esquerda da ovelha porque fica mais perto da cerca se bater para a ovelha
+                #caso tenha parede à esquerda/direita do cacifo debaixo da ovelha, mandar para cima da ovelha
+                if(baixoOvelha.paredeLeft or baixoOvelha.paredeRight):
+                    caminho_ovelha = algoritmo_A_star(k.numeroCacifo+6,ignora)
+                #caso nao tenha parede no cacifo abaixo, o robot poderá ir 
+                else:
+                    caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6,ignora)
+
+        elif(k.paredeRight and k.paredeLeft): #Para o caso de ter 3 paredes em forma de U para cima ou para baixo
+            #se tiver U virado para baixo, e parede em baixo do cacifo da esquerda é melhor ir para a direita
+            if(k.paredeUp):
+                if(esquerdaOvelha.paredeDown):
+                    caminho_ovelha = algoritmo_A_star(k.numeroCacifo+1,ignora)
+                #se tiver em cima pode ficar na esquerda
+                else:
+                    caminho_ovelha = algoritmo_A_star(k.numeroCacifo-1,ignora)
+            #se tiver U e parede em cima no cacifo da esquerda é melhor o robot ir para o cacifo da direita da ovelha
+            elif(k.paredeDown):
+                if(esquerdaOvelha.paredeUp):
+                    caminho_ovelha = algoritmo_A_star(k.numeroCacifo+1,ignora)
+                else:
+                    #se tive em baixo pode ir para a esquerda 
+                    caminho_ovelha = algoritmo_A_star(k.numeroCacifo-1,ignora)
+
         #Casos normais de 2 paredes
         elif(k.paredeUp and k.paredeLeft):
-            caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6,ignora) #vai para a posição abaixo da ovelha porque fica mais perto da cerca para a ovelha
+            #caso tenha uma parede na direita no cacifo abaixo, mandar para o cacifo de cima da ovelha
+            if(baixoOvelha.paredeRight):
+                caminho_ovelha = algoritmo_A_star(k.numeroCacifo+6,ignora)
+            #pode ficar em baixo pois nao perde a ovelha
+            else:
+                caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6,ignora)
+
+        #neste caso o robo entra vai para o cacifo que a ovelha estava por isso nao há outra
         elif(k.paredeDown and k.paredeRight):
-            caminho_ovelha = algoritmo_A_star(k.numeroCacifo-1,ignora) #vai para a posição à esquerda da ovelha porque fica mais perto da cerca se bater para a ovelha
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo-1,ignora) #vai para a posição à esquerda da ovelha 
+        #neste tbm
         elif(k.paredeLeft and k.paredeDown): 
-            caminho_ovelha = algoritmo_A_star(k.numeroCacifo+1,ignora) #vai para a posição à esquerda da ovelha porque fica mais perto da cerca se bater para a ovelha
-            #opcao 2 caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6) #vai para a posição abaixo da ovelha porque fica mais perto da cerca para a ovelha
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo+1,ignora) #vai para a posição à direita da ovelha
+        #neste tbm
         elif(k.paredeUp and k.paredeRight):
             caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6,ignora) #vai para a posição em cima da ovelha porque fica mais perto da cerca para a ovelha
         #Casos normais de 1 parede
@@ -1935,8 +1203,8 @@ def calcula_inicio(ovelha,ignora): #Função que vai calcular em que sitio come�
             caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6,ignora) #vai para a posição abaixo da ovelha porque fica mais perto da cerca para a ovelha
         else:
             caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6,ignora)
-            #  opcao 2 caminho_ovelha = algoritmo_A_star(k.numeroCacifo+1) #vai para a posição à direita da ovelha porque fica mais perto da cerca para a ovelha
     return caminho_ovelha        
+                
         
 def escolhe_ovelha(): #função que escolhe qual é a melhor ovelha para começar a ser guiada (para evitar ter de fazer mais ifs na função calcula_inicio() )
     ov1 = CacifoAtual(posicao_ovelhas[0]) #1ª ovelha encontrada
@@ -1944,8 +1212,41 @@ def escolhe_ovelha(): #função que escolhe qual é a melhor ovelha para começa
     if (ov1.numeroCacifo == ov2.numeroCacifo+1 or ov1.numeroCacifo == ov2.numeroCacifo+6 or ov1.numeroCacifo == ov2.numeroCacifo-1 or ov1.numeroCacifo == ov2.numeroCacifo-6): #Verifica se a 2ª ovelha está num cacifo adjacente ao da 1ª ovelha   
         if(ov1.numeroCacifo in [35,34,33,32,31,25,19,13,7,2,3,4,5,6,12,18,24,30]): #Verifica se a 1ª ovelha está na borda do tabuleiro
             return posicao_ovelhas[1]  #Devolve a 2ª ovelha porque é a mais fácil para começar a guiar
-        
+     #caso as ovelhas estejam em cacifos adjacentes ao cacifo do robot
+        #neste casos á esquerda do robo
+        elif(ov1.numeroCacifo == ov2.numeroCacifo+7):
+            #se tem parede em baixo dificulta o trajeto do robot
+            if(ov2.paredeDown):
+                #entao escolhe a 1 ovelha
+                return posicao_ovelhas[0]
+            #se tiver parede a direita (ou seja à esquerda do robot)
+            elif(ov1.paredeRight):
+                #escolhe a ovelha 2 
+                return posicao_ovelhas[1]
+        elif(ov1.numeroCacifo == ov2.numeroCacifo-7):
+            #se tem parede em baixo dificulta o trajeto do robot
+            if(ov1.paredeDown):
+                #entao escolhe a 2 ovelha
+                return posicao_ovelhas[1]
+            #se tiver parede a direita (ou seja à esquerda do robot)
+            elif(ov2.paredeRight):
+                #escolhe a ovelha 2 
+                return posicao_ovelhas[0]
+        #caso esteja no cacifo adjacente à direita do robot
+        elif(ov1.numeroCacifo == ov2.numeroCacifo+5):
+            if(ov2.paredeDown):
+                return posicao_ovelhas[0]
+            elif(ov1.paredeLeft):
+                return posicao_ovelhas[1]
+        elif(ov1.numeroCacifo == ov2.numeroCacifo-5):
+            if(ov1.paredeDown):
+                return posicao_ovelhas[1]
+            elif(ov2.paredeLeft):
+                return posicao_ovelhas[0]
     return posicao_ovelhas[0] #Devolve a 1ª ovelha por motivo nenhum senão simplesmente ser a primeira que foi encontrada
+
+
+
 def vai_ate_ovelha(ovelha):
     caminho = calcula_inicio(ovelha,False)
     i=0
@@ -2010,26 +1311,42 @@ def main():
     if (betty == posicao_ovelhas[0]): #escolheu a primeira ovelha
         vitoria = posicao_ovelhas[1]
         vai_ate_ovelha(betty)
-        #caminhobetty = algoritmo_A_star(36,True) 
-        guia_ovelha(betty)
-        #guia_ovelha(caminhobetty)
-        vai_ate_ovelha(vitoria)
-        guia_ovelha(vitoria)
-        #caminhovitoria = algoritmo_A_star(36,True)
-        #guia_ovelha(caminhovitoria)
+        posicaoOvelha_Sendo_Guiada = betty
+        while(posicaoOvelha_Sendo_Guiada != 36):
+            posicaoOvelha_Sendo_Guiada = interage_ovelha(posicaoOvelha_Sendo_Guiada)
+            if(posicaoOvelha_Sendo_Guiada != 36):
+                vai_ate_ovelha(posicaoOvelha_Sendo_Guiada)
 
+        vai_ate_ovelha(vitoria)
+        posicaoOvelha_Sendo_Guiada = vitoria
+        while(posicaoOvelha_Sendo_Guiada != 36):
+            posicaoOvelha_Sendo_Guiada = interage_ovelha(posicaoOvelha_Sendo_Guiada)
+            if(posicaoOvelha_Sendo_Guiada != 36):
+                vai_ate_ovelha(posicaoOvelha_Sendo_Guiada)
+                
     elif (posicao_ovelhas[0] == posicao_ovelhas[1]):
         vai_ate_ovelha(betty)
-        guia_ovelha(betty)
-        #caminhobetty = algoritmo_A_star(36,True)
-        #guia_ovelha(caminhobetty)
+        posicaoOvelha_Sendo_Guiada = betty
+        while(posicaoOvelha_Sendo_Guiada != 36):
+            posicaoOvelha_Sendo_Guiada = interage_ovelha(posicaoOvelha_Sendo_Guiada)
+            if(posicaoOvelha_Sendo_Guiada != 36):
+                vai_ate_ovelha(posicaoOvelha_Sendo_Guiada)
 
     else:
         vitoria = posicao_ovelhas[0]
         vai_ate_ovelha(betty)
-        guia_ovelha(betty)
+        posicaoOvelha_Sendo_Guiada = betty
+        while(posicaoOvelha_Sendo_Guiada != 36):
+            posicaoOvelha_Sendo_Guiada = interage_ovelha(posicaoOvelha_Sendo_Guiada)
+            if(posicaoOvelha_Sendo_Guiada != 36):
+                vai_ate_ovelha(posicaoOvelha_Sendo_Guiada)
+
         vai_ate_ovelha(vitoria)
-        guia_ovelha(vitoria)
+        posicaoOvelha_Sendo_Guiada = vitoria
+        while(posicaoOvelha_Sendo_Guiada != 36):
+            posicaoOvelha_Sendo_Guiada = interage_ovelha(posicaoOvelha_Sendo_Guiada)
+            if(posicaoOvelha_Sendo_Guiada != 36):
+                vai_ate_ovelha(posicaoOvelha_Sendo_Guiada) 
         
 
 if (__name__ == "__main__"):
