@@ -805,7 +805,7 @@ def calcula_braco(posicao_ovelha):
                 return posicao_ovelha +2 # direita -1
 
 
-
+#Funçao para colocar o robo virado para a ovelha antes de interagir com ela
 def verifica_direcao(direcao):
     if(direcao == -6):#robo esta em baixo da ovelha
         coloca_direcao(0)
@@ -830,293 +830,219 @@ def interage_ovelha(ovelha):
     posicao_atualizada_ovelha = ovelha
     #casos cantos
     if(ovelha == 31):#caso a ovelha esteja no cacifo 31
-        if(cacifoOvelha.paredeDown):
-            #caso tenha uma parede em baixo, o robo vai para baixo da ovelha
-            #robo bate, ovelha anda para a direita, robo segue
-            #print("15",file=stderr)
+        if(cacifoOvelha.paredeDown):#caso tenha uma parede em baixo
+            #robo apita
+            verifica_direcao(direcao)
             Sound.beep()
-            #move_robot(270)
             return calcula_apito(ovelha)
-        elif(cacifoOvelha.paredeRight):
-            #caso tenha uma parede a direita, o robo vai para a direita da ovelha
-            #robo bate, ovelha anda para baixo 2x, robo segue
+        elif(cacifoOvelha.paredeRight):#caso tenha uma parede a direita
+            #robo bate, ovelha anda 2x
             verifica_direcao(direcao)
             braco.on_for_degrees(100,360) #mexe o braço para baixo
             sleep(1)
             braco.on_for_degrees(100,-360) #mexe o braço para cima
             return calcula_braco(posicao_atualizada_ovelha)
         else:#caso sem paredes
-            #robo apita, ovelha anda para a direita, robo segue
-            #print("16",file=stderr)
+            #robo apita
+            verifica_direcao(direcao)
             Sound.beep()
             return calcula_apito(ovelha)
     elif(ovelha == 6):
-        if(cacifoOvelha.paredeUp):
-            #caso tenha uma parede em cima, robo vai para cima da ovelha
-            #robo bate, ovelha anada para a esquerda , robo segue
-            #print("17",file=stderr)
+        if(cacifoOvelha.paredeUp):#caso tenha uma parede em cima
+            #robo apita
+            verifica_direcao(direcao)
             Sound.beep()
             return calcula_apito(ovelha)
-        elif(cacifoOvelha.paredeLeft):
-            #caso tenha uma parede a esquerda, robo vai para a esquerda da ovelha
-            #robo bate, ovelha anda para cima 2x, robo segue
+        elif(cacifoOvelha.paredeLeft):#caso tenha uma parede a esquerda
+            #robo bate
             verifica_direcao(direcao)
             braco.on_for_degrees(100,360) #mexe o braço para baixo
             sleep(1)
             braco.on_for_degrees(100,-360) #mexe o braço para cima
             return calcula_braco(posicao_atualizada_ovelha)
-        else: #caso sem paredes
-            #robo vai para a esquerda da ovelha
-            #robo apita, ovelha sobe, robo segue
-            #print("18",file=stderr)
+        else:
+            #robo apita
+            verifica_direcao(direcao)
             Sound.beep()
             return calcula_apito(ovelha)
     elif(ovelha == 1):#canto inferior esquerdo
-        if(cacifoOvelha.paredeUp):
-            #caso tenha uma parede em cima, robo vai para cima da ovelha
-            #robo bate, ovelha anda para a direita 2x, robo segue
+        if(cacifoOvelha.paredeUp):#caso tenha uma parede em cima
+            #robo bate
             verifica_direcao(direcao)
             braco.on_for_degrees(100,360) #mexe o braço para baixo
             sleep(1)
             braco.on_for_degrees(100,-360) #mexe o braço para cima
             return calcula_braco(posicao_atualizada_ovelha)
-        #elif(cacifoOvelha.paredeRight):
-            #caso tenha uma parede a direita, robo vai para a direita da ovelha
-            #robo apita, ovelha anda para cima, robo segue
-            #Sound.beep()
-            #return calcula_apito(ovelha)
-        else: #caso sem paredes
-            #robo vai para a direita da ovelha
-            #robo apita, ovelha sobe, robo segue
-            #print("19",file=stderr)
+        else: 
+            #robo apita
+            verifica_direcao(direcao)
             Sound.beep()
             return calcula_apito(ovelha)
-
-    #CASOS QUE A OVELHA ESTA NO LIMITE MAS FAZ UM L
-    #7,2,5,12,25,32
     
     #CASOS LIMITES
     elif(ovelha in [2,3,4,5]):#limnite inferior
-        if(cacifoOvelha.paredeUp and cacifoOvelha.paredeLeft):
-            #robo vai para cima da ovelha
-            #robo apita, ovelha anda para a direita, robo segue
-            #print("20",file=stderr)
+        if(cacifoOvelha.paredeUp and cacifoOvelha.paredeLeft):#caso parede em cima e a esquerda
+            #robo apita
+            verifica_direcao(direcao)
             Sound.beep()
             return calcula_apito(ovelha)
-        elif(cacifoOvelha.paredeUp and cacifoOvelha.paredeRight):
-            #robo vai para cima
-            #robo apita, ovelha anda para a esquerda, robo segue
-            #print("21",file=stderr)
+        elif(cacifoOvelha.paredeUp and cacifoOvelha.paredeRight):#caso parede em cima e a direita
+            #robo apita
+            verifica_direcao(direcao)
             Sound.beep()
             return calcula_apito(ovelha)
-        elif(cacifoOvelha.paredeLeft or cacifoOvelha.paredeRight):
-            #robo vai para a direita ou esquerda (por esta ordem)
-            #robo apita, ovelha sobe para cima, robo segue
-            #print("23",file=stderr)
+        elif(cacifoOvelha.paredeLeft or cacifoOvelha.paredeRight):#caso parede a esquerda OU parede a direita (funcionam iguais)
+            #robo apita
+            verifica_direcao(direcao)
             Sound.beep()
             return calcula_apito(ovelha)
         else:#caso nao tenha paredes e esteja no limite inferior
-            #robo vai para a esquerda da ovelha
-            #robo apita, ovelha anda para a direita, robo segue
-            #print("24",file=stderr)
+            #robo apita
+            verifica_direcao(direcao)
             Sound.beep()
             return calcula_apito(ovelha)
         
     elif(ovelha in {12,18,24,30}):#limite direito
         if(cacifoOvelha.paredeUp and cacifoOvelha.paredeLeft):
-            #robo vai para a esquerda da ovelha
-            #robo apita, ovelha desce, robo segue
-            #print("25",file=stderr)
+            #robo apita
+            verifica_direcao(direcao)
             Sound.beep()
             return calcula_apito(ovelha)
         elif(cacifoOvelha.paredeDown and cacifoOvelha.paredeLeft):
-            #robo vai para a esquerda da ovelha
-            #robo bate, ovelha sobe 2x, robo segue
+            #robo bate
             verifica_direcao(direcao)
             braco.on_for_degrees(100,360) #mexe o braço para baixo
             sleep(1)
             braco.on_for_degrees(100,-360) #mexe o braço para cima
             return calcula_braco(posicao_atualizada_ovelha)
         elif(cacifoOvelha.paredeDown):
-            #robo vai para a esquerda da ovelha
-            #robo apita, ovelha sobe, robo segue
-            #print("26",file=stderr)
+            #robo apita
+            verifica_direcao(direcao)
             Sound.beep()
             return calcula_apito(ovelha)
         elif(cacifoOvelha.paredeUp):
-            #robo vai para baixo da ovelha
-            #robo apita, ovelha vai para a esquerda, robo segue
-            #print("27",file=stderr)
+            #robo apita
+            verifica_direcao(direcao)
             Sound.beep()
             return calcula_apito(ovelha)
         else:#sem paredes a volta da ovelha ou so uma parede a esquerda
-            #robo vai para baixo da ovelha
-            #robo apita, ovelha sobe, robo segue
-            #print("28",file=stderr)
+            #robo apita
+            verifica_direcao(direcao)
             Sound.beep()
             return calcula_apito(ovelha)
 
     elif(ovelha in [7,13,19,25]):#limite esquerdo
         if(cacifoOvelha.paredeRight and cacifoOvelha.paredeDown):
-            #robo vai para a direita
-            #robo usa braço, ovelha sobe 2x, robo segue
+            #robo usa braço
             verifica_direcao(direcao)
             braco.on_for_degrees(100,360) #mexe o braço para baixo
             sleep(1)
             braco.on_for_degrees(100,-360) #mexe o braço para cima
             return calcula_braco(posicao_atualizada_ovelha)
         elif(cacifoOvelha.paredeRight and cacifoOvelha.paredeUp):
-            #robo vai para a direita
-            #robo usa braço, ovelha desce 2x, robo segue
+            #robo usa braço
             verifica_direcao(direcao)
             braco.on_for_degrees(100,360) #mexe o braço para baixo
             sleep(1)
             braco.on_for_degrees(100,-360) #mexe o braço para cima
             return calcula_braco(posicao_atualizada_ovelha)
-        #elif(cacifoOvelha.paredeUp or cacifoOvelha.paredeDown):
-            #robo vai para baixo     robo vai para cima
-            #robo apita, ovelha anda para a direita, robo segue
-            #print("TESTE 13",file=stderr)
-            #Sound.beep()
-            #return calcula_apito(ovelha)
-        else: #casos sem paredes ou so uma parede a direita
-            #robo vai para baixo
-            #robo apita, ovelha sobe, robo segue
-            #print("1",file=stderr)
+        else:
+            #robo apita
+            verifica_direcao(direcao)
             Sound.beep()
             return calcula_apito(ovelha)
 
     elif(ovelha in [32,33,34,35]):#limite superior
         if(cacifoOvelha.paredeDown and cacifoOvelha.paredeRight):
-            #robo vai para baixo
-            #robo bate, ovelha anda para a esquerda 2x, robo segue
+            #robo bate
             verifica_direcao(direcao)
             braco.on_for_degrees(100,360) #mexe o braço para baixo
             sleep(1)
             braco.on_for_degrees(100,-360) #mexe o braço para cima
             return calcula_braco(posicao_atualizada_ovelha)
         elif(cacifoOvelha.paredeDown and cacifoOvelha.paredeLeft):
-            #robo vai para baixo
-            #robo bate, ovelha anda para a direita 2x, robo segue
+            #robo bate
             verifica_direcao(direcao)
             braco.on_for_degrees(100,360) #mexe o braço para baixo
             sleep(1)
             braco.on_for_degrees(100,-360) #mexe o braço para cima
             return calcula_braco(posicao_atualizada_ovelha)
         elif(cacifoOvelha.paredeRight):
-            #robo vai para a esquerda
-            #robo apita, ovelha anda para baixo, robo segue
-            #print("2",file=stderr)
+            #robo apita
             verifica_direcao(direcao)
             Sound.beep()
             return calcula_apito(ovelha)
-        else:#caso sem paredes, apenas 1 parede a esquerda, ou apenas 1 parede em baixo
-            #robo vai para a esquerda   #robo vai para baixo    #robo vai para a esquerda
-            #robo apita, ovelha anda para a direita, robo segue
+        else:
+            #robo apita
             verifica_direcao(direcao)
-            #print("3",file=stderr)
             Sound.beep()
             return calcula_apito(ovelha)
 
     #casos 3 paredes com a de cima e baixo fixas
     elif(cacifoOvelha.paredeUp and cacifoOvelha.paredeDown and (cacifoOvelha.paredeRight or cacifoOvelha.paredeLeft)):
-        #neste caso o robo iria estar em baixo da ovelha
         if(cacifoOvelha.paredeLeft):#caso a parede livre seja a direita
             #caso o robo n tenha uma parede a direita
-            #o robo iria apitar e a ovelha ia andar para a direita e o robo vai seguir
-            #como o beep é a volta do robo n intressa a direçao para onde esta virado
+            #o robo iria apitar
             verifica_direcao(direcao)
-            #print("4",file=stderr)
             Sound.beep()
             return calcula_apito(ovelha)
-        #caso o robo n consiga andar para a direita ele perde
         else:#caso a parede livre seja a esquerda
-            #caso o robo nao tenha uma parede a esquerda
-            #o robo iria apitar e a ovelha ia andar para a esquerda e o robo vai seguir
-            #como o beep é a volta do robo n intressa a direçao para onde esta virado
-            coloca_direcao(0)
-            #print("5",file=stderr)
+            #o robo iria apitar
+            verifica_direcao(direcao)
             Sound.beep()
             return calcula_apito(ovelha)
-        #caso o robo n consiga andar para a esquerda ele perde
 
     #casos 3 paredes com as dos lados fixas
     elif(cacifoOvelha.paredeLeft and cacifoOvelha.paredeRight and (cacifoOvelha.paredeDown or cacifoOvelha.paredeUp)):
-        #neste caso o robo iria estar a esquerda da ovelha
         if(cacifoOvelha.paredeDown):#caso a parede livre seja em cima
-            #o robo vai apitar, a ovelha vai andar para cima 
-            #o robo ira andar para cima
-            coloca_direcao(270) 
-            #print("6",file=stderr)
+            #o robo vai apitar
+            verifica_direcao(direcao)
             Sound.beep()
-            #move_robot(0)
             return calcula_apito(ovelha)
         elif(cacifoOvelha.paredeUp):#caso a parede livre esteja em baixo
-            #o robo vai apitar, a ovelha vai andar para baixo 
-            #o robo ira andar para baixo 
-            coloca_direcao(270)
-            #print("7",file=stderr)
+            #o robo vai apitar
+            verifica_direcao(direcao)
             Sound.beep()
             #move_robot(180)
             return calcula_apito(ovelha)
 
     #casos L
     if(cacifoOvelha.paredeLeft and cacifoOvelha.paredeDown):
-        #o robo vai para a direita da ovelha
-        #o robo vai apitar, a ovelha vai subir e o robo vai seguir
-        #o robo anda para cima
-        coloca_direcao(90)
-        #print("8",file=stderr)
+        #o robo vai apitar
+        verifica_direcao(direcao)
         Sound.beep()
-        #move_robot(0)
         return calcula_apito(ovelha)
     elif(cacifoOvelha.paredeLeft and cacifoOvelha.paredeUp):
-        #o robo vai para baixo da ovelha
-        #o robo vai apitar, a ovelha vai para a direita e o robo vai seguir
-        coloca_direcao(0)
-        #print("9",file=stderr)
+        #o robo vai apitar
+        verifica_direcao(direcao)
         Sound.beep()
-        #move_robot(270)
         return calcula_apito(ovelha)
     elif(cacifoOvelha.paredeRight and cacifoOvelha.paredeDown):
-        #o robo vai para a esquerda da ovelha
-        #o robo vai apitar, a ovelha vai para cima e o robo ira seguir
+        #o robo vai apitar
         coloca_direcao(270)
-        #print("10",file=stderr)
+        verifica_direcao(direcao)
         Sound.beep()
-        #move_robot(0)
         return calcula_apito(ovelha)
     elif(cacifoOvelha.paredeRight and cacifoOvelha.paredeUp):
-        #o robo vai para baixo
-        #o robo apita, ovelha vai para a esquerda
-        coloca_direcao(0)
-       # print("11",file=stderr)
+        #o robo apita,
+        verifica_direcao(direcao)
         Sound.beep()
-        #move_robot(90)
         return calcula_apito(ovelha)
     
     #casos 2 paredes paralelas e #casos 1 parede, sao iguais
     elif(cacifoOvelha.paredeUp or cacifoOvelha.paredeDown):
-        #vai para a esquerda da ovelha
-        #robo apita ovelha anda para a direita, robo segue
-        coloca_direcao(270)
-        #print("12",file=stderr)
+        #robo apita
+        verifica_direcao(direcao)
         Sound.beep()
-        #move_robot(270)
         return calcula_apito(ovelha)
     elif(cacifoOvelha.paredeRight or cacifoOvelha.paredeLeft):
-        #vai para baixo da ovelha
-        #robo apita ovelha anda para cima, robo segue
-        coloca_direcao(0)
-        #print("13",file=stderr)
+        #robo apita
+        verifica_direcao(direcao)
         Sound.beep()
-        #move_robot(0)
         return calcula_apito(ovelha)
     else:#caso sem paredes
-        #robo vai para baixo da ovelha
-        #robo apita ovelha sobe, robo segue
-        coloca_direcao(0)
-        #print("14",file=stderr)
+        #robo apita 
+        verifica_direcao(direcao)
         Sound.beep()
         return calcula_apito(ovelha)
 
