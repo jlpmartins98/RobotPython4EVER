@@ -2,7 +2,7 @@
 
 
 # from ev3dev2.motor import LargeMotor, OUTPUT_A, OUTPUT_B, SpeedPercent, MoveTank, MediumMotor,SpeedPercent
-from math import inf
+from math import inf, trunc
 from ev3dev2.sensor import INPUT_1, INPUT_2, INPUT_4
 from ev3dev2.sensor.lego import TouchSensor, ColorSensor, UltrasonicSensor
 from ev3dev2.led import Leds
@@ -192,7 +192,7 @@ def algoritmo_A_star(goal,ignoreSheep):
             # custa sempre 1 para andar para qq um dos child pois sao os cacifos adajacentes
             child.custoCaminho += currentNode.custoCaminho + 1
             if(child.numeroCacifo in posicao_ovelhas and ignoreSheep == False):
-                child.custoCaminho += 100
+                child.custoCaminho += 1000
             if(child.numeroCacifo < goal):  # calculo da heuristica
                 child.distanciaOjetivo = goal - child.numeroCacifo
             if(child.numeroCacifo >= goal):  # calculo da heuristica
@@ -539,102 +539,134 @@ def calcula_braco(posicao_ovelha):
             if(cacifo_ovelha.paredeRight == True): # Se tiver parede ao lado direito da ovelha (ovelha vai para a esquerda) -1 ||
                 proximo_cacifo = CacifoAtual(posicao_ovelha-1) 
                 if(proximo_cacifo.paredeLeft == True or proximo_cacifo.numeroCacifo in [1,7,13,19,25,31]): # Depois do primeiro movimento tem parede à esquerda (ovelha desce) -6
+                    atualiza_ovelha(posicao_ovelha,-7)
                     return posicao_ovelha-7
                 else: # Não tem parede à esquerda, ovelha anda 2 casas para esquerda
+                    atualiza_ovelha(posicao_ovelha,-2)
                     return posicao_ovelha-2
             else: # Não tem parede do lado direito (ovelha anda para a direita) +1
                 proximo_cacifo = CacifoAtual(posicao_ovelha+1)
                 if(proximo_cacifo.paredeRight == True): # Depois do primeiro movimento tem parede à direita (ovelha desce) -6
+                    atualiza_ovelha(posicao_ovelha,-5)
                     return posicao_ovelha-5
                 else: # Não tem parede à direita, ovelha anda 2 casas para a direita
+                    atualiza_ovelha(posicao_ovelha,2)
                     return posicao_ovelha+2 
         elif(cacifo_ovelha.numeroCacifo == 31): # Vai para a direita, supostamente nunca chamará com parede a impedir o movimento para a direita +1
             proximo_cacifo = CacifoAtual(posicao_ovelha+1)
             if(proximo_cacifo.paredeRight == True): # Depois do primeiro movimento tem parede à direita (ovelha desce) -6
+                atualiza_ovelha(posicao_ovelha,-5)
                 return posicao_ovelha-5
             else: # Não tem parede à direita, ovelha anda 2 casas para a direita
+                atualiza_ovelha(posicao_ovelha,2)
                 return posicao_ovelha+2 
         elif(cacifo_ovelha.paredeUp == True): # Se tiver parede por cima da ovelha e a ovelha não está no limite superior
             if(cacifo_ovelha.paredeRight==True or cacifo_ovelha.numeroCacifo in [6,12,18,24,30]): # Se tiver parede em cima e à direita ou na coluna da direita ( anda para a esquerda) -1
                 proximo_cacifo = CacifoAtual(posicao_ovelha-1)
                 if(proximo_cacifo.paredeUp == True):# Parede a impedir subir
                     if(proximo_cacifo.paredeLeft == True): # Parede a impedir subir e ir para a esquerda (ovelha desce) -6
+                        atualiza_ovelha(posicao_ovelha,-7)
                         return posicao_ovelha-7 # Andou para esquerda e baixo
                     else:
+                        atualiza_ovelha(posicao_ovelha,-2)
                         return posicao_ovelha-2 # Andou para esquerda 2 vezes
                 else: # Não tem parede a cima, ela sobe +6
+                    atualiza_ovelha(posicao_ovelha,5)
                     return posicao_ovelha+5 # Andou para esquerda e cima
             else: # Não tem parede à direita, anda para a direita +1
                 proximo_cacifo = CacifoAtual(posicao_ovelha+1)
                 if(proximo_cacifo.paredeUp == True):# Parede a impedir subir
                     if(proximo_cacifo.paredeRight == True): # Parede a impedir subir e ir para a direita (ovelha desce) -6
+                        atualiza_ovelha(posicao_ovelha,-5)
                         return posicao_ovelha-5 # Andou para direita e baixo
                     else:
+                        atualiza_ovelha(posicao_ovelha,2)
                         return posicao_ovelha+2 # Andou para direita 2 vezes
                 else: # não tem parede à cima, ela sobe +6
+                    atualiza_ovelha(posicao_ovelha,7)
                     return posicao_ovelha+7 # Andou para a direita e subiu
         else: # não há parede a cima e não está no limite superior (ovelha sobe) +6
             proximo_cacifo= CacifoAtual(posicao_ovelha+6)
             if(proximo_cacifo.paredeUp == True):
                 if(proximo_cacifo.paredeRight == True or proximo_cacifo.numeroCacifo in [6,12,18,24,30]): # Há parede na direita ou esta na coluna da direita (ovelha anda para a esquerda)
+                    atualiza_ovelha(posicao_ovelha,5)
                     return posicao_ovelha+5 # ovelha subiu e andou para a esquerda
                 else: # Não há parede nem está no limite (ovelha para a direita) +1
+                    atualiza_ovelha(posicao_ovelha,7)
                     return posicao_ovelha+7 # ovelha subiu e andou para a direita
             else: # Não há parede a impedir a subida
+                atualiza_ovelha(posicao_ovelha,12)
                 return posicao_ovelha+12 #ovelha sobe 2 vezes
     elif(informacao.direcao == 90): # Virado para a esquerda
         if(cacifo_ovelha.numeroCacifo in [7,13,19,25]):
             if(cacifo_ovelha.paredeUp == True): # Desce -6
                 proximo_cacifo = CacifoAtual(posicao_ovelha-6)
                 if(proximo_cacifo.paredeDown == True): # direita +1
+                    atualiza_ovelha(posicao_ovelha,-5)
                     return posicao_ovelha -5
                 else:
+                    atualiza_ovelha(posicao_ovelha,-12)
                     return posicao_ovelha -12
             else: # Sobe +6
                 proximo_cacifo = CacifoAtual(posicao_ovelha+6)
                 if(proximo_cacifo.paredeUp == True or proximo_cacifo.numeroCacifo ==31): # direita +1
+                    atualiza_ovelha(posicao_ovelha,7)
                     return posicao_ovelha +7
                 else:
+                    atualiza_ovelha(posicao_ovelha,12)
                     return posicao_ovelha +12
         elif(cacifo_ovelha.numeroCacifo ==1):
             proximo_cacifo = CacifoAtual(posicao_ovelha+6) # sobe +6
             if(proximo_cacifo.paredeUp == True): # direita +1
+                atualiza_ovelha(posicao_ovelha,7)
                 return posicao_ovelha +7
             else: # sobe +6
+                atualiza_ovelha(posicao_ovelha,12)
                 return posicao_ovelha +12
         elif(cacifo_ovelha.numeroCacifo==31):
             proximo_cacifo = CacifoAtual(posicao_ovelha-6) # desce -6
             if(proximo_cacifo.paredeDown == True): # direita +1
+                atualiza_ovelha(posicao_ovelha,-5)
                 return posicao_ovelha -5
             else: # desce -6
+                atualiza_ovelha(posicao_ovelha,-12)
                 return posicao_ovelha -12
         elif(cacifo_ovelha.paredeLeft == True):
             if(cacifo_ovelha.paredeUp == True or cacifo_ovelha.numeroCacifo in [31,32,33,34,35,36]): # baixo -6
                 proximo_cacifo = CacifoAtual(posicao_ovelha-6)
                 if(proximo_cacifo.paredeLeft == True): # desce ou direita
                     if(proximo_cacifo.paredeDown == True or proximo_cacifo.numeroCacifo in [1,2,3,4,5,6]): # direita +1
+                        atualiza_ovelha(posicao_ovelha,-5)
                         return posicao_ovelha -5
                     else:# desce -6
+                        atualiza_ovelha(posicao_ovelha,-12)
                         return posicao_ovelha -12
                 else: # esquerda -1
+                    atualiza_ovelha(posicao_ovelha,-7)
                     return posicao_ovelha -7
             else: # sobe +6
                 proximo_cacifo = CacifoAtual(posicao_ovelha +6)
                 if(proximo_cacifo.paredeLeft == True): # sobe ou direita
                     if(proximo_cacifo.paredeUp == True or proximo_cacifo.numeroCacifo in [31,32,33,34,35,36]):
+                        atualiza_ovelha(posicao_ovelha,7)
                         return posicao_ovelha +7 # direita +1
                     else: # sobe +6
+                        atualiza_ovelha(posicao_ovelha,12)
                         return posicao_ovelha+12
                 else:# esquerda -1
+                    atualiza_ovelha(posicao_ovelha,5)
                     return posicao_ovelha+5
         else: # andou para a esquerda -1
             proximo_cacifo = CacifoAtual(posicao_ovelha-1)
             if(proximo_cacifo.paredeLeft == True or proximo_cacifo.numeroCacifo in [1,7,13,19,25,31]):
                 if(proximo_cacifo.paredeUp==True or proximo_cacifo.numeroCacifo == 31):
+                    atualiza_ovelha(posicao_ovelha,-7)
                     return posicao_ovelha-7 # desce -6
                 else:
+                    atualiza_ovelha(posicao_ovelha,5)
                     return posicao_ovelha +5 # sobe +6
             else:
+                atualiza_ovelha(posicao_ovelha,-2)
                 return posicao_ovelha -2 # esquerda -1
     
     elif(informacao.direcao == 180): # Virado para baixo
@@ -642,102 +674,134 @@ def calcula_braco(posicao_ovelha):
             if(cacifo_ovelha.paredeLeft == True): # direta +1
                 proximo_cacifo = CacifoAtual(posicao_ovelha+1)
                 if(proximo_cacifo.paredeRight == True or proximo_cacifo ==6): # Sobe +6
+                    atualiza_ovelha(posicao_ovelha,7)
                     return posicao_ovelha +7
                 else: # direita +1
+                    atualiza_ovelha(posicao_ovelha,2)
                     return posicao_ovelha +2
             else: # esquerda -1
                 proximo_cacifo = CacifoAtual(posicao_ovelha-1)
                 if(proximo_cacifo.paredeLeft == True or proximo_cacifo.numeroCacifo ==1): # sobe +1
+                    atualiza_ovelha(posicao_ovelha,5)
                     return posicao_ovelha +5
                 else:
+                    atualiza_ovelha(posicao_ovelha,-2)
                     return posicao_ovelha -2
         elif(cacifo_ovelha.numeroCacifo ==1):
             proximo_cacifo = CacifoAtual(posicao_ovelha+1) # direita +1
             if(proximo_cacifo.paredeRight == True): # sobe +6
+                atualiza_ovelha(posicao_ovelha,7)
                 return posicao_ovelha +7
             else: # direita +1
+                atualiza_ovelha(posicao_ovelha,2)
                 return posicao_ovelha +2
         elif(cacifo_ovelha.numeroCacifo==6):
             proximo_cacifo = CacifoAtual(posicao_ovelha-1) # esquerda -1
             if(proximo_cacifo.paredeLeft == True): # sobe +6
+                atualiza_ovelha(posicao_ovelha,5)
                 return posicao_ovelha +5
             else: # esquerda -1
+                atualiza_ovelha(posicao_ovelha,-2)
                 return posicao_ovelha -2
         elif(cacifo_ovelha.paredeDown == True):
             if(cacifo_ovelha.paredeLeft == True or cacifo_ovelha.numeroCacifo in [1,7,13,19,25,31]): # direita +1
                 proximo_cacifo = CacifoAtual(posicao_ovelha+1)
                 if(proximo_cacifo.paredeDown == True): # sobe ou esquerda
                     if(proximo_cacifo.paredeRight == True or proximo_cacifo.numeroCacifo in [6,12,18,24,30,36]): # sobe +6
+                        atualiza_ovelha(posicao_ovelha,7)
                         return posicao_ovelha +7 # sobe +6
                     else:# direita -1
+                        atualiza_ovelha(posicao_ovelha,2)
                         return posicao_ovelha +2
                 else: # baixo -6
+                    atualiza_ovelha(posicao_ovelha,-5)
                     return posicao_ovelha -5
             else: # esquerda -1
                 proximo_cacifo = CacifoAtual(posicao_ovelha -1)
                 if(proximo_cacifo.paredeDown == True): # sobe ou esquerda
                     if(proximo_cacifo.paredeLeft == True or proximo_cacifo.numeroCacifo in [1,7,13,19,25,31]):
+                        atualiza_ovelha(posicao_ovelha,5)
                         return posicao_ovelha +5 # sobe +6
                     else: # esquerda -1
+                        atualiza_ovelha(posicao_ovelha,-2)
                         return posicao_ovelha-2
                 else:# desce -6
+                    atualiza_ovelha(posicao_ovelha,-7)
                     return posicao_ovelha-7
         else: # andou para a baixo -6
             proximo_cacifo = CacifoAtual(posicao_ovelha-6)
             if(proximo_cacifo.paredeDown == True or proximo_cacifo.numeroCacifo in [1,2,3,4,5,6]):
                 if(proximo_cacifo.paredeLeft==True or proximo_cacifo.numeroCacifo == 1):
+                    atualiza_ovelha(posicao_ovelha,-5)
                     return posicao_ovelha-5 # direita +1
                 else:
+                    atualiza_ovelha(posicao_ovelha,-7)
                     return posicao_ovelha -7 # esquerda -1
             else:
+                atualiza_ovelha(posicao_ovelha,-12)
                 return posicao_ovelha -12 # baixo -6
     elif(informacao.direcao == 270): # Virado para a direita
         if(cacifo_ovelha.numeroCacifo in [12,18,24,30]):
             if(cacifo_ovelha.paredeDown == True): # Sobe +6
                 proximo_cacifo = CacifoAtual(posicao_ovelha+6)
                 if(proximo_cacifo.paredeUp == True): # Esquerda -1
+                    atualiza_ovelha(posicao_ovelha,5)
                     return posicao_ovelha +5
                 else:
+                    atualiza_ovelha(posicao_ovelha,12)
                     return posicao_ovelha +12
             else: # desce -6
                 proximo_cacifo = CacifoAtual(posicao_ovelha-6)
                 if(proximo_cacifo.paredeDown == True or proximo_cacifo.numeroCacifo ==6): # esquerda -1
+                    atualiza_ovelha(posicao_ovelha,-7)
                     return posicao_ovelha -7
                 else:
+                    atualiza_ovelha(posicao_ovelha,-12)
                     return posicao_ovelha -12
         elif(cacifo_ovelha.numeroCacifo ==6):
             proximo_cacifo = CacifoAtual(posicao_ovelha+6) # sobe +6
             if(proximo_cacifo.paredeUp == True): # esquerda -1
+                atualiza_ovelha(posicao_ovelha,5)
                 return posicao_ovelha +5
             else: # sobe +6
+                atualiza_ovelha(posicao_ovelha,12)
                 return posicao_ovelha +12
         elif(cacifo_ovelha.paredeRight == True):
             if(cacifo_ovelha.paredeDown == True or cacifo_ovelha.numeroCacifo in [1,2,3,4,5,6]): # sobe +6
                 proximo_cacifo = CacifoAtual(posicao_ovelha+6)
                 if(proximo_cacifo.paredeRight == True): # Sobe ou esquerda
                     if(proximo_cacifo.paredeUp == True or proximo_cacifo.numeroCacifo in [31,32,33,34,35]): # direita +1
+                        atualiza_ovelha(posicao_ovelha,5)
                         return posicao_ovelha +5 # esquerda -1
                     else:# sobe +6
+                        atualiza_ovelha(posicao_ovelha,12)
                         return posicao_ovelha +12
                 else: # direita +1
+                    atualiza_ovelha(posicao_ovelha,7)
                     return posicao_ovelha +7
             else: # desce -6
                 proximo_cacifo = CacifoAtual(posicao_ovelha -6)
                 if(proximo_cacifo.paredeRight == True): # desce ou esquerda
                     if(proximo_cacifo.paredeDown == True or proximo_cacifo.numeroCacifo in [1,2,3,4,5,6]):
+                        atualiza_ovelha(posicao_ovelha,-7)
                         return posicao_ovelha -7 # esquerda -1
                     else: # desce -6
+                        atualiza_ovelha(posicao_ovelha,-12)
                         return posicao_ovelha-12
                 else:# direita +1
+                    atualiza_ovelha(posicao_ovelha,-5)
                     return posicao_ovelha-5
         else: # andou para a direta +1
             proximo_cacifo = CacifoAtual(posicao_ovelha+1)
             if(proximo_cacifo.paredeRight == True or proximo_cacifo.numeroCacifo in [6,12,18,24,30,36]):
                 if(proximo_cacifo.paredeDown==True or proximo_cacifo.numeroCacifo == 6):
+                    atualiza_ovelha(posicao_ovelha,7)
                     return posicao_ovelha+7 # sobe +6
                 else:
+                    atualiza_ovelha(posicao_ovelha,-5)
                     return posicao_ovelha -5 # desce -6
             else:
+                atualiza_ovelha(posicao_ovelha,2)
                 return posicao_ovelha +2 # direita -1
 
 
@@ -746,6 +810,8 @@ def calcula_braco(posicao_ovelha):
 #podemos usar esta funçao num ciclo ate a posiçao da ovelha ser 36, esta funçao juntamente com o calcula inicio nas posiçoes atualizadas+ a funçao q leva o robo para a posiçao do calcula_inicio
 def interage_ovelha(ovelha):
     #variavel para verificar se a ovelha tem paredes a volta
+    if(verifica_adjacentes(posicao_ovelhas[0],posicao_ovelhas[1]) == True):
+        return trata_ovelhas_adjacentes_robot
     cacifoRobot = CacifoAtual(informacao.posicao)
     cacifoOvelha = CacifoAtual(ovelha)
     posicao_atualizada_ovelha = ovelha
@@ -756,7 +822,7 @@ def interage_ovelha(ovelha):
             #robo bate, ovelha anda para a direita, robo segue
             Sound.beep()
             #move_robot(270)
-            return posicao_atualizada_ovelha+1
+            return calcula_apito(ovelha)
         if(cacifoOvelha.paredeRight):
             #caso tenha uma parede a direita, o robo vai para a direita da ovelha
             #robo bate, ovelha anda para baixo 2x, robo segue
@@ -768,13 +834,13 @@ def interage_ovelha(ovelha):
         else:#caso sem paredes
             #robo apita, ovelha anda para a direita, robo segue
             Sound.beep()
-            return posicao_atualizada_ovelha+1
+            return calcula_apito(ovelha)
     if(ovelha == 6):
         if(cacifoOvelha.paredeUp):
             #caso tenha uma parede em cima, robo vai para cima da ovelha
             #robo bate, ovelha anada para a esquerda , robo segue
             Sound.beep()
-            return posicao_atualizada_ovelha-1
+            return calcula_apito(ovelha)
         if(cacifoOvelha.paredeLeft):
             #caso tenha uma parede a esquerda, robo vai para a esquerda da ovelha
             #robo bate, ovelha anda para cima 2x, robo segue
@@ -787,7 +853,7 @@ def interage_ovelha(ovelha):
             #robo vai para a esquerda da ovelha
             #robo apita, ovelha sobe, robo segue
             Sound.beep()
-            return posicao_atualizada_ovelha+6
+            return calcula_apito(ovelha)
     if(ovelha == 1):#canto inferior esquerdo
         if(cacifoOvelha.paredeUp):
             #caso tenha uma parede em cima, robo vai para cima da ovelha
@@ -801,12 +867,12 @@ def interage_ovelha(ovelha):
             #caso tenha uma parede a direita, robo vai para a direita da ovelha
             #robo apita, ovelha anda para cima, robo segue
             Sound.beep()
-            return posicao_atualizada_ovelha+6
+            return calcula_apito(ovelha)
         else: #caso sem paredes
             #robo vai para a direita da ovelha
             #robo apita, ovelha sobe, robo segue
             Sound.beep()
-            return posicao_atualizada_ovelha+6
+            return calcula_apito(ovelha)
 
     #CASOS QUE A OVELHA ESTA NO LIMITE MAS FAZ UM L
     #7,2,5,12,25,32
@@ -817,29 +883,29 @@ def interage_ovelha(ovelha):
             #robo vai para cima da ovelha
             #robo apita, ovelha anda para a direita, robo segue
             Sound.beep()
-            return posicao_atualizada_ovelha+1
+            return calcula_apito(ovelha)
         elif(cacifoOvelha.paredeUp and cacifoOvelha.paredeRight):
             #robo vai para cima
             #robo apita, ovelha anda para a esquerda, robo segue
             Sound.beep()
-            return posicao_atualizada_ovelha-1
+            return calcula_apito(ovelha)
         elif(cacifoOvelha.paredeLeft or cacifoOvelha.paredeRight):
             #robo vai para a direita ou esquerda (por esta ordem)
             #robo apita, ovelha sobe para cima, robo segue
             Sound.beep()
-            return posicao_atualizada_ovelha+6
+            return calcula_apito(ovelha)
         else:#caso nao tenha paredes e esteja no limite inferior
             #robo vai para a esquerda da ovelha
             #robo apita, ovelha anda para a direita, robo segue
             Sound.beep()
-            return posicao_atualizada_ovelha+1
+            return calcula_apito(ovelha)
         
     if(ovelha in {12,18,24,30}):#limite direito
         if(cacifoOvelha.paredeUp and cacifoOvelha.paredeLeft):
             #robo vai para a esquerda da ovelha
             #robo apita, ovelha desce, robo segue
             Sound.beep()
-            return posicao_atualizada_ovelha-6
+            return calcula_apito(ovelha)
         if(cacifoOvelha.paredeDown and cacifoOvelha.paredeLeft):
             #robo vai para a esquerda da ovelha
             #robo bate, ovelha sobe 2x, robo segue
@@ -852,17 +918,17 @@ def interage_ovelha(ovelha):
             #robo vai para a esquerda da ovelha
             #robo apita, ovelha sobe, robo segue
             Sound.beep()
-            return posicao_atualizada_ovelha+6
+            return calcula_apito(ovelha)
         if(cacifoOvelha.paredeUp):
             #robo vai para baixo da ovelha
             #robo apita, ovelha vai para a esquerda, robo segue
             Sound.beep()
-            return posicao_atualizada_ovelha-1
+            return calcula_apito(ovelha)
         else:#sem paredes a volta da ovelha ou so uma parede a esquerda
             #robo vai para baixo da ovelha
             #robo apita, ovelha sobe, robo segue
             Sound.beep()
-            return posicao_atualizada_ovelha+6
+            return calcula_apito(ovelha)
 
     if(ovelha in [7,13,19,25]):#limite esquerdo
         if(cacifoOvelha.paredeRight and cacifoOvelha.paredeDown):
@@ -885,12 +951,13 @@ def interage_ovelha(ovelha):
             #robo vai para baixo     robo vai para cima
             #robo apita, ovelha anda para a direita, robo segue
             Sound.beep()
-            return posicao_atualizada_ovelha+1
+            return calcula_apito(ovelha)
         else: #casos sem paredes ou so uma parede a direita
             #robo vai para baixo
             #robo apita, ovelha sobe, robo segue
+            print("TESTE",file=stderr)
             Sound.beep()
-            return posicao_atualizada_ovelha+6
+            return calcula_apito(ovelha)
 
     if(ovelha in [32,33,34,35]):#limite superior
         if(cacifoOvelha.paredeDown and cacifoOvelha.paredeRight):
@@ -914,7 +981,7 @@ def interage_ovelha(ovelha):
             #robo apita, ovelha anda para baixo, robo segue
             coloca_direcao(270)
             Sound.beep()
-            return posicao_atualizada_ovelha-6
+            return calcula_apito(ovelha)
         else:#caso sem paredes, apenas 1 parede a esquerda, ou apenas 1 parede em baixo
             #robo vai para a esquerda   #robo vai para baixo    #robo vai para a esquerda
             #robo apita, ovelha anda para a direita, robo segue
@@ -923,7 +990,7 @@ def interage_ovelha(ovelha):
             elif(cacifoRobot.numeroCacifo+1 == ovelha):
                 coloca_direcao(270)
             Sound.beep()
-            return calcula_braco(posicao_atualizada_ovelha)
+            return calcula_apito(ovelha)
 
     #casos 3 paredes com a de cima e baixo fixas
     if(cacifoOvelha.paredeUp and cacifoOvelha.paredeDown and (cacifoOvelha.paredeRight or cacifoOvelha.paredeLeft)):
@@ -936,7 +1003,7 @@ def interage_ovelha(ovelha):
             Sound.beep()
             #move_robot(270)
             coloca_direcao(0)
-            return posicao_atualizada_ovelha+1
+            return calcula_apito(ovelha)
         #caso o robo n consiga andar para a direita ele perde
         else:#caso a parede livre seja a esquerda
             #caso o robo nao tenha uma parede a esquerda
@@ -946,7 +1013,7 @@ def interage_ovelha(ovelha):
             Sound.beep()
             #move_robot(90)
             coloca_direcao(0)
-            return posicao_atualizada_ovelha-1
+            return calcula_apito(ovelha)
         #caso o robo n consiga andar para a esquerda ele perde
 
     #casos 3 paredes com as dos lados fixas
@@ -958,14 +1025,14 @@ def interage_ovelha(ovelha):
             coloca_direcao(270) 
             Sound.beep()
             #move_robot(0)
-            return posicao_atualizada_ovelha+6
+            return calcula_apito(ovelha)
         if(cacifoOvelha.paredeUp):#caso a parede livre esteja em baixo
             #o robo vai apitar, a ovelha vai andar para baixo 
             #o robo ira andar para baixo 
             coloca_direcao(270)
             Sound.beep()
             #move_robot(180)
-            return posicao_atualizada_ovelha-6
+            return calcula_apito(ovelha)
 
     #casos L
     if(cacifoOvelha.paredeLeft and cacifoOvelha.paredeDown):
@@ -975,28 +1042,28 @@ def interage_ovelha(ovelha):
         coloca_direcao(90)
         Sound.beep()
         #move_robot(0)
-        return posicao_atualizada_ovelha+6
+        return calcula_apito(ovelha)
     if(cacifoOvelha.paredeLeft and cacifoOvelha.paredeUp):
         #o robo vai para baixo da ovelha
         #o robo vai apitar, a ovelha vai para a direita e o robo vai seguir
         coloca_direcao(0)
         Sound.beep()
         #move_robot(270)
-        return posicao_atualizada_ovelha+1
+        return calcula_apito(ovelha)
     if(cacifoOvelha.paredeRight and cacifoOvelha.paredeDown):
         #o robo vai para a esquerda da ovelha
         #o robo vai apitar, a ovelha vai para cima e o robo ira seguir
         coloca_direcao(270)
         Sound.beep()
         #move_robot(0)
-        return posicao_atualizada_ovelha+6
+        return calcula_apito(ovelha)
     if(cacifoOvelha.paredeRight and cacifoOvelha.paredeUp):
         #o robo vai para baixo
         #o robo apita, ovelha vai para a esquerda
         coloca_direcao(0)
         Sound.beep()
         #move_robot(90)
-        return posicao_atualizada_ovelha-1
+        return calcula_apito(ovelha)
     
     #casos 2 paredes paralelas e #casos 1 parede, sao iguais
     if(cacifoOvelha.paredeUp or cacifoOvelha.paredeDown):
@@ -1005,27 +1072,105 @@ def interage_ovelha(ovelha):
         coloca_direcao(270)
         Sound.beep()
         #move_robot(270)
-        return posicao_atualizada_ovelha+1
+        return calcula_apito(ovelha)
     if(cacifoOvelha.paredeRight or cacifoOvelha.paredeLeft):
         #vai para baixo da ovelha
         #robo apita ovelha anda para cima, robo segue
         coloca_direcao(0)
         Sound.beep()
         #move_robot(0)
-        return posicao_atualizada_ovelha+6
+        return calcula_apito(ovelha)
     else:#caso sem paredes
         #robo vai para baixo da ovelha
         #robo apita ovelha sobe, robo segue
         coloca_direcao(0)
         Sound.beep()
-        return posicao_atualizada_ovelha+6
+        return calcula_apito(ovelha)
 
-
+def calcula_apito(posicao_ovelha):
+    print("Posicao Robo", file=stderr)
+    print(informacao.posicao,file=stderr)
+    print("Ovelha",file=stderr)
+    print(posicao_ovelha, file=stderr)
+    direcao = informacao.posicao - posicao_ovelha # robot- ovelha
+    #print(direcao)
+    cacifo_ovelha = CacifoAtual(posicao_ovelha)
+    if(direcao == -6 or direcao == -12): # robot por baixo da ovelha
+        if(cacifo_ovelha.numeroCacifo in [31,32,33,34,35,36] or cacifo_ovelha.paredeUp == True):
+            if(cacifo_ovelha.paredeRight == True or cacifo_ovelha.numeroCacifo in [6,12,18,24,30,36]):
+                atualiza_ovelha(posicao_ovelha,-1)
+                return posicao_ovelha -1
+            else:
+                atualiza_ovelha(posicao_ovelha,1)
+                return posicao_ovelha +1
+        else:
+            atualiza_ovelha(posicao_ovelha,6)
+            return posicao_ovelha +6        
+    elif(direcao == 6 or direcao ==12): # robot por cima
+        if(cacifo_ovelha.numeroCacifo in [1,2,3,4,5,6] or cacifo_ovelha.paredeDown == True):
+            if(cacifo_ovelha.paredeLeft == True or cacifo_ovelha.numeroCacifo in [1,7,13,19,25,31]):
+                atualiza_ovelha(posicao_ovelha,1)
+                return posicao_ovelha +1
+            else:
+                atualiza_ovelha(posicao_ovelha,-1)
+                return posicao_ovelha -1
+        else:
+            atualiza_ovelha(posicao_ovelha,-6)
+            return posicao_ovelha -6
+    elif(direcao == 1 or direcao==2): # robot direita
+        if(cacifo_ovelha.numeroCacifo in [1,7,13,19,25,31] or cacifo_ovelha.paredeLeft == True):
+            if(cacifo_ovelha.paredeUp == True or cacifo_ovelha.numeroCacifo in [31,32,33,34,35,36]):
+                atualiza_ovelha(posicao_ovelha,-6)
+                return posicao_ovelha -6
+            else:
+                atualiza_ovelha(posicao_ovelha,6)
+                return posicao_ovelha +6
+        else:
+            atualiza_ovelha(posicao_ovelha,-1)
+            return posicao_ovelha -1
+    elif(direcao == -1 or direcao == -2): # robot esquerda
+        if(cacifo_ovelha.numeroCacifo in [6,12,18,24,30,36] or cacifo_ovelha.paredeRight == True):
+            if(cacifo_ovelha.paredeDown == True or cacifo_ovelha.numeroCacifo in [1,2,3,4,5,6]):
+                atualiza_ovelha(posicao_ovelha,6)
+                return posicao_ovelha +6
+            else:
+                atualiza_ovelha(posicao_ovelha,-6)
+                return posicao_ovelha -6
+        else:
+            atualiza_ovelha(posicao_ovelha,1)
+            return posicao_ovelha +1
 
 
 #funçao que interage com as ovelhas caso estejam ambas adjacentes ao robot (usa o braço nao o apito)
-def trata_ovelhas_adjacentes_robot():
-    return
+def trata_ovelhas_adjacentes_robot(ovelha):
+    #variavel para saber se o robo esta em cima,baixo, esquerda ou direita da ovelha
+    direcao = informacao.posicao - ovelha
+    if(direcao == -6):#robo esta em baixo da ovelha
+        coloca_direcao(0)
+        braco.on_for_degrees(100,360) #mexe o braço para baixo
+        sleep(1)
+        braco.on_for_degrees(100,-360) #mexe o braço para cima
+        return calcula_braco(ovelha)
+    elif(direcao == 6):#robo em cima da ovelha
+        coloca_direcao(180)
+        braco.on_for_degrees(100,360) #mexe o braço para baixo
+        sleep(1)
+        braco.on_for_degrees(100,-360) #mexe o braço para cima
+        return calcula_braco(ovelha)
+    elif(direcao == 1):#robo a direita da ovelha
+        coloca_direcao(90)
+        braco.on_for_degrees(100,360) #mexe o braço para baixo
+        sleep(1)
+        braco.on_for_degrees(100,-360) #mexe o braço para cima
+        return calcula_braco(ovelha)
+    elif(direcao == -1):#robo a esquerda da ovelha
+        coloca_direcao(270)
+        braco.on_for_degrees(100,360) #mexe o braço para baixo
+        sleep(1)
+        braco.on_for_degrees(100,-360) #mexe o braço para cima
+        return calcula_braco(ovelha)
+
+
 
 #funcao que verifica se o robo tem as duas ovelhas adjacentes a ele
 #recebe a posiçao da ovelha que esta guiando e a posiçao da outra ovelha
@@ -1066,15 +1211,18 @@ def verifica_adjacentes(ovelhaGuiando,ovelha2):
             return True
     return False
 
-            
-           
-def calcula_inicio(ovelha,ignora): #Função que vai calcular em que sitio começar e qual o caminho da heurística que recebe qual a ovelha que quer guiar
+                       
+def calcula_inicio(ovelha,ignora,HerdingSheep): #Função que vai calcular em que sitio começar e qual o caminho da heurística que recebe qual a ovelha que quer guiar
+    
+    ignora = False
     k = CacifoAtual(ovelha)
     caminho_ovelha = []
     #posicoes da ovelha 
-    esquerdaOvelha = CacifoAtual(ovelha-1) 
-    #direitaOvelha = CacifoAtual(ovelha+1) 
-    baixoOvelha = CacifoAtual(ovelha-6)
+    esquerdaOvelhaAux = ovelha - 1
+    esquerdaOvelha = CacifoAtual(esquerdaOvelhaAux) 
+    #direitaOvelha = CacifoAtual(ovelha+1)
+    baixoOvelhaAux = ovelha - 6 
+    baixoOvelha = CacifoAtual(baixoOvelhaAux)
     #cimaOvelha = CacifoAtual(ovelha+6) 
     #mudar o caminho do robot manualmente caso o caminho_ovelha seja maior que 2
     #if(len(caminho_ovelha)>=2 and guiando_a_ovelha):
@@ -1152,7 +1300,7 @@ def calcula_inicio(ovelha,ignora): #Função que vai calcular em que sitio come�
         else:
             caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6,ignora)
     
-    else:#Trata dos casos para L's dentro do tabuleiro
+    elif(ovelha in [8,9,10,11,14,15,16,17,20,21,22,23,26,27,28,29]):#Trata dos casos para L's dentro do tabuleiro
         #Casos de 3 paredes 
         if(k.paredeUp and k.paredeDown and (k.paredeLeft or k.paredeRight)): #Para o caso de ter 3 paredes em forma de C para a direita ou para a esquerda nota: usar lógica negada?
                 #caso tenha parede à esquerda/direita do cacifo debaixo da ovelha, mandar para cima da ovelha
@@ -1203,8 +1351,71 @@ def calcula_inicio(ovelha,ignora): #Função que vai calcular em que sitio come�
             caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6,ignora) #vai para a posição abaixo da ovelha porque fica mais perto da cerca para a ovelha
         else:
             caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6,ignora)
+
+    if(HerdingSheep == True and (len(caminho_ovelha) > 3)):
+        print("Caminho < 3",file=stderr) #entra neste if 
+        if(ovelha not in [32,33,34,35,31]):
+            print("Len Up:", file=stderr)
+            caminho_ovelhaUp = algoritmo_A_star(ovelha+6,ignora)
+            print(len(caminho_ovelhaUp),file=stderr)
+        if(ovelha not in [1,2,3,4,5,6]):
+            caminho_ovelhaDown = algoritmo_A_star(ovelha-6,ignora)
+            print("Len Down:", file=stderr)
+            print(len(caminho_ovelhaDown),file=stderr)
+        if(ovelha not in [1,7,13,19,25]):
+            caminho_ovelhaLeft = algoritmo_A_star(ovelha-1,ignora)
+            print("Len Left:", file=stderr)
+            print(len(caminho_ovelhaLeft),file=stderr)
+        if(ovelha not in [6,12,18,24,30]):
+            caminho_ovelhaRight = algoritmo_A_star(ovelha+1,ignora)
+            print("Len Right:", file=stderr)
+            print(len(caminho_ovelhaRight),file=stderr)
+      
+        if(ovelha == 1):
+            if(len(caminho_ovelhaUp) < 4):
+                return caminho_ovelhaUp
+            else:
+                return caminho_ovelhaRight
+
+        if(ovelha == 6):
+            if(len(caminho_ovelhaUp) < 4):
+                return caminho_ovelhaUp
+            else:
+                return caminho_ovelhaLeft
+        
+        if(ovelha == 31):
+            if(len(caminho_ovelhaDown) < 4):
+                return caminho_ovelhaDown
+            else:
+                return caminho_ovelhaRight
+
+        if(ovelha not in [7,13,19,25] and k.paredeLeft == False):
+            print("testeLeft",file=stderr)
+            if(len(caminho_ovelhaLeft) < 4):
+                print("Len Left:", file=stderr)
+                print(len(caminho_ovelhaLeft),file=stderr)
+                return caminho_ovelhaLeft
+        if(ovelha not in [30,24,18,12] and k.paredeRight == False):
+            print("testeRight",file=stderr)
+            if(len(caminho_ovelhaRight) < 4):
+                print("Len Right:", file=stderr)
+                print(len(caminho_ovelhaRight),file=stderr)
+                return caminho_ovelhaRight
+        if(ovelha not in [32,33,34,35] and k.paredeUp == False):
+            print("testeUp",file=stderr)
+            if(len(caminho_ovelhaUp) < 4):
+                print("Len Up:", file=stderr)
+                print(len(caminho_ovelhaUp),file=stderr)
+                return caminho_ovelhaUp
+        if(ovelha not in [2,3,4,5] and k.paredeDown == False):
+            print("testeDown",file=stderr)
+            if(len(caminho_ovelhaDown) < 4):
+                print("Len Down:", file=stderr)
+                print(len(caminho_ovelhaDown),file=stderr)
+                return caminho_ovelhaDown
+    print("Caminho > 3",file=stderr)
     return caminho_ovelha        
-                
+
         
 def escolhe_ovelha(): #função que escolhe qual é a melhor ovelha para começar a ser guiada (para evitar ter de fazer mais ifs na função calcula_inicio() )
     ov1 = CacifoAtual(posicao_ovelhas[0]) #1ª ovelha encontrada
@@ -1246,9 +1457,11 @@ def escolhe_ovelha(): #função que escolhe qual é a melhor ovelha para começa
     return posicao_ovelhas[0] #Devolve a 1ª ovelha por motivo nenhum senão simplesmente ser a primeira que foi encontrada
 
 
-
-def vai_ate_ovelha(ovelha):
-    caminho = calcula_inicio(ovelha,False)
+def vai_ate_ovelha(ovelha,HerdingSheep):
+    caminho = calcula_inicio(ovelha,False,HerdingSheep)
+    #print("Caminho:",file=stderr)
+    #for i in caminho:
+        #print(i.numeroCacifo, file =stderr)
     i=0
     while(i<len(caminho)-1):
         if(caminho[i+1].numeroCacifo-caminho[i].numeroCacifo==6):
@@ -1275,9 +1488,9 @@ def main():
     adiciona_parede(22)
     
     informacao.direcao=0
-    informacao.posicao=11
-    guarda_posicao_ovelha()
     informacao.posicao=26
+    guarda_posicao_ovelha()
+    informacao.posicao=11
     guarda_posicao_ovelha()
     informacao.posicao=1
 
@@ -1310,43 +1523,43 @@ def main():
 
     if (betty == posicao_ovelhas[0]): #escolheu a primeira ovelha
         vitoria = posicao_ovelhas[1]
-        vai_ate_ovelha(betty)
+        vai_ate_ovelha(betty,False)
         posicaoOvelha_Sendo_Guiada = betty
         while(posicaoOvelha_Sendo_Guiada != 36):
             posicaoOvelha_Sendo_Guiada = interage_ovelha(posicaoOvelha_Sendo_Guiada)
             if(posicaoOvelha_Sendo_Guiada != 36):
-                vai_ate_ovelha(posicaoOvelha_Sendo_Guiada)
+                vai_ate_ovelha(posicaoOvelha_Sendo_Guiada,True)
 
-        vai_ate_ovelha(vitoria)
+        vai_ate_ovelha(vitoria,False)
         posicaoOvelha_Sendo_Guiada = vitoria
         while(posicaoOvelha_Sendo_Guiada != 36):
             posicaoOvelha_Sendo_Guiada = interage_ovelha(posicaoOvelha_Sendo_Guiada)
             if(posicaoOvelha_Sendo_Guiada != 36):
-                vai_ate_ovelha(posicaoOvelha_Sendo_Guiada)
+                vai_ate_ovelha(posicaoOvelha_Sendo_Guiada,True)
                 
     elif (posicao_ovelhas[0] == posicao_ovelhas[1]):
-        vai_ate_ovelha(betty)
+        vai_ate_ovelha(betty,False)
         posicaoOvelha_Sendo_Guiada = betty
         while(posicaoOvelha_Sendo_Guiada != 36):
             posicaoOvelha_Sendo_Guiada = interage_ovelha(posicaoOvelha_Sendo_Guiada)
             if(posicaoOvelha_Sendo_Guiada != 36):
-                vai_ate_ovelha(posicaoOvelha_Sendo_Guiada)
+                vai_ate_ovelha(posicaoOvelha_Sendo_Guiada,True)
 
     else:
         vitoria = posicao_ovelhas[0]
-        vai_ate_ovelha(betty)
+        vai_ate_ovelha(betty,False)
         posicaoOvelha_Sendo_Guiada = betty
         while(posicaoOvelha_Sendo_Guiada != 36):
             posicaoOvelha_Sendo_Guiada = interage_ovelha(posicaoOvelha_Sendo_Guiada)
             if(posicaoOvelha_Sendo_Guiada != 36):
-                vai_ate_ovelha(posicaoOvelha_Sendo_Guiada)
+                vai_ate_ovelha(posicaoOvelha_Sendo_Guiada,True)
 
-        vai_ate_ovelha(vitoria)
+        vai_ate_ovelha(vitoria,False)
         posicaoOvelha_Sendo_Guiada = vitoria
         while(posicaoOvelha_Sendo_Guiada != 36):
             posicaoOvelha_Sendo_Guiada = interage_ovelha(posicaoOvelha_Sendo_Guiada)
             if(posicaoOvelha_Sendo_Guiada != 36):
-                vai_ate_ovelha(posicaoOvelha_Sendo_Guiada) 
+                vai_ate_ovelha(posicaoOvelha_Sendo_Guiada,True) 
         
 
 if (__name__ == "__main__"):
