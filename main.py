@@ -821,7 +821,7 @@ def interage_ovelha(ovelha):
         if(cacifoOvelha.paredeDown):
             #caso tenha uma parede em baixo, o robo vai para baixo da ovelha
             #robo bate, ovelha anda para a direita, robo segue
-            print("15",file=stderr)
+            #print("15",file=stderr)
             Sound.beep()
             #move_robot(270)
             return calcula_apito(ovelha)
@@ -835,14 +835,14 @@ def interage_ovelha(ovelha):
             return calcula_braco(posicao_atualizada_ovelha)
         else:#caso sem paredes
             #robo apita, ovelha anda para a direita, robo segue
-            print("16",file=stderr)
+            #print("16",file=stderr)
             Sound.beep()
             return calcula_apito(ovelha)
     elif(ovelha == 6):
         if(cacifoOvelha.paredeUp):
             #caso tenha uma parede em cima, robo vai para cima da ovelha
             #robo bate, ovelha anada para a esquerda , robo segue
-            print("17",file=stderr)
+            #print("17",file=stderr)
             Sound.beep()
             return calcula_apito(ovelha)
         elif(cacifoOvelha.paredeLeft):
@@ -856,7 +856,7 @@ def interage_ovelha(ovelha):
         else: #caso sem paredes
             #robo vai para a esquerda da ovelha
             #robo apita, ovelha sobe, robo segue
-            print("18",file=stderr)
+            #print("18",file=stderr)
             Sound.beep()
             return calcula_apito(ovelha)
     elif(ovelha == 1):#canto inferior esquerdo
@@ -876,7 +876,7 @@ def interage_ovelha(ovelha):
         else: #caso sem paredes
             #robo vai para a direita da ovelha
             #robo apita, ovelha sobe, robo segue
-            print("19",file=stderr)
+            #print("19",file=stderr)
             Sound.beep()
             return calcula_apito(ovelha)
 
@@ -888,25 +888,25 @@ def interage_ovelha(ovelha):
         if(cacifoOvelha.paredeUp and cacifoOvelha.paredeLeft):
             #robo vai para cima da ovelha
             #robo apita, ovelha anda para a direita, robo segue
-            print("20",file=stderr)
+            #print("20",file=stderr)
             Sound.beep()
             return calcula_apito(ovelha)
         elif(cacifoOvelha.paredeUp and cacifoOvelha.paredeRight):
             #robo vai para cima
             #robo apita, ovelha anda para a esquerda, robo segue
-            print("21",file=stderr)
+            #print("21",file=stderr)
             Sound.beep()
             return calcula_apito(ovelha)
         elif(cacifoOvelha.paredeLeft or cacifoOvelha.paredeRight):
             #robo vai para a direita ou esquerda (por esta ordem)
             #robo apita, ovelha sobe para cima, robo segue
-            print("23",file=stderr)
+            #print("23",file=stderr)
             Sound.beep()
             return calcula_apito(ovelha)
         else:#caso nao tenha paredes e esteja no limite inferior
             #robo vai para a esquerda da ovelha
             #robo apita, ovelha anda para a direita, robo segue
-            print("24",file=stderr)
+            #print("24",file=stderr)
             Sound.beep()
             return calcula_apito(ovelha)
         
@@ -914,7 +914,7 @@ def interage_ovelha(ovelha):
         if(cacifoOvelha.paredeUp and cacifoOvelha.paredeLeft):
             #robo vai para a esquerda da ovelha
             #robo apita, ovelha desce, robo segue
-            print("25",file=stderr)
+            #print("25",file=stderr)
             Sound.beep()
             return calcula_apito(ovelha)
         elif(cacifoOvelha.paredeDown and cacifoOvelha.paredeLeft):
@@ -928,19 +928,19 @@ def interage_ovelha(ovelha):
         elif(cacifoOvelha.paredeDown):
             #robo vai para a esquerda da ovelha
             #robo apita, ovelha sobe, robo segue
-            print("26",file=stderr)
+            #print("26",file=stderr)
             Sound.beep()
             return calcula_apito(ovelha)
         elif(cacifoOvelha.paredeUp):
             #robo vai para baixo da ovelha
             #robo apita, ovelha vai para a esquerda, robo segue
-            print("27",file=stderr)
+            #print("27",file=stderr)
             Sound.beep()
             return calcula_apito(ovelha)
         else:#sem paredes a volta da ovelha ou so uma parede a esquerda
             #robo vai para baixo da ovelha
             #robo apita, ovelha sobe, robo segue
-            print("28",file=stderr)
+            #print("28",file=stderr)
             Sound.beep()
             return calcula_apito(ovelha)
 
@@ -970,7 +970,7 @@ def interage_ovelha(ovelha):
         else: #casos sem paredes ou so uma parede a direita
             #robo vai para baixo
             #robo apita, ovelha sobe, robo segue
-            print("1",file=stderr)
+            #print("1",file=stderr)
             Sound.beep()
             return calcula_apito(ovelha)
 
@@ -994,7 +994,7 @@ def interage_ovelha(ovelha):
         elif(cacifoOvelha.paredeRight):
             #robo vai para a esquerda
             #robo apita, ovelha anda para baixo, robo segue
-            print("2",file=stderr)
+            #print("2",file=stderr)
             coloca_direcao(270)
             Sound.beep()
             return calcula_apito(ovelha)
@@ -1005,7 +1005,7 @@ def interage_ovelha(ovelha):
                 coloca_direcao(0)
             elif(cacifoRobot.numeroCacifo+1 == ovelha):
                 coloca_direcao(270)
-            print("3",file=stderr)
+            #print("3",file=stderr)
             Sound.beep()
             return calcula_apito(ovelha)
 
@@ -1017,7 +1017,7 @@ def interage_ovelha(ovelha):
             #o robo iria apitar e a ovelha ia andar para a direita e o robo vai seguir
             #como o beep é a volta do robo n intressa a direçao para onde esta virado
             coloca_direcao(0)
-            print("4",file=stderr)
+            #print("4",file=stderr)
             Sound.beep()
             #move_robot(270)
             coloca_direcao(0)
@@ -1028,7 +1028,7 @@ def interage_ovelha(ovelha):
             #o robo iria apitar e a ovelha ia andar para a esquerda e o robo vai seguir
             #como o beep é a volta do robo n intressa a direçao para onde esta virado
             coloca_direcao(0)
-            print("5",file=stderr)
+            #print("5",file=stderr)
             Sound.beep()
             #move_robot(90)
             coloca_direcao(0)
@@ -1042,7 +1042,7 @@ def interage_ovelha(ovelha):
             #o robo vai apitar, a ovelha vai andar para cima 
             #o robo ira andar para cima
             coloca_direcao(270) 
-            print("6",file=stderr)
+            #print("6",file=stderr)
             Sound.beep()
             #move_robot(0)
             return calcula_apito(ovelha)
@@ -1050,7 +1050,7 @@ def interage_ovelha(ovelha):
             #o robo vai apitar, a ovelha vai andar para baixo 
             #o robo ira andar para baixo 
             coloca_direcao(270)
-            print("7",file=stderr)
+            #print("7",file=stderr)
             Sound.beep()
             #move_robot(180)
             return calcula_apito(ovelha)
@@ -1061,7 +1061,7 @@ def interage_ovelha(ovelha):
         #o robo vai apitar, a ovelha vai subir e o robo vai seguir
         #o robo anda para cima
         coloca_direcao(90)
-        print("8",file=stderr)
+        #print("8",file=stderr)
         Sound.beep()
         #move_robot(0)
         return calcula_apito(ovelha)
@@ -1069,7 +1069,7 @@ def interage_ovelha(ovelha):
         #o robo vai para baixo da ovelha
         #o robo vai apitar, a ovelha vai para a direita e o robo vai seguir
         coloca_direcao(0)
-        print("9",file=stderr)
+        #print("9",file=stderr)
         Sound.beep()
         #move_robot(270)
         return calcula_apito(ovelha)
@@ -1077,7 +1077,7 @@ def interage_ovelha(ovelha):
         #o robo vai para a esquerda da ovelha
         #o robo vai apitar, a ovelha vai para cima e o robo ira seguir
         coloca_direcao(270)
-        print("10",file=stderr)
+        #print("10",file=stderr)
         Sound.beep()
         #move_robot(0)
         return calcula_apito(ovelha)
@@ -1095,7 +1095,7 @@ def interage_ovelha(ovelha):
         #vai para a esquerda da ovelha
         #robo apita ovelha anda para a direita, robo segue
         coloca_direcao(270)
-        print("12",file=stderr)
+        #print("12",file=stderr)
         Sound.beep()
         #move_robot(270)
         return calcula_apito(ovelha)
@@ -1103,7 +1103,7 @@ def interage_ovelha(ovelha):
         #vai para baixo da ovelha
         #robo apita ovelha anda para cima, robo segue
         coloca_direcao(0)
-        print("13",file=stderr)
+        #print("13",file=stderr)
         Sound.beep()
         #move_robot(0)
         return calcula_apito(ovelha)
@@ -1111,15 +1111,15 @@ def interage_ovelha(ovelha):
         #robo vai para baixo da ovelha
         #robo apita ovelha sobe, robo segue
         coloca_direcao(0)
-        print("14",file=stderr)
+        #print("14",file=stderr)
         Sound.beep()
         return calcula_apito(ovelha)
 
 def calcula_apito(posicao_ovelha):
-    #print("Posicao Robo", file=stderr)
-    #print(informacao.posicao,file=stderr)
-    #print("Ovelha",file=stderr)
-    #print(posicao_ovelha, file=stderr)
+    print("Posicao Robo", file=stderr)
+    print(informacao.posicao,file=stderr)
+    print("Ovelha",file=stderr)
+    print(posicao_ovelha, file=stderr)
     direcao = informacao.posicao - posicao_ovelha # robot- ovelha
     #print(direcao)
     cacifo_ovelha = CacifoAtual(posicao_ovelha)
@@ -1272,7 +1272,6 @@ def calcula_inicio(sheep,ignora,HerdingSheep): #Função que vai calcular em que
             caminho_ovelha = algoritmo_A_star(k.numeroCacifo-1,ignora)
     #caso a ovelha vai para o cacifo 1
     elif(k.numeroCacifo == 1):
-        
         #perde
         #if(k.paredeUp and k.numeroCacifo+6.paredeRight):
             #caminho_ovelha = algoritmo_A_star(k.numeroCacifo+6,ignora)
@@ -1281,7 +1280,10 @@ def calcula_inicio(sheep,ignora,HerdingSheep): #Função que vai calcular em que
             caminho_ovelha = algoritmo_A_star(k.numeroCacifo+6,ignora)
         elif(k.paredeRight):
             caminho_ovelha = algoritmo_A_star(k.numeroCacifo+1,ignora)
-      
+        #caso sem paredes
+        else:
+            caminho_ovelha = algoritmo_A_star(k.numeroCacifo+6,ignora)
+ 
     elif (k.numeroCacifo in [31]): #Caso especial para o 31 porque faz parte do limite do tabuleiro de cima e da esquerda (por isso já faz um L)
         if(k.paredeDown == True):
             caminho_ovelha = algoritmo_A_star(k.numeroCacifo-6,ignora) #vai para a posição abaixo da ovelha porque fica mais perto da cerca para a ovelha
@@ -1448,8 +1450,7 @@ def calcula_inicio(sheep,ignora,HerdingSheep): #Função que vai calcular em que
                 #print("Len Right:", file=stderr)
                 #print(len(caminho_ovelhaRight),file=stderr)
                 return caminho_ovelhaRight
-        
-        
+          
     #print("Caminho > 3",file=stderr)
     return caminho_ovelha        
 
@@ -1518,20 +1519,20 @@ def vai_ate_ovelha(ovelha,HerdingSheep):
 
 
 def main():
-    anda = False
     inicializaCacifos()
-    adiciona_parede(8)
-    adiciona_parede(4)
+
+    adiciona_parede(7)
+    adiciona_parede(10)
     informacao.direcao=90
-    adiciona_parede(33)
-    adiciona_parede(18)
-    adiciona_parede(26)
-    adiciona_parede(22)
+    adiciona_parede(12)
+    adiciona_parede(21)
+    adiciona_parede(32)
+    adiciona_parede(35)
     
     informacao.direcao=0
-    informacao.posicao=26
+    informacao.posicao=14
     guarda_posicao_ovelha()
-    informacao.posicao=11
+    informacao.posicao=15
     guarda_posicao_ovelha()
     informacao.posicao=1
 
@@ -1568,9 +1569,10 @@ def main():
         posicaoOvelha_Sendo_Guiada = betty
         while(posicaoOvelha_Sendo_Guiada != 36):
             posicaoOvelha_Sendo_Guiada = interage_ovelha(posicaoOvelha_Sendo_Guiada)
-            print("CICLO MAIN", file=stderr)
+            #print("CICLO MAIN", file=stderr)
             if(posicaoOvelha_Sendo_Guiada != 36):
                 vai_ate_ovelha(posicaoOvelha_Sendo_Guiada,True)
+            print(posicaoOvelha_Sendo_Guiada,file=stderr)
                 
 
         vai_ate_ovelha(vitoria,False)
@@ -1579,7 +1581,8 @@ def main():
             posicaoOvelha_Sendo_Guiada = interage_ovelha(posicaoOvelha_Sendo_Guiada)
             if(posicaoOvelha_Sendo_Guiada != 36):
                 vai_ate_ovelha(posicaoOvelha_Sendo_Guiada,True)
-                sleep(1)
+            print(posicaoOvelha_Sendo_Guiada,file=stderr)
+               
                 
     elif (posicao_ovelhas[0] == posicao_ovelhas[1]):
         vai_ate_ovelha(betty,False)
@@ -1588,7 +1591,8 @@ def main():
             posicaoOvelha_Sendo_Guiada = interage_ovelha(posicaoOvelha_Sendo_Guiada)
             if(posicaoOvelha_Sendo_Guiada != 36):
                 vai_ate_ovelha(posicaoOvelha_Sendo_Guiada,True)
-                sleep(1)
+            print(posicaoOvelha_Sendo_Guiada,file=stderr)
+                
 
     else:
         vitoria = posicao_ovelhas[0]
@@ -1598,7 +1602,8 @@ def main():
             posicaoOvelha_Sendo_Guiada = interage_ovelha(posicaoOvelha_Sendo_Guiada)
             if(posicaoOvelha_Sendo_Guiada != 36):
                 vai_ate_ovelha(posicaoOvelha_Sendo_Guiada,True)
-                sleep(1)
+            print(posicaoOvelha_Sendo_Guiada,file=stderr)
+                
 
         vai_ate_ovelha(vitoria,False)
         posicaoOvelha_Sendo_Guiada = vitoria
@@ -1606,7 +1611,8 @@ def main():
             posicaoOvelha_Sendo_Guiada = interage_ovelha(posicaoOvelha_Sendo_Guiada)
             if(posicaoOvelha_Sendo_Guiada != 36):
                 vai_ate_ovelha(posicaoOvelha_Sendo_Guiada,True)
-                sleep(1)
+            print(posicaoOvelha_Sendo_Guiada,file=stderr)
+                
         
 
 if (__name__ == "__main__"):
