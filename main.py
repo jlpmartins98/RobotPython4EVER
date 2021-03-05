@@ -806,12 +806,25 @@ def calcula_braco(posicao_ovelha):
 
 
 
+def verifica_direcao(direcao):
+    if(direcao == -6):#robo esta em baixo da ovelha
+        coloca_direcao(0)
+    elif(direcao == 6):#robo em cima da ovelha
+        coloca_direcao(180)
+    elif(direcao == 1):#robo a direita da ovelha
+        coloca_direcao(90)
+    elif(direcao == -1):#robo a esquerda da ovelha
+        coloca_direcao(270)
+
+
 #funçao que interage com as ovelhas pela 1º vez e devolve a posiçao atualizada da ovelha
 #podemos usar esta funçao num ciclo ate a posiçao da ovelha ser 36, esta funçao juntamente com o calcula inicio nas posiçoes atualizadas+ a funçao q leva o robo para a posiçao do calcula_inicio
 def interage_ovelha(ovelha):
     #variavel para verificar se a ovelha tem paredes a volta
     if(verifica_adjacentes(posicao_ovelhas[0],posicao_ovelhas[1]) == True):
         return trata_ovelhas_adjacentes_robot(ovelha)
+    #variavel para saber se o robo esta em cima,baixo, esquerda ou direita da ovelha
+    direcao = informacao.posicao - ovelha
     cacifoRobot = CacifoAtual(informacao.posicao)
     cacifoOvelha = CacifoAtual(ovelha)
     posicao_atualizada_ovelha = ovelha
@@ -827,7 +840,7 @@ def interage_ovelha(ovelha):
         elif(cacifoOvelha.paredeRight):
             #caso tenha uma parede a direita, o robo vai para a direita da ovelha
             #robo bate, ovelha anda para baixo 2x, robo segue
-            coloca_direcao(90)
+            verifica_direcao(direcao)
             braco.on_for_degrees(100,360) #mexe o braço para baixo
             sleep(1)
             braco.on_for_degrees(100,-360) #mexe o braço para cima
@@ -847,7 +860,7 @@ def interage_ovelha(ovelha):
         elif(cacifoOvelha.paredeLeft):
             #caso tenha uma parede a esquerda, robo vai para a esquerda da ovelha
             #robo bate, ovelha anda para cima 2x, robo segue
-            coloca_direcao(270)
+            verifica_direcao(direcao)
             braco.on_for_degrees(100,360) #mexe o braço para baixo
             sleep(1)
             braco.on_for_degrees(100,-360) #mexe o braço para cima
@@ -862,7 +875,7 @@ def interage_ovelha(ovelha):
         if(cacifoOvelha.paredeUp):
             #caso tenha uma parede em cima, robo vai para cima da ovelha
             #robo bate, ovelha anda para a direita 2x, robo segue
-            coloca_direcao(180)
+            verifica_direcao(direcao)
             braco.on_for_degrees(100,360) #mexe o braço para baixo
             sleep(1)
             braco.on_for_degrees(100,-360) #mexe o braço para cima
@@ -919,7 +932,7 @@ def interage_ovelha(ovelha):
         elif(cacifoOvelha.paredeDown and cacifoOvelha.paredeLeft):
             #robo vai para a esquerda da ovelha
             #robo bate, ovelha sobe 2x, robo segue
-            coloca_direcao(270)
+            verifica_direcao(direcao)
             braco.on_for_degrees(100,360) #mexe o braço para baixo
             sleep(1)
             braco.on_for_degrees(100,-360) #mexe o braço para cima
@@ -947,7 +960,7 @@ def interage_ovelha(ovelha):
         if(cacifoOvelha.paredeRight and cacifoOvelha.paredeDown):
             #robo vai para a direita
             #robo usa braço, ovelha sobe 2x, robo segue
-            coloca_direcao(90)
+            verifica_direcao(direcao)
             braco.on_for_degrees(100,360) #mexe o braço para baixo
             sleep(1)
             braco.on_for_degrees(100,-360) #mexe o braço para cima
@@ -955,7 +968,7 @@ def interage_ovelha(ovelha):
         elif(cacifoOvelha.paredeRight and cacifoOvelha.paredeUp):
             #robo vai para a direita
             #robo usa braço, ovelha desce 2x, robo segue
-            coloca_direcao(90)
+            verifica_direcao(direcao)
             braco.on_for_degrees(100,360) #mexe o braço para baixo
             sleep(1)
             braco.on_for_degrees(100,-360) #mexe o braço para cima
@@ -977,7 +990,7 @@ def interage_ovelha(ovelha):
         if(cacifoOvelha.paredeDown and cacifoOvelha.paredeRight):
             #robo vai para baixo
             #robo bate, ovelha anda para a esquerda 2x, robo segue
-            coloca_direcao(0)
+            verifica_direcao(direcao)
             braco.on_for_degrees(100,360) #mexe o braço para baixo
             sleep(1)
             braco.on_for_degrees(100,-360) #mexe o braço para cima
@@ -985,7 +998,7 @@ def interage_ovelha(ovelha):
         elif(cacifoOvelha.paredeDown and cacifoOvelha.paredeLeft):
             #robo vai para baixo
             #robo bate, ovelha anda para a direita 2x, robo segue
-            coloca_direcao(0)
+            verifica_direcao(direcao)
             braco.on_for_degrees(100,360) #mexe o braço para baixo
             sleep(1)
             braco.on_for_degrees(100,-360) #mexe o braço para cima
@@ -994,16 +1007,13 @@ def interage_ovelha(ovelha):
             #robo vai para a esquerda
             #robo apita, ovelha anda para baixo, robo segue
             #print("2",file=stderr)
-            coloca_direcao(270)
+            verifica_direcao(direcao)
             Sound.beep()
             return calcula_apito(ovelha)
         else:#caso sem paredes, apenas 1 parede a esquerda, ou apenas 1 parede em baixo
             #robo vai para a esquerda   #robo vai para baixo    #robo vai para a esquerda
             #robo apita, ovelha anda para a direita, robo segue
-            if(cacifoRobot.numeroCacifo +6 == ovelha):
-                coloca_direcao(0)
-            elif(cacifoRobot.numeroCacifo+1 == ovelha):
-                coloca_direcao(270)
+            verifica_direcao(direcao)
             #print("3",file=stderr)
             Sound.beep()
             return calcula_apito(ovelha)
@@ -1015,11 +1025,9 @@ def interage_ovelha(ovelha):
             #caso o robo n tenha uma parede a direita
             #o robo iria apitar e a ovelha ia andar para a direita e o robo vai seguir
             #como o beep é a volta do robo n intressa a direçao para onde esta virado
-            coloca_direcao(0)
+            verifica_direcao(direcao)
             #print("4",file=stderr)
             Sound.beep()
-            #move_robot(270)
-            coloca_direcao(0)
             return calcula_apito(ovelha)
         #caso o robo n consiga andar para a direita ele perde
         else:#caso a parede livre seja a esquerda
@@ -1029,8 +1037,6 @@ def interage_ovelha(ovelha):
             coloca_direcao(0)
             #print("5",file=stderr)
             Sound.beep()
-            #move_robot(90)
-            coloca_direcao(0)
             return calcula_apito(ovelha)
         #caso o robo n consiga andar para a esquerda ele perde
 
@@ -1084,7 +1090,7 @@ def interage_ovelha(ovelha):
         #o robo vai para baixo
         #o robo apita, ovelha vai para a esquerda
         coloca_direcao(0)
-        print("11",file=stderr)
+       # print("11",file=stderr)
         Sound.beep()
         #move_robot(90)
         return calcula_apito(ovelha)
