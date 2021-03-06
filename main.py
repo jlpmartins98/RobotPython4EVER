@@ -1494,7 +1494,7 @@ def main():
     while ((len(cacifos_visitados)<36)):
         if((paredes_encontradas ==6 and len(posicao_ovelhas)==2)):
             break
-        if(cacifos_visitados > 32):
+        if(len(cacifos_visitados) > 32):
             if(paredes_encontradas == 5 and len(posicao_ovelhas)==2):
                 array = falta_visitar()
                 vai_falta_verificar(array[0])
