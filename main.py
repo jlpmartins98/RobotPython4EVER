@@ -534,13 +534,14 @@ def atualiza_ovelha(o,pos):
 #Calcula_braco recebe a posição inicial da ovelha antes do robot usar o braco, e devolve a posição final da ovelha 
 #Dependendo das paredes à volta e das regras do jogo (Caso não seja possível o movimento, será realizado no sentido do relógio) quer da ovelha na posição inical, quer após o primeiro movimento
 #Calcula e devolve a posição final
+#Como os casos são todos semelhantes apenas comentamos o primeiro para servir de exemplo
 def calcula_braco(posicao_ovelha):
     cacifo_ovelha = CacifoAtual(posicao_ovelha)
     if(informacao.direcao==0): # Virado para cima (Robot por baixo da ovelha)
         if(cacifo_ovelha.numeroCacifo in [32,33,34,35]): # Se a ovelha estiver no limite superior do tabuleiro 
-            if(cacifo_ovelha.paredeRight == True): # Se tiver parede ao lado direito da ovelha 
-                proximo_cacifo = CacifoAtual(posicao_ovelha-1) # Ovelha andou para a esquerd #Busca o cacifo no qual a ovelha está após o primeiro movimento
-                if(proximo_cacifo.paredeLeft == True or proximo_cacifo.numeroCacifo in [1,7,13,19,25,31]): # Depois do primeiro movimento tem parede à esquerda (ovelha desce) -6
+            if(cacifo_ovelha.paredeRight == True): #Se tiver parede ao lado direito da ovelha 
+                proximo_cacifo = CacifoAtual(posicao_ovelha-1) # Ovelha anda para esquerda, busca o cacifo atual representado
+                if(proximo_cacifo.paredeLeft == True or proximo_cacifo.numeroCacifo in [1,7,13,19,25,31]): # Se após o primeiro movimento
                     atualiza_ovelha(posicao_ovelha,-7)
                     return posicao_ovelha-7
                 else: # Não tem parede à esquerda, ovelha anda 2 casas para esquerda
@@ -1493,9 +1494,10 @@ def main():
     while ((len(cacifos_visitados)<36)):
         if((paredes_encontradas ==6 and len(posicao_ovelhas)==2)):
             break
-        if(paredes_encontradas ==5 and len(posicao_ovelhas) ==2 and cacifos_visitados > 32):
-            array = falta_visitar()
-            vai_falta_verificar(array[0])
+        if(cacifos_visitados > 32):
+            if(paredes_encontradas == 5 and len(posicao_ovelhas)==2):
+                array = falta_visitar()
+                vai_falta_verificar(array[0])
         verifica_cacifo()
         #print(array_pode_avancar, file= stderr)
     
