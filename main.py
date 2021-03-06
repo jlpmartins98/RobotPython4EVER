@@ -805,6 +805,7 @@ def calcula_braco(posicao_ovelha):
                 return posicao_ovelha +2 # direita -1
 
 
+
 #Funçao para colocar o robo virado para a ovelha antes de interagir com ela
 def verifica_direcao(direcao):
     if(direcao == -6):#robo esta em baixo da ovelha
@@ -1053,51 +1054,51 @@ def calcula_apito(posicao_ovelha):
     print(posicao_ovelha, file=stderr)
     direcao = informacao.posicao - posicao_ovelha # robot- ovelha
     #print(direcao)
-    cacifo_ovelha = CacifoAtual(posicao_ovelha)
-    if(direcao == -6 or direcao == -12): # robot por baixo da ovelha
-        if(cacifo_ovelha.numeroCacifo in [31,32,33,34,35,36] or cacifo_ovelha.paredeUp == True):
-            if(cacifo_ovelha.paredeRight == True or cacifo_ovelha.numeroCacifo in [6,12,18,24,30,36]):
-                atualiza_ovelha(posicao_ovelha,-1)
-                return posicao_ovelha -1
+    cacifo_ovelha = CacifoAtual(posicao_ovelha) # Busca o cacifo onde está a ovelha
+    if(direcao == -6 or direcao == -12): # robot por baixo da ovelha da ovelha
+        if(cacifo_ovelha.numeroCacifo in [31,32,33,34,35,36] or cacifo_ovelha.paredeUp == True): # Ovelha com parede por cima ou no limite superior do tabuleiro
+            if(cacifo_ovelha.paredeRight == True or cacifo_ovelha.numeroCacifo in [6,12,18,24,30,36]): # Ovelha com parede a direita ou no limite direito do tabuleiro
+                atualiza_ovelha(posicao_ovelha,-1) # Atualiza a posição global da ovelha // ovelha andou para esquerda
+                return posicao_ovelha -1 # Devolve a posiçao da ovelha // ovelha andou para a esquerda
             else:
-                atualiza_ovelha(posicao_ovelha,1)
-                return posicao_ovelha +1
+                atualiza_ovelha(posicao_ovelha,1)# Atualiza a posição global da ovelha // ovelha andou para direita
+                return posicao_ovelha +1 # Devolve a posiçao da ovelha // ovelha andou para a direita
         else:
             atualiza_ovelha(posicao_ovelha,6)
             return posicao_ovelha +6        
-    elif(direcao == 6 or direcao ==12): # robot por cima
-        if(cacifo_ovelha.numeroCacifo in [1,2,3,4,5,6] or cacifo_ovelha.paredeDown == True):
-            if(cacifo_ovelha.paredeLeft == True or cacifo_ovelha.numeroCacifo in [1,7,13,19,25,31]):
-                atualiza_ovelha(posicao_ovelha,1)
-                return posicao_ovelha +1
+    elif(direcao == 6 or direcao ==12): # robot por cima da ovelha
+        if(cacifo_ovelha.numeroCacifo in [1,2,3,4,5,6] or cacifo_ovelha.paredeDown == True):# Ovelha com parede por baixo ou no limite inferior do tabuleiro
+            if(cacifo_ovelha.paredeLeft == True or cacifo_ovelha.numeroCacifo in [1,7,13,19,25,31]): # Ovelha com parede a esquerda ou no limite da esquerda do tabuleiro
+                atualiza_ovelha(posicao_ovelha,1)# Atualiza a posição global da ovelha // ovelha andou para direita
+                return posicao_ovelha +1  # Devolve a posiçao da ovelha // ovelha andou para a direita
             else:
-                atualiza_ovelha(posicao_ovelha,-1)
-                return posicao_ovelha -1
+                atualiza_ovelha(posicao_ovelha,-1)# Atualiza a posição global da ovelha // ovelha andou para esquerda
+                return posicao_ovelha -1  # Devolve a posiçao da ovelha // ovelha andou para a esquerda
         else:
-            atualiza_ovelha(posicao_ovelha,-6)
-            return posicao_ovelha -6
-    elif(direcao == 1 or direcao==2): # robot direita
-        if(cacifo_ovelha.numeroCacifo in [1,7,13,19,25,31] or cacifo_ovelha.paredeLeft == True):
-            if(cacifo_ovelha.paredeUp == True or cacifo_ovelha.numeroCacifo in [31,32,33,34,35,36]):
-                atualiza_ovelha(posicao_ovelha,-6)
-                return posicao_ovelha -6
+            atualiza_ovelha(posicao_ovelha,-6)# Atualiza a posição global da ovelha // ovelha andou para baixo
+            return posicao_ovelha -6  # Devolve a posiçao da ovelha // ovelha andou para a baixo
+    elif(direcao == 1 or direcao==2): # robot direita da ovelha
+        if(cacifo_ovelha.numeroCacifo in [1,7,13,19,25,31] or cacifo_ovelha.paredeLeft == True):# Ovelha com parede a esquerda ou no limite a esquerda do tabuleiro
+            if(cacifo_ovelha.paredeUp == True or cacifo_ovelha.numeroCacifo in [31,32,33,34,35,36]): # Ovelha com parede por cima ou no limite superior do tabuleiro
+                atualiza_ovelha(posicao_ovelha,-6)# Atualiza a posição global da ovelha // ovelha andou para baixo
+                return posicao_ovelha -6  # Devolve a posiçao da ovelha // ovelha andou para a baixo
             else:
-                atualiza_ovelha(posicao_ovelha,6)
-                return posicao_ovelha +6
+                atualiza_ovelha(posicao_ovelha,6)# Atualiza a posição global da ovelha // ovelha andou para cima
+                return posicao_ovelha +6  # Devolve a posiçao da ovelha // ovelha andou para a cima
         else:
-            atualiza_ovelha(posicao_ovelha,-1)
-            return posicao_ovelha -1
+            atualiza_ovelha(posicao_ovelha,-1)# Atualiza a posição global da ovelha // ovelha andou para esquerda
+            return posicao_ovelha -1  # Devolve a posiçao da ovelha // ovelha andou para a esquerda
     elif(direcao == -1 or direcao == -2): # robot esquerda
-        if(cacifo_ovelha.numeroCacifo in [6,12,18,24,30,36] or cacifo_ovelha.paredeRight == True):
-            if(cacifo_ovelha.paredeDown == True or cacifo_ovelha.numeroCacifo in [1,2,3,4,5,6]):
-                atualiza_ovelha(posicao_ovelha,6)
-                return posicao_ovelha +6
+        if(cacifo_ovelha.numeroCacifo in [6,12,18,24,30,36] or cacifo_ovelha.paredeRight == True):# Ovelha com parede a direita ou no limite a direita do tabuleiro
+            if(cacifo_ovelha.paredeDown == True or cacifo_ovelha.numeroCacifo in [1,2,3,4,5,6]): # Ovelha com parede por baixo ou no limite inferior do tabuleiro
+                atualiza_ovelha(posicao_ovelha,6)# Atualiza a posição global da ovelha // ovelha andou para cima
+                return posicao_ovelha +6 # Devolve a posiçao da ovelha // ovelha andou para a cima
             else:
-                atualiza_ovelha(posicao_ovelha,-6)
-                return posicao_ovelha -6
+                atualiza_ovelha(posicao_ovelha,-6)# Atualiza a posição global da ovelha // ovelha andou para baixo
+                return posicao_ovelha -6 # Devolve a posiçao da ovelha // ovelha andou para a baixo
         else:
-            atualiza_ovelha(posicao_ovelha,1)
-            return posicao_ovelha +1
+            atualiza_ovelha(posicao_ovelha,1)# Atualiza a posição global da ovelha // ovelha andou para direita
+            return posicao_ovelha +1 # Devolve a posiçao da ovelha // ovelha andou para a direita
 
 
 #funçao que interage com as ovelhas caso estejam ambas adjacentes ao robot (usa o braço nao o apito)
@@ -1461,20 +1462,7 @@ def vai_ate_ovelha(ovelha,HerdingSheep):
 def main():
     inicializaCacifos()
 
-    adiciona_parede(7)
-    adiciona_parede(10)
-    informacao.direcao=90
-    adiciona_parede(12)
-    adiciona_parede(21)
-    adiciona_parede(32)
-    adiciona_parede(35)
     
-    informacao.direcao=0
-    informacao.posicao=14
-    guarda_posicao_ovelha()
-    informacao.posicao=15
-    guarda_posicao_ovelha()
-    informacao.posicao=1
 
     while ((len(cacifos_visitados)<36)):
         if((paredes_encontradas ==6 and len(posicao_ovelhas)==2)):
